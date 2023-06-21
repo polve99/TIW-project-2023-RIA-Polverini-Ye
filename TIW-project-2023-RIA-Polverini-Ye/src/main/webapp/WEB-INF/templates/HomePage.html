@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+    <link rel="stylesheet" type="text/css" media="all" href="CSS/mystyle.css" />
+</head>
+
+<body>
+<h1 align="center">$ BidWars $</h1>
+<h2 align="center">Hi <span th:text="${session.user.name}"></span>, what do you want to do?</h2>
+
+<div class="button-container">
+    <a href="BuyPage.html" th:href="@{/GoToBuy}" class="buy-button">BUY SOMETHING</a>
+    <a href="SellPage.html" th:href="@{/GoToSell}" class="sell-button">SELL SOMETHING</a>
+</div>
+
+<div class="logout-button">
+    <a th:href="@{Logout}" class="logout-button-small">Logout</a>
+</div>
+
+</body>
+
+</html>

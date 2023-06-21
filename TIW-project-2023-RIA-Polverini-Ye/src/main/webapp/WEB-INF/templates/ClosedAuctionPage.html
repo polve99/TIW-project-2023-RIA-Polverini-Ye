@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Closed Auction Page</title>
+    <link rel="stylesheet" type="text/css" media="all" href="CSS/mystyle.css" />
+</head>
+
+<body>
+<h1>BidWars' Closed Auction Page</h1>
+<h2>Hi <span th:text="${user.name}"></span>, here are the details of the closed auction '<span th:text="${session.idAuction}"></span>', you are looking at:</h2>
+
+<div th:if="${closeMsg != null}">
+  <p th:text="${closeMsg}"></p>
+</div>
+
+<fieldset>
+    <div class="container">
+        <div class="row">
+            <h1>Closed Auction Details</h1>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Articles</th>
+                    <th>Winning Price</th>
+                    <th>Winning Bidder</th>
+                    <th>Shipping Address</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <ul>
+                            <li th:each="article : ${articles}" th:text="${article.articleName}"></li>
+                        </ul>
+                    </td>
+                    <td th:text="${closedAuctionInfo[0]}"></td>
+                    <td th:text="${closedAuctionInfo[1]}"></td>
+                    <td th:text="${closedAuctionInfo[2]}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</fieldset>
+
+<div class="logout-button">
+    <a th:href="@{Logout}" class="logout-button-small">Logout</a>
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+	version="4.0">
+	<display-name>TIW_project_2023_pure_HTML_Polverini_Ye</display-name>
+	<context-param>
+		<param-name>dbUrl</param-name>
+		<param-value>jdbc:mysql://localhost:3306</param-value>
+	</context-param>
+	<context-param>
+		<param-name>dbUser</param-name>
+		<param-value>root</param-value>
+	</context-param>
+	<context-param>
+		<param-name>dbPassword</param-name>
+		<param-value>Ciaogiulia0101*!</param-value>
+	</context-param>
+	<context-param>
+		<param-name>dbDriver</param-name>
+		<param-value>com.mysql.cj.jdbc.Driver</param-value>
+	</context-param>
+	<filter>
+	<filter-name>LoginFilter</filter-name>
+    	<filter-class>filters.LoginFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+    	<filter-name>LoginFilter</filter-name>
+		<url-pattern>/GoToHome</url-pattern>
+	    <url-pattern>/AddArticle</url-pattern>
+	    <url-pattern>/CreateAuction</url-pattern>
+	    <url-pattern>/GoToAuction</url-pattern>
+	    <url-pattern>/GoToBuy</url-pattern>
+	    <url-pattern>/GoToSell</url-pattern>
+	    <url-pattern>/CreateDirectory</url-pattern>
+	    <url-pattern>/MakeBid</url-pattern>
+	    <url-pattern>/Logout</url-pattern>
+	</filter-mapping>
+	<welcome-file-list>
+		<welcome-file>GoToHomePage</welcome-file>
+	</welcome-file-list>
+</web-app>
