@@ -24,7 +24,7 @@
 						<p th:text="${msgIndex}" class="error"></p>
 					</div>
 			
-			        <form action = "Login" method = "post" >
+			        <form action = "#" method = "post" id = "login">
 			            <fieldset>
 			                <p>
 			                    E-mail: <input type="email" id="email" name="userMail" required/>
@@ -42,6 +42,10 @@
 			                </div>
 			            </fieldset>
 			        </form>
+			        <div class = "loginBottomSection">
+						<input id = "loginButton" type = "button" value = "Login">
+						<p class = "changeAutMethod">Don't have an account? <a id = "registerAnchor" href = "#">Register</a></p>
+					</div>
 			    </div>
 			</div>
 			
@@ -51,7 +55,7 @@
 			        	<h2 align = "center">Register an account to BidWars</h2>
 			        	<p>Fill the fields below and submit to create a new account</p>
 			        </div>
-			        <form action="Registration" method="post" id="registration">
+			        <form action = "#" method = "post" id = "registration">
 					    <fieldset>
 					        <p>
 					            Name: <input type="text" id="firstName" name="name" required/>
@@ -85,6 +89,10 @@
 					        </p>
 					    </fieldset>
 					</form>
+					<div class = "registrationBottomSection">
+						<input id = "registrationButton" type = "button" value = "Registration">
+						<p class = "changeAutMethod">Already have an account? <a id = "loginAnchor" href = "#">Login</a></p>
+					</div>
 			    </div>
 			</div>
 		
