@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+	    <meta charset="utf-8">
+	    <title>BidWars</title>
+	    <script src="utilis.js" charset="utf-8" defer></script>
+		<script src="login.js" charset="utf-8" defer></script>
+		<script src="cookie.js" charset="utf-8" defer></script>
+		<script src="auction.js" charset="utf-8" defer></script>
+	    <link rel="stylesheet" type="text/css" media="all" href="CSS/mystyle.css" />
+	</head>
+
+	<body>
+	
+		<!-- HOME PAGE SECTION -->
+		
+		<div class = "header">
+			<h1 align="center">$ BidWars' Home Page $</h1>
+			<h2 align="center">Hi <span th:text="${session.user.name}"></span>, what do you want to do?</h2>
+			<div class="button-container">
+				<a href="#" id="id_goToBuy" class="buy-button">BUY SOMETHING</a>
+				<a href="#" id="id_goToSell" class="sell-button">SELL SOMETHING</a>
+			</div>
+			<div class="logout-button">
+				<a href="Logout" class="logout-button-small">Logout</a>
+			</div>
+		</div>
+		
+		<!-- BUY PAGE SECTION -->
+		
+		<div id = "BuySection">
+			<h1 style="text-align: center;">BidWars' Buy section</h1>
+			
+			<div class = "errorString">
+				<p id = "errorString" class="error"></p>
+			</div>
+			
+			<form id="id_searchKeyword" action="#" style="text-align: center;">
+			    <fieldset>
+			        <div class="container">
+			            <div class="row">
+			            	<h2 style="text-align: center;">Here's a list of all the open auctions!</h2>
+			                <div id = "id_empty_auctionInfoListOpen">
+								<p id = "NoOpenAuctionsMsg"></p>
+							</div>
+							
+			                <div id = "id_auctionInfoListOpen">
+			                
+			                	<table class=table id = "SearchedMacroTable">
+			                		<tr>
+			                			<td>
+				                			<table class="table" id = "id_auctionInfoListOpen_listContainer">
+						                        <thead>
+							                        <tr>
+							                            <th>Auction Id</th>
+							                            <th>Articles</th>
+							                            <th>Max Bid</th>
+							                            <th>Min Rise</th>
+							                            <th>Time Left</th>
+							                        </tr>
+						                        </thead>
+						                        <tbody id = "id_auctionInfoListOpen_body">
+												</tbody>
+						                    </table>
+			                			</td>
+			                			<td>
+			                			
+			                			</td>
+			                		</tr>
+			                	</table>
+			                
+			                    
+			                </div>
+			            </div>
+			        </div>
+			    </fieldset>
+			    <br><br>
+			    
+			    <div style="text-align: center;">
+			        <fieldset>
+			            <p>Search for an auction by keyword:</p>
+			            <p class="wizard" id="id_searchKeywordWizard"></p>
+			            <input type="text" id="keyword" name="keyword" 
+			            	placeholder="Insert here the keyword to search" size="40" maxlength="200"/> 
+			            <input type="submit" value="Search"/>
+			        </fieldset>
+			    </div>
+			</form>
+			
+			
+			
+			
+			<!-- TODO: da fare la searchedCookieTable -->
+			
+			
+			
+			
+			
+			
+			
+			
+			<br><br>
+			<h2 style="text-align: center;">Here's a list of all the closed auctions you won!</h2>
+			
+			<form style="text-align: center;">
+			    <fieldset>
+			        <div class="container">
+			            <div class="row">
+			                <h1>List of auctions you won</h1>
+			                <div id = "id_empty_auctionInfoListWon">
+								<p id = "NoWonAuctionsMsg"></p>
+							</div>
+			                <div id = "id_auctionInfoListWon">
+			                    <table class="table" id = "id_auctionInfoListWon_listContainer">
+			                        <thead>
+			                        <tr>
+			                            <th>Auction Id</th>
+			                            <th>Articles</th>
+			                            <th>Winning bid</th>
+			                        </tr>
+			                        </thead>
+			                        <tbody id="id_auctionInfoListWon_body">
+									</tbody>
+			                    </table>
+			                </div>
+			            </div>
+			        </div>
+			    </fieldset>
+			</form>
+		
+		</div>
+		
+		<!-- SELL PAGE SECTION -->
+		
+		
+		
+		
+		
+	</body>
+</html>
