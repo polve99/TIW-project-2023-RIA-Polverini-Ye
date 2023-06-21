@@ -34,53 +34,104 @@
 		
 		<div id = "BuySection">
 			<h1 style="text-align: center;">BidWars' Buy section</h1>
+			<div class = "errorString">
+				<p id = "errorString" class="error"></p>
+			</div>
 			
-			
-			<!-- BUY1: all open auctions section -->
-			
-			<!-- BUY2: KEYWORD SEARCH section  -->
-			
-			<!-- BUY3: searched keyword open auctions section -->
-			
-			
-			
-			
-			
-			<!-- BUY4 da fare da zero: COOKIE SEARCHED AUCTIONS section -->
-			
-			
-			
-			
-			<!-- BUY5: WON AUCTIONS section -->
+			<!-- BUY1: open auctions, KEYWORD search and detailed auction section (open w bid option and closed) -->
 			
 			<br><br>
-			<h2 style="text-align: center;">Here's a list of all the closed auctions you won!</h2>
-			
-			<form style="text-align: center;">
-			    <fieldset>
+			<div id = "OpenAuctionSection">
+				<fieldset>
 			        <div class="container">
 			            <div class="row">
-			                <h1>List of auctions you won</h1>
-			                <div id = "id_empty_auctionInfoListWon">
-								<p id = "NoWonAuctionsMsg"></p>
+			                <h1>List of open auctions</h1>
+			                <div id = "id_empty_auctionInfoListOpen">
+								<p id = "NoOpenAuctionsMsg"></p>
 							</div>
-			                <div id = "id_auctionInfoListWon">
-			                    <table class="table" id = "id_auctionInfoListWon_listContainer">
-			                        <thead>
-			                        <tr>
-			                            <th>Auction Id</th>
-			                            <th>Articles</th>
-			                            <th>Winning bid</th>
-			                        </tr>
-			                        </thead>
-			                        <tbody id="id_auctionInfoListWon_body">
-									</tbody>
-			                    </table>
-			                </div>
+							
+							<table class="table" id="OpenAuctionMacroTable">
+								
+								 <tr>
+								 	<td>
+						            	<table class="table" id = "id_auctionInfoListOpen_listContainer">
+						                    <thead>
+						                        <tr>
+						                            <th>Auction Id</th>
+						                            <th>Articles</th>
+						                            <th>Max Bid</th>
+						                            <th>Min Rise</th>
+						                            <th>Time Left</th>
+						                        </tr>
+						                    </thead>
+						                    <tbody id="id_auctionInfoListOpen_body">
+											</tbody>
+						                </table>
+								 	</td>
+								 	
+								 	<td> <!-- auction's details page with list of articles and table with bids for the auction
+								 			 quindi 2 tables interne e con anche la form per fare la bid -->
+								 		<table class="table" id="id_auctionDetails">
+								 			
+								 		</table>
+								 	</td>
+								 	
+								 </tr>
+							</table>
+			                
 			            </div>
 			        </div>
 			    </fieldset>
-			</form>
+			    
+			    <br><br><!-- form per fare la search della KEYWORD -->
+			    <div style="text-align: center;">
+			    	<form id="id_searchKeyword" action="#">
+						<fieldset>
+							<p>Search for an auction by keyword:</p>
+							<p class="wizard" id="id_cercaastewizard"></p>
+							<input type="text" id="keyword" name="keyword"
+								placeholder="Insert here the keyword to search" 
+								size="40" maxlength="200" required /> <input type="hidden">
+							<p><input type="submit" value="Search" /></p>
+						</fieldset>
+					</form>
+			    </div>
+			    
+			</div>
+			
+			
+			
+			<!-- BUY2 da fare da zero: COOKIE SEARCHED AUCTIONS section -->
+			
+			
+			
+			
+			<!-- BUY3: WON AUCTIONS section -->
+			
+			<br><br>
+			<fieldset id = "WonAuctionSection">
+				<div class="container">
+			        <div class="row">
+			            <h2 style="text-align: center;">List of all the closed auctions you won!</h2>
+			            <div id = "id_empty_auctionInfoListWon">
+							<p id = "NoWonAuctionsMsg"></p>
+						</div>
+			            <div id = "id_auctionInfoListWon">
+			                <table class="table" id = "id_auctionInfoListWon_listContainer">
+			                    <thead>
+			                    <tr>
+			                        <th>Auction Id</th>
+			                        <th>Articles</th>
+			                        <th>Winning bid</th>
+			                    </tr>
+			                    </thead>
+			                    <tbody id="id_auctionInfoListWon_body">
+								</tbody>
+			                </table>
+			            </div>
+			        </div>
+				</div>
+			</fieldset>
 		
 		</div>
 		
