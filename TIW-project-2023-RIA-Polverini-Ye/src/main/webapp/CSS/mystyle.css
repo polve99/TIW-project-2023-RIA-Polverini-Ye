@@ -13,6 +13,7 @@ body {
 /* Common */
 h1,
 h2 {
+	text-align: center;
     /*color: #117A65;*/
     color: #336666;
 }
@@ -118,9 +119,23 @@ h2[align="center"] {
     height: 100vh;
 }
 
+.registrationContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   	margin-left: 20px;
+    height: 100vh;
+}
+
 .loginSection {
     background-color: #E8F6F3;
     padding: 20px;
+    border: 1px solid #ddd;
+}
+
+.registrationSection {
+    background-color: #E8F6F3;
+    padding: 50px;
     border: 1px solid #ddd;
 }
 
@@ -144,14 +159,21 @@ h2[align="center"] {
     font-weight: bold;
 }
 
-#registerAnchor:hover {
-    text-decoration: underline;
+#loginAnchor {
+	color: #117A65;
+	font-weight: bold;
 }
 
-/* Registration Page */
-#registration p {
-    margin-bottom: 10px;
+#loginAnchor:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }
+
+#registerAnchor:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 
 .logout {
     text-align: center;
@@ -198,4 +220,29 @@ h2[align="center"] {
     color: #fff;
     text-decoration: none;
     border-radius: 3px;
+}
+
+
+
+/*esperimetno*/
+
+
+
+
+
+input[type="text"].inputWithError, input[type="password"].inputWithError, input[type="email"].inputWithError {
+	border: 2px solid red;
+}
+
+
+.hiddenElement {
+	display: none;
+}
+
+.hiddenmsg {
+	display: none;
+}
+
+.hiddenmsg1 {
+	display: none;
 }

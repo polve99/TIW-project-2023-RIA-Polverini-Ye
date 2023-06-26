@@ -14,7 +14,7 @@
 	</context-param>
 	<context-param>
 		<param-name>dbPassword</param-name>
-		<param-value></param-value>
+		<param-value>JacPolDiri99_99</param-value>
 	</context-param>
 	<context-param>
 		<param-name>dbDriver</param-name>
@@ -38,6 +38,6 @@
 	    <url-pattern>/Logout</url-pattern>
 	</filter-mapping>
 	<welcome-file-list>
-		<welcome-file>GoToHomePage</welcome-file>
+		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 </web-app>

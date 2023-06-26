@@ -5,122 +5,96 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.regex.Pattern;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
+import org.apache.commons.lang.StringEscapeUtils;
 
 import beans.User;
 import dao.UserDAO;
 import utilis.ConnectionHandler;
-import utilis.ThymeleafTemplateEngineCreator;
 
 @WebServlet("/Registration")
+@MultipartConfig
 public class Registration extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-    private Connection connection = null;
-    private TemplateEngine templateEngine = null;
-
+	private static final long serialVersionUID = 1L;
+	private Connection connection = null;
+	
     public Registration() {
         super();
     }
-
+    
     @Override
     public void init() throws ServletException {
-        connection = ConnectionHandler.getConnection(getServletContext());
-        ServletContext servletContext = getServletContext();
-        templateEngine = ThymeleafTemplateEngineCreator.getTemplateEngine(servletContext);
+    	connection = ConnectionHandler.getConnection(getServletContext());
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String path = "WEB-INF/registration.html";
-        final WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
-        templateEngine.process(path, ctx, response.getWriter());
-    }
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String name = request.getParameter("name");
-        String surname = request.getParameter("surname");
-        String userMail = request.getParameter("userMail");
-        String passw = request.getParameter("password");
-        String repeatedPassword = request.getParameter("repeatedPassword");
-        String telephone = request.getParameter("telephone");
-        String address = request.getParameter("address");
-        Pattern emailPattern = Pattern.compile("^(.+)@(.+)$");
-        boolean emailValid = emailPattern.matcher(userMail).matches();
-        boolean isValid = false;
-
-        if (name==null || name==" " || name.length() < 2 || name.length() > 20) {
-            request.setAttribute("nameErrorMessage", "Name must be between 2 and 20 characters");
-        }
-
-        if (surname==null || surname.length() < 2 || surname.length() > 20) {
-            request.setAttribute("surnameErrorMessage", "Surname must be between 2 and 20 characters");
-        }
-
-        if (userMail==null || userMail.length() < 5 || userMail.length() > 50 || !emailValid) {
-            request.setAttribute("emailErrorMessage", "Invalid email. Email must be between 5 and 50 characters and have a valid format (e.g., email@mail.com)");
-        }
-
-        UserDAO userDAO = new UserDAO(connection);
-        try {
-            if(userDAO.isUserMailInDB(userMail)) {
-                request.setAttribute("emailErrorMessage", "Email already in use");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        if (passw==null || passw.length() < 8 || passw.length() > 50) {
-            request.setAttribute("passwordErrorMessage", "Password must be between 8 and 50 characters");
-        }
-
-        if (repeatedPassword==null || !passw.equals(repeatedPassword)) {
-            request.setAttribute("repeatPasswordErrorMessage", "Password and repeated password do not match");
-        }
-
-        if (address==null || address.length() < 1 || address.length() > 50) {
-            request.setAttribute("addressErrorMessage", "Address must be between 1 and 50 characters");
-        }
-
-        if (name.length() >= 2 && name.length() <= 20 &&
-                surname.length() >= 2 && surname.length() <= 20 &&
-                userMail.length() >= 5 && userMail.length() <= 50 && emailValid &&
-                passw.length() >= 8 && passw.length() <= 50 &&
-                passw.equals(repeatedPassword) &&
-                address.length() >= 1 && address.length() <= 50) {
-            isValid = true;
-        }
-
-        if (isValid) {
-            User user = null;
-            try {
-                user = userDAO.createUser(userMail, passw, name, surname, telephone, address);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                request.setAttribute("errorMsg", "Error in creating user. Please try again.");
-            }
-            HttpSession session = request.getSession(true);
-            session.setAttribute("user", user);
-            session.setAttribute("language", request.getLocale().getLanguage());
-            response.sendRedirect("GoToHome");
-        } else {
-            String path = "WEB-INF/registration.html";
-            ServletContext servletContext = getServletContext();
-            final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-            templateEngine.process(path, ctx, response.getWriter());
-        }
-    }
-
-    @Override
-    public void destroy() {
-        ConnectionHandler.closeConnection(connection);
-    }
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String surname = StringEscapeUtils.escapeJava(request.getParameter("surname"));
+		String name = StringEscapeUtils.escapeJava(request.getParameter("name"));
+		String userMail = StringEscapeUtils.escapeJava(request.getParameter("email"));
+		String password = StringEscapeUtils.escapeJava(request.getParameter("password"));
+		String repeatedPassword = StringEscapeUtils.escapeJava(request.getParameter("repeatedPassword"));
+		String telephone = StringEscapeUtils.escapeJava(request.getParameter("telephone"));
+		String address = StringEscapeUtils.escapeJava(request.getParameter("address"));
+		Pattern emailPattern = Pattern.compile("^(.+)@(.+)$");
+		Pattern telehonePattern = Pattern.compile("\\d+");
+		boolean telValid = false;;
+		if (telephone != null) {
+			telValid = telehonePattern.matcher(telephone).matches();
+		}
+		boolean emailValid = emailPattern.matcher(userMail).matches();
+		boolean isBadRequest = true;
+		String badRequestMessage = "";
+		if (name == null || password == null || repeatedPassword == null || userMail == null || surname == null || address == null ||
+				name.isBlank() || password.isBlank() || repeatedPassword.isBlank() || userMail.isBlank() || surname.isBlank() || address.isBlank()) {
+			badRequestMessage = "Missing parameters";
+		} else if (!emailValid) {
+			badRequestMessage = "Email not valid";
+		} else if (!password.equals(repeatedPassword)) {
+			badRequestMessage = "Password and repeated password are different";
+		} else if (password.length() < 8) {
+			badRequestMessage = "Password must be at least of 8 characters";
+		} else if(telephone != null && !telValid) {
+			badRequestMessage = "Telephone number not valid";
+		} else {
+			isBadRequest = false;
+		}
+		if (isBadRequest) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println(badRequestMessage);
+			return;
+		}
+		UserDAO userDAO = new UserDAO(connection);
+		User user = null;
+		try {
+			user = userDAO.createUser(userMail, password, name, surname, telephone, address);
+		} catch (SQLException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Internal server error, please retry later");
+			return;
+		}
+		if (user == null) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("Username or password are not correct");
+			return;
+		}
+		HttpSession session = request.getSession(true);
+		session.setAttribute("user", user);
+		response.setStatus(HttpServletResponse.SC_OK);
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().println(userMail);
+	}
+	
+	@Override
+	public void destroy() {
+		ConnectionHandler.closeConnection(connection);
+	}
 
 }
