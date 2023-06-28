@@ -9,7 +9,7 @@
 				if (x.readyState == XMLHttpRequest.DONE) {
 					switch(x.status) {
 						case 200:
-							sessionStorage.setItem("userMail", message);
+							sessionStorage.setItem("name", message);
 							window.location.href = "home.html";
 							break;
 						default:

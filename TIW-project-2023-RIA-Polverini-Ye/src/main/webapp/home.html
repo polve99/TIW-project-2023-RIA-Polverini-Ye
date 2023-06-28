@@ -1,25 +1,26 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 
 	<head>
 	    <meta charset="utf-8">
 	    <title>BidWars</title>
+	    <link rel="stylesheet" type="text/css" media="all" href="CSS/mystyle.css"/>
 	    <script src="utilis.js" charset="utf-8" defer></script>
-		<script src="login.js" charset="utf-8" defer></script>
+		<script src="home.js" charset="utf-8" defer></script>
 		<script src="cookie.js" charset="utf-8" defer></script>
 		<script src="auction.js" charset="utf-8" defer></script>
-	    <link rel="stylesheet" type="text/css" media="all" href="CSS/mystyle.css" />
+		<script src="buypage.js" charset="utf-8" defer></script>
 	</head>
 
 	<body> 
 	<!-- TODO: da cancellare la cartella templates quando abbiamo fatto tutto -->
 	
 	
-		<!-- HOME PAGE SECTION  --------------------------------------------------------------------------------------------- -->
+		<!-- HOME PAGE SECTION  -------------------s-------------------------------------------------------------------------- -->
 		
-		<div class = "header">
+		<div class = "homeLinks" id = "home">
 			<h1 align="center">$ BidWars' Home Page $</h1>
-			<h2 align="center">Hi <span th:text="${session.user.name}"></span>, what do you want to do?</h2>
+			<h2 align="center" id = "customTitle"></h2>
 			<div class="button-container">
 				<a href="#" id="id_goToBuy" class="buy-button">BUY SOMETHING</a>
 				<a href="#" id="id_goToSell" class="sell-button">SELL SOMETHING</a>
@@ -32,7 +33,7 @@
 		
 		<!-- BUY PAGE SECTION ----------------------------------------------------------------------------------------------- -->
 		
-		<div id = "BuySection">
+		<div class = "hiddenElement" id = "buySection">
 			<h1 style="text-align: center;">BidWars' Buy section</h1>
 			<div class = "errorString">
 				<p id = "errorString" class="error"></p>
@@ -65,6 +66,7 @@
 						                        </tr>
 						                    </thead>
 						                    <tbody id="id_auctionInfoListOpen_body">
+						                    	
 											</tbody>
 						                </table>
 								 	</td>
@@ -139,7 +141,9 @@
 		
 		
 		<!-- SELL PAGE SECTION --------------------------------------------------------------------------------------------- -->
-		
+		<div class = "hiddenElement" id = "sellSection">
+			<p>SELL PAGE</p>
+		</div>
 		
 		
 		

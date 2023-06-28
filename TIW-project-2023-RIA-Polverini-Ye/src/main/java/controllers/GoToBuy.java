@@ -27,6 +27,8 @@ import dao.BidDAO;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
+import com.google.gson.Gson;
+
 import utilis.ConnectionHandler;
 import utilis.ThymeleafTemplateEngineCreator;
 
@@ -107,6 +109,8 @@ public class GoToBuy extends HttpServlet {
 
             auctionInfoList.add(auctionInfo);
         }
+        Gson gson = new Gson();
+        String auctionInfoListString = gson.toJson(auctionInfoList);
 
         //here starts the retreiving infos for closed won auctions table
 
@@ -130,35 +134,19 @@ public class GoToBuy extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error retrieving won auctions");
             return;
         }
+        
+        String wonAuctionInfoListString = gson.toJson(wonAuctionInfoList);
+        String finalObject = "{auctionInfoList: " + auctionInfoListString + ";\n" + "wonAuctionInfoList: " + wonAuctionInfoListString + ";\n}";
 
         //response
 
         WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
         String path = "/WEB-INF/templates/BuyPage.html";
 
-        ctx.setVariable("auctionInfoListOpen", auctionInfoList);
-        ctx.setVariable("auctionInfoListWon", wonAuctionInfoList);
-
-        if (auctionInfoList.isEmpty()) {
-            if (keyword != null && !keyword.isBlank()) {
-                ctx.setVariable("NoOpenAuctionsMsg", "There are no open auctions for the keyword: "+keyword+".");
-            } else {
-                ctx.setVariable("NoOpenAuctionsMsg", "There are no open auctions at this time.");
-            }
-        }
-
-        if (wonAuctionInfoList.isEmpty()) {
-            ctx.setVariable("NoWonAuctionsMsg", "You haven't won any auctions yet.");
-        }
-
-        String errorString = (String) request.getAttribute("errorString"); //from CloseAuction servlet
-        if (errorString != null) {
-            ctx.setVariable("errorString", errorString);
-        }
-
-        ctx.setVariable("user", user.getName());
-        session.setAttribute("from", "BuyPage"); //used in GoToAuction for handling errors
-        templateEngine.process(path, ctx, response.getWriter());
+        response.setStatus(HttpServletResponse.SC_OK);
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().println(finalObject);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

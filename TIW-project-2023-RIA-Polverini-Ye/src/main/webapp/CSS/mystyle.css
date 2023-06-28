@@ -246,3 +246,11 @@ input[type="text"].inputWithError, input[type="password"].inputWithError, input[
 .hiddenmsg1 {
 	display: none;
 }
+
+.buyPage{
+	 display: inline-block; /*MODIFICARE*/
+}
+
+.sellPage{
+	 display: inline-block;  /*MODIFICARE*/
+}
