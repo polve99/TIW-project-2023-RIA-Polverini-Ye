@@ -36,7 +36,6 @@ import utilis.ThymeleafTemplateEngineCreator;
 public class GoToBuy extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private Connection connection = null;
-    private TemplateEngine templateEngine = null;
     private AuctionDAO auctionDAO;
     private ArticleDAO articleDAO;
     private BidDAO bidDAO;
@@ -49,7 +48,7 @@ public class GoToBuy extends HttpServlet {
     public void init() throws ServletException {
         connection = ConnectionHandler.getConnection(getServletContext());
         ServletContext servletContext = getServletContext();
-        templateEngine = ThymeleafTemplateEngineCreator.getTemplateEngine(servletContext);
+        
         auctionDAO = new AuctionDAO(connection);
         articleDAO = new ArticleDAO(connection);
         bidDAO = new BidDAO(connection);
@@ -136,12 +135,8 @@ public class GoToBuy extends HttpServlet {
         }
         
         String wonAuctionInfoListString = gson.toJson(wonAuctionInfoList);
-        String finalObject = "{auctionInfoList: " + auctionInfoListString + ";\n" + "wonAuctionInfoList: " + wonAuctionInfoListString + ";\n}";
-
-        //response
-
-        WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
-        String path = "/WEB-INF/templates/BuyPage.html";
+        String finalObject = "{\"auctionInfoList\": " + auctionInfoListString + ",\n" + "\"wonAuctionInfoList\": " + wonAuctionInfoListString + "\n}";
+        //System.out.println(finalObject);
 
         response.setStatus(HttpServletResponse.SC_OK);
 		response.setContentType("application/json");
