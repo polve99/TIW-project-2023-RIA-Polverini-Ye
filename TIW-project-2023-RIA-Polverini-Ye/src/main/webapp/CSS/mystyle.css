@@ -248,7 +248,11 @@ input[type="text"].inputWithError, input[type="password"].inputWithError, input[
 }
 
 .buyPage{
-	 display: inline-block; /*MODIFICARE*/
+	height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .sellPage{
