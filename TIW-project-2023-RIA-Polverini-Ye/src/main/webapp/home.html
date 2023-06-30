@@ -39,92 +39,184 @@
 				<p id = "errorString" class="error"></p>
 			</div>
 			
-			<!-- BUY1: open auctions, KEYWORD search and detailed auction section (open w bid option and closed) -->
+			<!-- BUYPAGE without cookie -->
 			
 			<br><br>
-			<div id = "OpenAuctionSection">
+			<div id = "BuyPage">
 				
 				<fieldset>
 			        <div class="container">
 			            <div class="row">
-			                <h1>List of open auctions</h1>
-			                <div id = "id_empty_auctionInfoListOpen">
-								<p id = "NoOpenAuctionsMsg"></p>
+			                
+							<!-- BuyPage with open auctions intial/keyword, searchKeyword e wonAuctions -->
+							
+							<div class = "hiddenElement" id = "BuyPage_OpenAuctions">
+							
+								<!-- Open Auctions Table section -->
+								<h1>List of open auctions</h1>
+				                <div id = "id_empty_auctionInfoListOpen">
+									<p id = "NoOpenAuctionsMsg"></p>
+								</div>
+								<div class="container">
+				        			<div class="row">
+										<table class="table" id = "id_auctionInfoListOpen_listContainer">
+									    	<thead>
+									       		<tr>
+									                <th>Auction Id</th>
+									                <th>Articles</th>
+									                <th>Max Bid</th>
+									                <th>Min Rise</th>
+									                <th>Time Left</th>
+									            </tr>
+									        </thead>
+									        <tbody id="id_auctionInfoListOpen_body">
+									                    	
+											</tbody>
+									    </table>
+									</div>    
+							    </div>
+							    
+								<br><br> <!-- form to search Keyword section -->
+								<div style="text-align: center;">
+								    <form id="id_searchKeyword" action="#">
+										<fieldset>
+											<p>Search for an auction by keyword:</p>
+											<p class="wizard" id="id_searchKeywordWizard"></p>
+											<input type="text" id="keyword" name="keyword"
+													placeholder="Insert here the keyword to search" 
+													size="40" maxlength="200" required /> <input type="hidden">
+											<p><input type="submit" value="Search" /></p>
+										</fieldset>
+									</form>
+								</div>
+								
+								<br><br> <!-- Won auctions table section -->
+								
+								<h1>List of auctions you won</h1>
+								<fieldset id = "WonAuctionSection">
+									<div class="container">
+								        <div class="row">
+								            <h2 style="text-align: center;">List of the closed auctions you won!</h2>
+								            <div id = "id_empty_auctionInfoListWon">
+												<p id = "NoWonAuctionsMsg"></p>
+											</div>
+								            <div id = "id_auctionInfoListWon">
+								               
+								            </div>
+								        </div>
+									</div>
+								</fieldset>
+								
 							</div>
+
+							<!-- OpenAuctionPage con tabella di articoli, tabella di bids, form per fare bid o per chiudere asta -->
 							
 							<table class="table" id="OpenAuctionMacroTable">
-								
 								 <tr>
-								 	<td>
-						            	<table class="table" id = "id_auctionInfoListOpen_listContainer">
-						                    <thead>
-						                        <tr>
-						                            <th>Auction Id</th>
-						                            <th>Articles</th>
-						                            <th>Max Bid</th>
-						                            <th>Min Rise</th>
-						                            <th>Time Left</th>
-						                        </tr>
-						                    </thead>
-						                    <tbody id="id_auctionInfoListOpen_body">
-						                    	
-											</tbody>
-						                </table>
+								 	<td> <!-- tables of articles and bids -->
+									 	<div class="container">
+				        					<div class="row">
+										 		<h1>Open Auction Details</h1>
+										 		<table class="table" id="id_auctionDetails">
+										 			<thead>
+								                        <tr>
+								                            <th>Auction ID</th>
+													        <th>Articles</th>
+													        <th>Highest Bidder</th>
+													        <th>Highest Bid</th>
+															<th>Time Left</th>
+								                        </tr>
+								                    </thead>
+								                    <tbody id="id_auctionDetails_body">
+								                    
+													</tbody>
+										 		</table>
+									 		</div>
+								 		</div>
+										<div class="container">
+			        						<div class="row">
+										 		<h1>Bid History</h1>
+										 		<table class="table" id="id_auctionDetailsBids">
+										 			<thead>
+								                        <tr>
+								                            <th>IdBid</th>
+								                            <th>User</th>
+								                            <th>Bid Offer</th>
+								                            <th>Date Time</th>
+								                        </tr>
+								                    </thead>
+								                    <tbody id="id_auctionDetailsBids_body">
+								                    	
+													</tbody>
+										 		</table>
+										 	</div>
+										</div>		 		
 								 	</td>
 								 	
-								 	<td> <!-- auction's details page with list of articles and table with bids for the auction
-								 			 quindi 2 tables interne e con anche la form per fare la bid -->
-								 		<table class="table" id="id_auctionDetails">
-								 			
-								 		</table>
+								 	<td> <!-- form to place a bid o or close if you are the owner -->
+								 		<div class = "bidform"  id = "bidform">
+											<h1>Place a Bid</h1>
+											<div class = "msgBid">
+												<p id = "msgBid"></p>
+											</div>
+											<form action = "#" method = "post" id = "MakeBid">
+												<!-- <input type="hidden" name="idAuction" th:value="${auction.idAuction}" /> TODO non so come mettere la idAuction in automatico -->
+												<label>Bid Value:</label>
+												<input type="number" id="bidValue" name="bidValue" required />
+												<button type="submit">Place Bid</button>
+											</form>
+										</div>
+										
+										<div class = "closeform"  id = "closeform">
+											<h2>Do you want to close this auction?</h2>
+											<div class = "closeMsg">
+												<p id = "closeMsg"></p>
+											</div>
+											<form action = "#" method = "post" id = "CloseAuction">
+												<!-- <input type="hidden" name="idAuction" th:value="${auction.idAuction}" /> TODO non so come mettere la idAuction in automatico -->
+												<button type="submit">Close auction</button>
+											</form>
+										</div>
 								 	</td>
 								 	
 								 </tr>
 							</table>
+							
+							<!-- CloseAuctionPage con tabella di articoli, tabella di bids, form per fare bid o per chiudere asta -->
+							
+							<div class="container">
+        						<div class="row">
+									<h1>Closed Auction Details</h1>
+									<table class="table" id = "id_closedAuctionInfo_listContainer">
+										<thead>
+									    	<tr>
+							                    <th>Articles</th>
+							                    <th>Winning Price</th>
+							                    <th>Winning Bidder</th>
+							                    <th>Shipping Address</th>
+									      	</tr>
+									 	</thead>
+										<tbody id="id_closedAuctionInfo_body">
+									                    	
+										</tbody>
+									</table>
+								</div>	
+			                </div>
 			                
 			            </div>
 			        </div>
 			    </fieldset>
 			    
-			    <br><br><!-- form per fare la search della KEYWORD -->
-			    <div style="text-align: center;">
-			    	<form id="id_searchKeyword" action="#">
-						<fieldset>
-							<p>Search for an auction by keyword:</p>
-							<p class="wizard" id="id_cercaastewizard"></p>
-							<input type="text" id="keyword" name="keyword"
-								placeholder="Insert here the keyword to search" 
-								size="40" maxlength="200" required /> <input type="hidden">
-							<p><input type="submit" value="Search" /></p>
-						</fieldset>
-					</form>
-			    </div>
-			    
 			</div>
 			
 			
 			
-			<!-- BUY2 da fare da zero: COOKIE SEARCHED AUCTIONS section -->
+			<!-- BUYPAGE - COOKIE SEARCHED AUCTIONS section -->
 			
 			
 			
 			
-			<!-- BUY3: WON AUCTIONS section -->
 			
-			<br><br>
-			<fieldset id = "WonAuctionSection">
-				<div class="container">
-			        <div class="row">
-			            <h2 style="text-align: center;">List of the closed auctions you won!</h2>
-			            <div id = "id_empty_auctionInfoListWon">
-							<p id = "NoWonAuctionsMsg"></p>
-						</div>
-			            <div id = "id_auctionInfoListWon">
-			               
-			            </div>
-			        </div>
-				</div>
-			</fieldset>
 		
 		</div>
 		
