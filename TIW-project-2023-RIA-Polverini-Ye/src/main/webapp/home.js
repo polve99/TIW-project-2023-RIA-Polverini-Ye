@@ -6,11 +6,15 @@ const home = () => {
 		document.getElementById("home").className = "hiddenElement";
 		document.getElementById("sellSection").className = "hiddenElement";
 		document.getElementById("buySection").className = "buyPage";
+		document.getElementById("buySectionTitle").classList.remove("hiddenElement");
+		document.getElementById("sellSectionTitle").classList.add("hiddenElement");
 	});
 	document.getElementById("id_goToSell").addEventListener("click", () => {
 		document.getElementById("home").className = "hiddenElement";
 		document.getElementById("buySection").className = "hiddenElement";
 		document.getElementById("sellSection").className = "sellPage";
+		document.getElementById("buySectionTitle").classList.add("hiddenElement");
+		document.getElementById("sellSectionTitle").classList.remove("hiddenElement");
 	});
 	document.getElementById("customTitle").appendChild(document.createTextNode("Hi "+ sessionStorage.getItem("name")+", what do you want to do?"))
 };
