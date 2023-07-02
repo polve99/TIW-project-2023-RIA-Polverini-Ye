@@ -9,7 +9,6 @@ import java.nio.file.StandardCopyOption;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.UUID;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -20,14 +19,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.Part;
 
-import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-
 import dao.ArticleDAO;
 import beans.User;
 import utilis.ConnectionHandler;
-import utilis.ThymeleafTemplateEngineCreator;
 
 @WebServlet("/AddArticle")
 @MultipartConfig
@@ -35,7 +29,6 @@ public class AddArticle extends HttpServlet{
 	
 	private static final long serialVersionUID = 1L;
     private Connection connection = null;
-    private TemplateEngine templateEngine = null;
 
     public AddArticle() {
         super();
@@ -45,7 +38,6 @@ public class AddArticle extends HttpServlet{
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
         connection = ConnectionHandler.getConnection(servletContext);
-        templateEngine = ThymeleafTemplateEngineCreator.getTemplateEngine(servletContext);
     }
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -53,7 +45,7 @@ public class AddArticle extends HttpServlet{
 		//String shortDir = "/images";
 		String userHome = System.getProperty("user.home");
         String pathString = userHome + "/git/TIW-project-2023-pure-HTML-Polverini-Ye/TIW-project-2023-pure-HTML-Polverini-Ye/src/main/webapp/images";
-        String pathString1 = userHome + "/git/TIW-project-2023-pure-HTML-Polverini-Ye/TIW-project-2023-pure-HTML-Polverini-Ye";
+        //String pathString1 = userHome + "/git/TIW-project-2023-pure-HTML-Polverini-Ye/TIW-project-2023-pure-HTML-Polverini-Ye";
         Path path = Paths.get(pathString);
 		//System.out.println("Webapp path: " + webappPath);
 
@@ -139,7 +131,7 @@ public class AddArticle extends HttpServlet{
 	}
 
 	//TODO: INUTILE?
-	private String getFileName(Part part) {
+	/*private String getFileName(Part part) {
 	    String contentDisposition = part.getHeader("content-disposition");
 	    String[] tokens = contentDisposition.split(";");
 	    for (String token : tokens) {
@@ -148,7 +140,7 @@ public class AddArticle extends HttpServlet{
 	        }
 	    }
 	    return "";
-	}
+	}*/
 
 	// prende l'estensione del file
 	private String getFileExtension(String fileName) {

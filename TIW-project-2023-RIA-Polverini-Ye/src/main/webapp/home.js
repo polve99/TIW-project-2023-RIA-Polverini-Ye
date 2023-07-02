@@ -19,15 +19,28 @@ const main1 = () => {
 	home();
 };
 
+const floatImage = () => {
+	 //immagini hover
+		    var lis = document.getElementsByTagName("li");
+			for (var i = 0; i < lis.length; i++) {
+				if(lis[i].className != "notOver"){
+				  lis[i].addEventListener('mouseover', function(event) {
+				    showFloatingImage(event, this.className);
+				  });
+			  }
+			}
+};
+
 window.addEventListener("load", () => {
 	if (sessionStorage.getItem("name") == null){
 		window.location.href = "index.html";
 		
 	} else {
 		main1();
+		
+		//GET gotobuy
 		makeCall("GET", "GoToBuy", null, function(response) {
 	  	if (response.readyState == XMLHttpRequest.DONE && response.status == 200) {
-			console.log(response.responseText);
 		    var response = JSON.parse(response.responseText);
 		    var auctionInfoList = response.auctionInfoList;
 		    var wonAuctionInfoList = response.wonAuctionInfoList;
@@ -36,14 +49,28 @@ window.addEventListener("load", () => {
 		    createOpenAuctionTable(auctionInfoList);
 		    createWonAuctionTable(wonAuctionInfoList);
 		    
-		    //immagini hover
-		    var lis = document.getElementsByClassName("li_image");
-			for (var i = 0; i < lis.length; i++) {
-			  lis[i].addEventListener('mouseover', function(event) {
-			    showFloatingImage(event, this.id);
-			  });
-			}
-	  }
-});
+		    floatImage();
+				    
+		  }
+		});
+
+			
+			//GET gotosell
+			makeCall("GET", "GoToSell", null, function(response1) {
+				
+			  	if (response1.readyState == XMLHttpRequest.DONE && response1.status == 200) {
+				    var finalobject = JSON.parse(response1.responseText);
+				    var yourAuctionInfoList = finalobject.auctionInfoList;
+				    var ownClosedAuctionInfoList = finalobject.ownClosedAuctionInfoList;
+				    //var imageList = finalobject.imageList;
+				
+				    // Utilizza i dati dell'oggetto JSON come desideri
+				    createYourAuctionTable(yourAuctionInfoList);
+				    createOwnWonAuctionTable(ownClosedAuctionInfoList);
+				    floatImage();
+			  }
+		});
+		
+					
 	}
 });

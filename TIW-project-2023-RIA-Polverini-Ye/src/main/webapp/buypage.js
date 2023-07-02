@@ -23,6 +23,7 @@ function createOpenAuctionTable(auctionInfoList) {
     auctionInfo.articles.forEach(function(article) {
       var listItem = document.createElement("li");
       listItem.textContent = article.articleName;
+      listItem.className = "notOver";
       var imageItem = document.createElement("img");
       imageItem.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+article.image;
       imageItem.style.width = "30px";
@@ -61,7 +62,7 @@ function createWonAuctionTable(wonAuctionInfoList){
 
   // Crea l'intestazione della tabella
   var table = document.createElement("table");
-  table.className = "table";
+  table.className = "tableWon";
   var thead = document.createElement("thead");
   var headerRow = document.createElement("tr");
   var headers = ["ID Auction", "Articles", "Winning bid"];
@@ -93,8 +94,8 @@ function createWonAuctionTable(wonAuctionInfoList){
     auctionInfo.articles.forEach(function(article) {
       var listItem = document.createElement("li");
       listItem.textContent = article.articleName;
-      listItem.id = article.image;
-      listItem.className = "li_image";
+      //listItem.id = article.image;
+      listItem.className = article.image;
       //var imageItem = document.createElement("img");
       //imageItem.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+article.image;
       //imageItem.style.width = "30px";
@@ -126,6 +127,7 @@ function createWonAuctionTable(wonAuctionInfoList){
 
 // Funzione per mostrare l'immagine fluttuante sopra il cursore
 function showFloatingImage(event, image) {
+	console.log("showFloatingImage called");
   // Crea l'elemento dell'immagine
   var floatingImage = document.createElement('img');
   floatingImage.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+image; // Sostituisci con il percorso corretto dell'immagine
@@ -158,15 +160,17 @@ function showFloatingImage(event, image) {
     event.target.removeEventListener('mouseout', removeFloatingImage);
     document.body.removeChild(floatingImage);
   }
-}
+};
 
 // Aggiungi un listener a tutti gli elementi li con className = a li_image per attivare la visualizzazione dell'immagine fluttuante
-var lis = document.getElementsByClassName("li_image");
+var lis = document.getElementsByTagName("li");
 for (var i = 0; i < lis.length; i++) {
-  lis[i].addEventListener('mouseover', function(event) {
-    showFloatingImage(event, this.id);
-  });
-}
+				if(lis[i].className != "notOver"){
+				  lis[i].addEventListener('mouseover', function(event) {
+				    showFloatingImage(event, this.className);
+				  });
+			  }
+			}
 
 
 

@@ -1,8 +1,6 @@
 package controllers;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -11,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -26,17 +23,19 @@ import beans.User;
 import dao.ArticleDAO;
 import dao.AuctionDAO;
 import dao.BidDAO;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
+
+
+
+import com.google.gson.Gson;
 
 import utilis.ConnectionHandler;
-import utilis.ThymeleafTemplateEngineCreator;
+
 
 @WebServlet("/GoToSell")
 public class GoToSell extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private Connection connection = null;
-    private TemplateEngine templateEngine = null;
+    
     private AuctionDAO auctionDAO;
     private ArticleDAO articleDAO;
     private BidDAO bidDAO;
@@ -48,8 +47,7 @@ public class GoToSell extends HttpServlet {
     @Override
     public void init() throws ServletException {
         connection = ConnectionHandler.getConnection(getServletContext());
-        ServletContext servletContext = getServletContext();
-        templateEngine = ThymeleafTemplateEngineCreator.getTemplateEngine(servletContext);
+        
         auctionDAO = new AuctionDAO(connection);
         articleDAO = new ArticleDAO(connection);
         bidDAO = new BidDAO(connection);
@@ -107,9 +105,13 @@ public class GoToSell extends HttpServlet {
             auctionInfoList.add(auctionInfo);
         }
 
+        
+        ArrayList<Map<String, Object>> ownClosedAuctionInfoList = new ArrayList<>();
+        List<String> imageList1 = new ArrayList<>();
+        
         try {
             ArrayList<Auction> ownClosedAuctions = auctionDAO.getAllClosedAuctionsByUser(user.getUserMail());
-            ArrayList<Map<String, Object>> ownClosedAuctionInfoList = new ArrayList<>();
+            
 
             for (Auction auction : ownClosedAuctions) {
                 ArrayList<Object> auctionClosedInfos = auctionDAO.getAuctionClosedInfosForTable(auction);
@@ -122,19 +124,18 @@ public class GoToSell extends HttpServlet {
                 if(auctionClosedInfos.get(0)==null) {
                 	auctionInfo.put("maxBidValue", "No bidders.");
                 } else {
-                	auctionInfo.put("maxBidValue", auctionClosedInfos.get(0));
+                	auctionInfo.put("maxBidValue", ((Bid)auctionClosedInfos.get(0)).getBidValue());
                 }
                 
                 auctionInfo.put("articles", auctionClosedInfos.get(1));
 
                 ownClosedAuctionInfoList.add(auctionInfo);
             }
+            
 
-            final WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
-            String path = "/WEB-INF/templates/SellPage.html";
             
             
-            List<String> imageList1 = new ArrayList<>();
+            
         	ArticleDAO articleDAO = new ArticleDAO(connection);
         	try {
     			imageList1 = articleDAO.findImagesByUser(user.getUserMail());
@@ -142,7 +143,7 @@ public class GoToSell extends HttpServlet {
     			// TODO Auto-generated catch block
     			e.printStackTrace();
     		}
-        	List<String> imageList = new ArrayList<>();
+        	/*List<String> imageList = new ArrayList<>();
         	for (String image : imageList1) {
         		String userHome = System.getProperty("user.home");
                 String pathString = userHome + "/git/TIW-project-2023-pure-HTML-Polverini-Ye/TIW-project-2023-pure-HTML-Polverini-Ye/src/main/webapp";
@@ -151,46 +152,30 @@ public class GoToSell extends HttpServlet {
 
         		String imageDirectory = imagePath+image;
         		imageList.add(imageDirectory);
-        	}
+        	}*/
         	
-        	 
         	
-        	if(!imageList.isEmpty()) {
-        		ctx.setVariable("imageList", imageList1);
-        	} else {
-                ctx.setVariable("NoArticle", "You have no articles at this time.");
-                //prova
-                ctx.setVariable("imageList", imageList1);
-        	}
-            
-
-            if (auctionListOpen.isEmpty()) {
-                
-                ctx.setVariable("NoOpenAuctionsMsg", "You have no open auctions at this time.");
-                //prova
-                ctx.setVariable("auctionInfoListOpen", auctionInfoList);
-             
-            } else {
-                ctx.setVariable("auctionInfoListOpen", auctionInfoList);
-            }
-
-            if (ownClosedAuctionInfoList.isEmpty()) {
-                ctx.setVariable("NoWonAuctionsMsg", "You haven't any auctions closed yet.");
-                //prova
-                ctx.setVariable("auctionInfoListWon", ownClosedAuctionInfoList);
-            } else {
-                ctx.setVariable("auctionInfoListWon", ownClosedAuctionInfoList);
-            }
-
-            ctx.setVariable("user", user.getName());
-            session.setAttribute("from", "SellPage"); //used in GoToAuction for handling errors
-            templateEngine.process(path, ctx, response.getWriter());
+           
             
         } catch (SQLException e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error retrieving won auctions");
         }
         
+        Gson gson = new Gson();
+        String auctionInfoListString = gson.toJson(auctionInfoList);
+        String ownClosedAuctionInfoListString = gson.toJson(ownClosedAuctionInfoList);
+        String imageList1String = gson.toJson(imageList1);
+        String finalObject1 = "{\"auctionInfoList\": " + auctionInfoListString + ",\n" + "\"ownClosedAuctionInfoList\": " + ownClosedAuctionInfoListString + ",\n" + "\"imageList\": " + imageList1String + "\n}";
+    	
+    	System.out.println(finalObject1);
+        
+
+       
+        response.setStatus(HttpServletResponse.SC_OK);
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().println(finalObject1);
     }
 
     private String formatTimeLeft(Timestamp expirationDateTime) {

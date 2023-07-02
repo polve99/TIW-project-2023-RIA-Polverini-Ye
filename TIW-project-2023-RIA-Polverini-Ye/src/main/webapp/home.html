@@ -10,10 +10,10 @@
     <script src="cookie.js" charset="utf-8" defer></script>
     <script src="auction.js" charset="utf-8" defer></script>
     <script src="buypage.js" charset="utf-8" defer></script>
+    <script src="sellpage.js" charset="utf-8" defer></script>
 </head>
 
 <body>
-<!-- TODO: da cancellare la cartella templates quando abbiamo fatto tutto -->
 
 
 <!-- HOME PAGE SECTION  -------------------s-------------------------------------------------------------------------- -->
@@ -49,6 +49,8 @@
                 <div class="row">
 
                     <!-- BuyPage with open auctions intial/keyword, searchKeyword e wonAuctions -->
+
+                    <div class = "nothiddenElement" id = "BuyPage_OpenAuctions">
 
                     <div id = "BuyPage_OpenAuctions">
 
@@ -178,6 +180,29 @@
 
                     </div>
 
+                    <!-- CloseAuctionPage con tabella di articoli, tabella di bids, form per fare bid o per chiudre asta -->
+                    
+                    <div class = "hiddenElement" id = "BuyPage_ClosedAuctions">
+	                    <div class="container">
+	                        <div class="row">
+	                            <h1>Closed Auction Details</h1>
+	                            <table class="table" id = "id_closedAuctionInfo_listContainer">
+	                                <thead>
+	                                <tr>
+	                                    <th>Articles</th>
+	                                    <th>Winning Price</th>
+	                                    <th>Winning Bidder</th>
+	                                    <th>Shipping Address</th>
+	                                </tr>
+	                                </thead>
+	                                <tbody id="id_closedAuctionInfo_body">
+	
+	                                </tbody>
+	                            </table>
+	                        </div>
+	                    </div>
+	                </div>    
+
                     <!-- CloseAuctionPage con tabella di articoli, tabella di bids, form per fare bid o per chiudere asta -->
                     
                     <div class = "hiddenElement" id = "BuyPage_ClosedAuctions">
@@ -203,6 +228,7 @@
 
                 </div>
             </div>
+            </div>
         </fieldset>
 
     </div>
@@ -223,7 +249,34 @@
 
 <!-- SELL PAGE SECTION --------------------------------------------------------------------------------------------- -->
 <div class = "hiddenElement" id = "sellSection">
-    <p>SELL PAGE</p>
+	<h1 style="text-align: center;">BidWars' Buy section</h1>
+    <div class = "errorString">
+        <p id = "errorString" class="error"></p>
+    </div>
+
+    <br><br>
+    	<div id = "firstTableSell">
+		    <h1>List of your open auctions</h1>
+	        <div id = "id_empty_yourAuctionInfoListOpen">
+	            <p id = "NoOpenAuctionsMsg"></p>
+	        </div>
+	        <div class="container">
+	            <div id = "id_yourAuctionInfoListOpen_listContainer">
+	                
+	            </div>
+	        </div>
+        </div>
+        
+        <div id = "secondTableSell">
+        	<h1>List of your closed auctions</h1>
+        	<div id = "id_empty_yourAuctionInfoListOpen">
+	            <p id = "NoOpenAuctionsMsg"></p>
+	            <div id = "id_yourClosedAuctionInfoListOpen_listContainer">
+	                
+	            </div>
+	        </div>
+        </div>
+
 </div>
 
 
