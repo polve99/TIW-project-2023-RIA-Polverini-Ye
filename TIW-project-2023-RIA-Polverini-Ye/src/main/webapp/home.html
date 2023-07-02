@@ -10,10 +10,10 @@
     <script src="cookie.js" charset="utf-8" defer></script>
     <script src="auction.js" charset="utf-8" defer></script>
     <script src="buypage.js" charset="utf-8" defer></script>
-    <script src="sellpage.js" charset="utf-8" defer></script>
 </head>
 
 <body>
+<!-- TODO: da cancellare la cartella templates quando abbiamo fatto tutto -->
 
 
 <!-- HOME PAGE SECTION  -------------------s-------------------------------------------------------------------------- -->
@@ -49,8 +49,6 @@
                 <div class="row">
 
                     <!-- BuyPage with open auctions intial/keyword, searchKeyword e wonAuctions -->
-
-                    <div class = "nothiddenElement" id = "BuyPage_OpenAuctions">
 
                     <div id = "BuyPage_OpenAuctions">
 
@@ -114,120 +112,96 @@
                     <!-- OpenAuctionPage con tabella di articoli, tabella di bids, form per fare bid o per chiudere asta -->
 
                     <div class = "hiddenElement" id="OpenAuctionMacroTable">
-                           	 <!-- tables of articles and bids -->
-                                <div class="container">
-                                    <div class="row">
-                                        <h1>Open Auction Details</h1>
-                                        <table class="table" id="id_auctionDetails">
-                                            <thead>
-                                            <tr>
-                                                <th>Auction ID</th>
-                                                <th>Articles</th>
-                                                <th>Highest Bidder</th>
-                                                <th>Highest Bid</th>
-                                                <th>Time Left</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody id="id_auctionDetails_body">
+                        <!-- tables of articles and bids -->
+                        <div class="container">
+                            <div class="row">
+                                <h1>Open Auction Details</h1>
+                                <table class="table" id="id_auctionDetails">
+                                    <thead>
+                                    <tr>
+                                        <th>Auction ID</th>
+                                        <th>Articles</th>
+                                        <th>Highest Bidder</th>
+                                        <th>Highest Bid</th>
+                                        <th>Time Left</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="id_auctionDetails_body">
 
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="container">
-                                    <div class="row">
-                                        <h1>Bid History</h1>
-                                        <table class="table" id="id_auctionDetailsBids">
-                                            <thead>
-                                            <tr>
-                                                <th>IdBid</th>
-                                                <th>User</th>
-                                                <th>Bid Offer</th>
-                                                <th>Date Time</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody id="id_auctionDetailsBids_body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="container">
+                            <div class="row">
+                                <h1>Bid History</h1>
+                                <table class="table" id="id_auctionDetailsBids">
+                                    <thead>
+                                    <tr>
+                                        <th>IdBid</th>
+                                        <th>User</th>
+                                        <th>Bid Offer</th>
+                                        <th>Date Time</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="id_auctionDetailsBids_body">
 
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
-                            <!-- form to place a bid o or close if you are the owner -->
-                                <div class = "bidform"  id = "bidform">
-                                    <h1>Place a Bid</h1>
-                                    <div class = "msgBid">
-                                        <p id = "msgBid"></p>
-                                    </div>
-                                    <form action = "#" method = "post" id = "MakeBid">
-                                        <!-- <input type="hidden" name="idAuction" th:value="${auction.idAuction}" /> TODO non so come mettere la idAuction in automatico -->
-                                        <label>Bid Value:</label>
-                                        <input type="number" id="bidValue" name="bidValue" required />
-                                        <button type="submit">Place Bid</button>
-                                    </form>
-                                </div>
+                        <!-- form to place a bid o or close if you are the owner -->
+                        <div class = "bidform"  id = "bidform">
+                            <h1>Place a Bid</h1>
+                            <div class = "msgBid">
+                                <p id = "msgBid"></p>
+                            </div>
+                            <form action = "#" method = "post" id = "MakeBid">
+                                <!-- <input type="hidden" name="idAuction" th:value="${auction.idAuction}" /> TODO non so come mettere la idAuction in automatico -->
+                                <label>Bid Value:</label>
+                                <input type="number" id="bidValue" name="bidValue" required />
+                                <button type="submit">Place Bid</button>
+                            </form>
+                        </div>
 
-                                <div class = "closeform"  id = "closeform">
-                                    <h2>Do you want to close this auction?</h2>
-                                    <div class = "closeMsg">
-                                        <p id = "closeMsg"></p>
-                                    </div>
-                                    <form action = "#" method = "post" id = "CloseAuction">
-                                        <!-- <input type="hidden" name="idAuction" th:value="${auction.idAuction}" /> TODO non so come mettere la idAuction in automatico -->
-                                        <button type="submit">Close auction</button>
-                                    </form>
-                                </div>
+                        <div class = "closeform"  id = "closeform">
+                            <h2>Do you want to close this auction?</h2>
+                            <div class = "closeMsg">
+                                <p id = "closeMsg"></p>
+                            </div>
+                            <form action = "#" method = "post" id = "CloseAuction">
+                                <!-- <input type="hidden" name="idAuction" th:value="${auction.idAuction}" /> TODO non so come mettere la idAuction in automatico -->
+                                <button type="submit">Close auction</button>
+                            </form>
+                        </div>
 
                     </div>
 
-                    <!-- CloseAuctionPage con tabella di articoli, tabella di bids, form per fare bid o per chiudre asta -->
-                    
-                    <div class = "hiddenElement" id = "BuyPage_ClosedAuctions">
-	                    <div class="container">
-	                        <div class="row">
-	                            <h1>Closed Auction Details</h1>
-	                            <table class="table" id = "id_closedAuctionInfo_listContainer">
-	                                <thead>
-	                                <tr>
-	                                    <th>Articles</th>
-	                                    <th>Winning Price</th>
-	                                    <th>Winning Bidder</th>
-	                                    <th>Shipping Address</th>
-	                                </tr>
-	                                </thead>
-	                                <tbody id="id_closedAuctionInfo_body">
-	
-	                                </tbody>
-	                            </table>
-	                        </div>
-	                    </div>
-	                </div>    
-
                     <!-- CloseAuctionPage con tabella di articoli, tabella di bids, form per fare bid o per chiudere asta -->
-                    
+
                     <div class = "hiddenElement" id = "BuyPage_ClosedAuctions">
-	                    <div class="container">
-	                        <div class="row">
-	                            <h1>Closed Auction Details</h1>
-	                            <table class="table" id = "id_closedAuctionInfo_listContainer">
-	                                <thead>
-	                                <tr>
-	                                    <th>Articles</th>
-	                                    <th>Winning Price</th>
-	                                    <th>Winning Bidder</th>
-	                                    <th>Shipping Address</th>
-	                                </tr>
-	                                </thead>
-	                                <tbody id="id_closedAuctionInfo_body">
-	
-	                                </tbody>
-	                            </table>
-	                        </div>
-	                    </div>
-	                </div>    
+                        <div class="container">
+                            <div class="row">
+                                <h1>Closed Auction Details</h1>
+                                <table class="table" id = "id_closedAuctionInfo_listContainer">
+                                    <thead>
+                                    <tr>
+                                        <th>Articles</th>
+                                        <th>Winning Price</th>
+                                        <th>Winning Bidder</th>
+                                        <th>Shipping Address</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="id_closedAuctionInfo_body">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
-            </div>
             </div>
         </fieldset>
 
@@ -243,6 +217,9 @@
 
 
 </div>
+
+
+
 
 
 
