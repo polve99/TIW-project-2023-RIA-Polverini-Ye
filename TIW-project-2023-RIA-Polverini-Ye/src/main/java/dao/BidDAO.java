@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -17,17 +18,21 @@ public class BidDAO {
         this.connection = connection;
     }
 
-    public void createBid(float bidValue, String userMail, int idAuction) throws SQLException {
+    public int createBid(float bidValue, String userMail, int idAuction, Timestamp bidDateTime) throws SQLException {
         String query = "INSERT INTO dbaste.bids (bidValue, bidDateTime, userMail, idAuction) VALUES (?,?,?,?)";
         PreparedStatement pstatement = null;
-        Timestamp bidDateTime = new Timestamp(System.currentTimeMillis());
+        ResultSet res = null;
+        int idBid = 0;
+        //Timestamp bidDateTime = new Timestamp(System.currentTimeMillis());
         try {
-            pstatement = connection.prepareStatement(query);
+            pstatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             pstatement.setFloat(1, bidValue);
             pstatement.setTimestamp(2, bidDateTime);
             pstatement.setString(3, userMail);
             pstatement.setInt(4, idAuction);
             pstatement.executeUpdate();
+            res = pstatement.getGeneratedKeys();
+            if(res.next()) idBid = (int) res.getLong(1);
         } catch (SQLException e) {
             throw new SQLException(e);
         } finally {
@@ -35,10 +40,14 @@ public class BidDAO {
                 if (pstatement != null) {
                     pstatement.close();
                 }
+                if( res != null) {
+                	res.close();
+                }
             } catch (SQLException e) {
                 throw new SQLException(e);
             }
         }
+        return idBid;
     }
 
     public Bid findBidByIdBid(int idBid) throws SQLException{

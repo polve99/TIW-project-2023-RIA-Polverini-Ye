@@ -7,13 +7,19 @@ function createOpenAuctionTable(auctionInfoList) {
   
   //Cerca il corpo della tabella con i dati dell'asta
   var tbody = document.getElementById("id_auctionInfoListOpen_body");
+  tbody.innerHTML = "";
 
   auctionInfoList.forEach(function(auctionInfo) {
     var row = document.createElement("tr");
 
     //ID Auction
     var idAuctionCell = document.createElement("td");
-    idAuctionCell.textContent = auctionInfo.idAuction;
+    //idAuctionCell.textContent = auctionInfo.idAuction;
+    idAuctionCell.id = auctionInfo.idAuction;
+    let linkId = document.createElement("a");
+    linkId.className = "id";
+    linkId.textContent = auctionInfo.idAuction;
+    idAuctionCell.appendChild(linkId);
     row.appendChild(idAuctionCell);
 
     //Articles
@@ -84,7 +90,12 @@ function createWonAuctionTable(wonAuctionInfoList){
 
     // ID Auction
     var idAuctionCell = document.createElement("td");
-    idAuctionCell.textContent = auctionInfo.idAuction;
+    //idAuctionCell.textContent = auctionInfo.idAuction;
+    idAuctionCell.id = auctionInfo.idAuction;
+    let linkId1 = document.createElement("a");
+    linkId1.className = "id";
+    linkId1.textContent = auctionInfo.idAuction;
+    idAuctionCell.appendChild(linkId1);
     row.appendChild(idAuctionCell);
 
     //Articles
@@ -127,7 +138,7 @@ function createWonAuctionTable(wonAuctionInfoList){
 
 // Funzione per mostrare l'immagine fluttuante sopra il cursore
 function showFloatingImage(event, image) {
-	console.log("showFloatingImage called");
+	//console.log("showFloatingImage called");
   // Crea l'elemento dell'immagine
   var floatingImage = document.createElement('img');
   floatingImage.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+image; // Sostituisci con il percorso corretto dell'immagine
@@ -167,10 +178,206 @@ var lis = document.getElementsByTagName("li");
 for (var i = 0; i < lis.length; i++) {
 				if(lis[i].className != "notOver"){
 				  lis[i].addEventListener('mouseover', function(event) {
-				    showFloatingImage(event, this.className);
+					  console.log(this.id);
+				    showFloatingImage(event, this.id);
 				  });
 			  }
 			}
 
+//funzione per mostrare dettagli asta
+const aucDetails = () => {
+	let ids = document.getElementsByClassName("id");
+	console.log(ids.length);
+	for (let i = 0; i < ids.length; i++){
+		console.log(ids[i].textContent);
+		ids[i].addEventListener("click", () => {
+		makeCall("GET", "GoToAuction?idAuction="+ids[i].textContent,null, function(response){
+			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
+				var response = JSON.parse(response.responseText);
+				if(response.isOpen === true){
+					document.getElementById("BuyPage_ClassicInitialPage").className = "hiddenElement";
+					document.getElementById("OpenAuctionMacroTable").className = "OpenAuctionMacroTable";
+				} else {
+					document.getElementById("BuyPage_ClosedAuctions").className = "BuyPage_ClosedAuctions";
+					document.getElementById("BuyPage_ClassicInitialPage").className = "hiddenElement";
+				}
+				document.getElementById("BuyPage_ClassicInitialPage").className = "hiddenElement";
+				buildTableDetails(response);
+			} else {
+				//INSERIRE GLI ERRORI
+			}
+			
+		});
+	});
+	};
+	};
 
+function buildTableDetails(details){
+	if (details.isOpen){
+		//open auction
+		let openAuctionBody = document.getElementById("id_auctionDetails_body");
+		openAuctionBody.innerHTML="";
+		let row = document.createElement("tr");
+		
+		//id
+		let idCell = document.createElement("td");
+		idCell.textContent = details.auction.idAuction;
+		row.appendChild(idCell);
+		
+		//articles
+		let articlesCell = document.createElement("td");
+	    let articlesList = document.createElement("ul");
+	    
+	    details.articles.forEach(function(article) {
+	      let listItem = document.createElement("li");
+	      listItem.textContent = article.articleName;
+	      listItem.className = "notOver";
+	      let imageItem = document.createElement("img");
+	      imageItem.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+article.image;
+	      imageItem.style.width = "30px";
+	  	  imageItem.style.height = "30px";
+	      listItem.appendChild(imageItem);
+	      articlesList.appendChild(listItem);
+	    });
+	    articlesCell.appendChild(articlesList);
+	    row.appendChild(articlesCell);
+	    
+	    //higest bidder
+	    let highBidderCell = document.createElement("td");
+	    if (details.maxBid === undefined){
+	    	highBidderCell.textContent = "no one";
+	    } else {
+			highBidderCell.textContent = details.maxBid.userMail;
+		}
+	    
+	    row.appendChild(highBidderCell);
+	    
+	    //highest bid
+	    let highBidCell = document.createElement("td");
+	    if (details.maxBid === undefined){
+	    	highBidCell.textContent = details.initialPrice;
+	    } else {
+			highBidCell.textContent = details.maxBid.bidValue;
+		}
+	    row.appendChild(highBidCell);
+	    
+	    //time left
+	    let timeLeftCell = document.createElement("td");
+	    timeLeftCell.textContent = details.timeLeftFormatted;
+	    row.appendChild(timeLeftCell);
+	    openAuctionBody.appendChild(row);
+	    
+	    if (details.isNotExpired || details.owner){
+			document.getElementById("bidform").className = "hiddenElement";
+		}
+		
+		let bidHistoryBody = document.getElementById("id_auctionDetailsBids_body");
+		bidHistoryBody.innerHTML = "";
+		
+		details.bids.forEach(function(bid){
+			let bidRow = document.createElement("tr");
+			
+			//id Bid
+			let idBidCell = document.createElement("td");
+			idBidCell.textContent=bid.idBid;
+			bidRow.appendChild(idBidCell);
+			
+			//user
+			let bidUser = document.createElement("td");
+			bidUser.textContent = bid.userMail;
+			bidRow.appendChild(bidUser);
+			
+			//bid
+			let bidCell = document.createElement("td");
+			bidCell.textContent = bid.bidValue;
+			bidRow.appendChild(bidCell);
+			
+			//date Time
+			let dateTimeCell = document.createElement("td");
+			dateTimeCell.textContent = bid.bidDateTime;
+			bidRow.appendChild(dateTimeCell);
+			
+			bidHistoryBody.appendChild(bidRow);
+			 
+		});
+		} else{
+			//document.getElementById("BuyPage_ClosedAuctions").className = "BuyPage_ClosedAuctions";
+			let closedAuction_body = document.getElementById("id_closedAuctionInfo_body");
+			closedAuction_body.innerHTML = "";
+			let closedAuctionRow = document.createElement("tr");
+			
+			//articles
+			if(details.articles.lenght > 0){
+				let articlesCell = document.createElement("td");
+			    let articlesList = document.createElement("ul");
+			    
+			    details.articles.forEach(function(article) {
+			      let listItem = document.createElement("li");
+			      listItem.textContent = article.articleName;
+			      listItem.className = "notOver";
+			      let imageItem = document.createElement("img");
+			      imageItem.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+article.image;
+			      imageItem.style.width = "30px";
+			  	  imageItem.style.height = "30px";
+			      listItem.appendChild(imageItem);
+			      articlesList.appendChild(listItem);
+			    });
+			    articlesCell.appendChild(articlesList);
+			    closedAuctionRow.appendChild(articlesCell);
+			
+			} else {
+				let noArt = document.createElement("td");
+				noArt.textContent = "artcles reinserted";
+				closedAuctionRow.appendChild(noArt);
+			}
+			
+			//max bid
+			let maxBidCell = document.createElement("td");
+			maxBidCell.textContent = details.closedAuctionInfo[0];
+			closedAuctionRow.appendChild(maxBidCell);
+			
+			//winner
+			let winner = document.createElement("td");
+			winner.textContent = details.closedAuctionInfo[1];
+			closedAuctionRow.appendChild(winner);
+			
+			//address
+			let address = document.createElement("td");
+			address.textContent = details.closedAuctionInfo[2];
+			closedAuctionRow.appendChild(address);
+			
+			closedAuction_body.appendChild(closedAuctionRow);
+			
+		}
+	
+	
+};
+
+const keyWordTable = () => {
+	document.getElementById("searchButton").addEventListener("click", (e) => {
+		e.preventDefault();
+		let form = e.target.closest("form");
+		let formData = new FormData(form);
+		let keyword = formData.get("keyword");
+		makeCall("GET", "GoToBuy?keyword="+keyword, null, function(response){
+			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
+				var response = JSON.parse(response.responseText);
+			    var auctionInfoList = response.auctionInfoList;
+			    //var wonAuctionInfoList = response.wonAuctionInfoList;
+			
+			    // Utilizza i dati dell'oggetto JSON come desideri
+			    if (auctionInfoList.length > 0){
+				    createOpenAuctionTable(auctionInfoList);
+				    main2();
+			    } else {
+					//messaggio errore nessun oggetto con keyword
+				}
+			
+			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
+				//mettere futuri errori
+			}
+		});
+		
+	});
+};
 

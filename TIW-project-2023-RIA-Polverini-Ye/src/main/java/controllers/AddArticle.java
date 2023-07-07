@@ -19,6 +19,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.Part;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import dao.ArticleDAO;
 import beans.User;
 import utilis.ConnectionHandler;
@@ -44,12 +46,14 @@ public class AddArticle extends HttpServlet{
 		
 		//String shortDir = "/images";
 		String userHome = System.getProperty("user.home");
-        String pathString = userHome + "/git/TIW-project-2023-pure-HTML-Polverini-Ye/TIW-project-2023-pure-HTML-Polverini-Ye/src/main/webapp/images";
-        //String pathString1 = userHome + "/git/TIW-project-2023-pure-HTML-Polverini-Ye/TIW-project-2023-pure-HTML-Polverini-Ye";
+        String pathString = userHome + "/git/TIW-project-2023-RIA-Polverini-Ye/TIW-project-2023-RIA-Polverini-Ye/src/main/webapp/images";
+        String pathString1 = userHome + "/git/TIW-project-2023-pure-HTML-Polverini-Ye/TIW-project-2023-pure-HTML-Polverini-Ye";
         Path path = Paths.get(pathString);
+        Path path1 = Paths.get(pathString1);
 		//System.out.println("Webapp path: " + webappPath);
 
 		String uploadDirectory = path.toString();
+		String uploadDirectory1 = path1.toString();
 	    //String filePath = null;
 	    //String shortFilePath = null;
 	    String fileName = null;
@@ -64,12 +68,17 @@ public class AddArticle extends HttpServlet{
 	    if (!dir.exists()) {
 	        dir.mkdirs();
 	    }
+	    
+	    File dir1 = new File(uploadDirectory1);
+	    if (!dir1.exists()) {
+	        dir1.mkdirs();
+	    }
 
 	    try {
-	        Part filePart = request.getPart("imageToUpload"); // riceve la image part dalla richiesta
+	        Part filePart = request.getPart("articleImage"); // riceve la image part dalla richiesta
+	        if(filePart == null) System.out.println("errore");
 	        fileName = System.currentTimeMillis() + "_" + filePart.getSubmittedFileName(); // estrae il nome
 	        String fileExtension = getFileExtension(fileName);
-	        //response.getWriter().println(fileName+" "+ fileExtension);
 
 	        // Check if the file extension is allowed
 	        if (isAllowedExtension(fileExtension)) {
@@ -82,7 +91,9 @@ public class AddArticle extends HttpServlet{
 	            //response.getWriter().println(uploadDirectory);
 	            try (InputStream inputStream = filePart.getInputStream()) {
 	                File file = new File(uploadDirectory, fileName);
+	                File file1 = new File(uploadDirectory1, fileName);
 	                Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+	                Files.copy(inputStream, file1.toPath(), StandardCopyOption.REPLACE_EXISTING);
 	            }
 	            
 	            //response.getWriter().println("File uploaded successfully!");
@@ -92,14 +103,14 @@ public class AddArticle extends HttpServlet{
 	            //response.getWriter().println("Invalid file type. Only JPG, JPEG, PNG, and GIF files are allowed.");
 	        }
 	    } catch (Exception ex) {
-	    	
+	    	ex.printStackTrace();
 	        response.getWriter().println("Error uploading file: " + ex.getMessage());
 	    }
 	
 	    float price = 0;
-	    String articleName = request.getParameter("articleName");
-	    String articleDesc = request.getParameter("articleDesc");
-	    String articlePrice = request.getParameter("price");
+	    String articleName =  StringEscapeUtils.escapeJava(request.getParameter("articleName"));
+	    String articleDesc = StringEscapeUtils.escapeJava(request.getParameter("articleDesc"));
+	    String articlePrice = StringEscapeUtils.escapeJava(request.getParameter("articlePrice"));
 	    User user = (User) request.getSession().getAttribute("user");
 	    
 	    if (articlePrice != null && !articlePrice.isEmpty()) {
@@ -115,11 +126,11 @@ public class AddArticle extends HttpServlet{
 	    ArticleDAO article = new ArticleDAO(connection);
 	    //PER CONTROLLARE IN FUTURO IL PATH DOVE VENGONO SALVATE LE IMMAGINI, COMMENTARE DAL TRY FINO A DOPO LA SENDREDIRECT E DECOMMENTARE LE RESPONSE.GETWRITER()
 	   try {
-		   Part filePart = request.getPart("imageToUpload"); 
-	       fileName = filePart.getSubmittedFileName(); 
+		   Part filePart = request.getPart("articleImage"); 
+	       //fileName = filePart.getSubmittedFileName(); 
 	       String fileExtension = getFileExtension(fileName);
 	       if(isAllowedExtension(fileExtension)) {
-	       	article.createArticle(articleName, articleDesc, price, fileName,user.getUserMail());
+	       	article.createArticle(articleName, articleDesc, price, fileName ,user.getUserMail());
 	       }
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -127,7 +138,10 @@ public class AddArticle extends HttpServlet{
 			return;
 		}
 	   
-	    response.sendRedirect("GoToSell");
+	  response.setStatus(HttpServletResponse.SC_OK);
+	  response.setContentType("application/json");
+	  response.setCharacterEncoding("UTF-8");
+	  response.getWriter().print(fileName);
 	}
 
 	//TODO: INUTILE?

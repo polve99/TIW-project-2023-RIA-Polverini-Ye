@@ -85,7 +85,7 @@ public class GoToBuy extends HttpServlet {
             Bid maxBid = null;
             float maxBidValue;
             try {
-                articles = articleDAO.findArticlesListByIdAuction(auction.getIdAuction());
+                articles = articleDAO.findArticlesListByIdAuction(auction.getIdAuction());  //fare join tra article e auctions per prendere questo
                 maxBid = bidDAO.findMaxBidInAuction(auction.getIdAuction());
                 if(maxBid==null) {
                 	maxBidValue = auction.getInitialPrice();

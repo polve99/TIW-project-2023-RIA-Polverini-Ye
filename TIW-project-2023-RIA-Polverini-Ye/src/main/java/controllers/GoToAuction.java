@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,14 +25,17 @@ import dao.AuctionDAO;
 import dao.BidDAO;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
+
+import com.google.gson.Gson;
+
 import utilis.ConnectionHandler;
 import utilis.ThymeleafTemplateEngineCreator;
 
 @WebServlet("/GoToAuction")
+@MultipartConfig
 public class GoToAuction extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private Connection connection = null;
-    private TemplateEngine templateEngine = null;
     private AuctionDAO auctionDAO;
     private ArticleDAO articleDAO;
     private BidDAO bidDAO;
@@ -43,7 +47,7 @@ public class GoToAuction extends HttpServlet {
     @Override
     public void init() throws ServletException {
         connection = ConnectionHandler.getConnection(getServletContext());
-        templateEngine = ThymeleafTemplateEngineCreator.getTemplateEngine(getServletContext());
+        
         auctionDAO = new AuctionDAO(connection);
         articleDAO = new ArticleDAO(connection);
         bidDAO = new BidDAO(connection);
@@ -93,9 +97,9 @@ public class GoToAuction extends HttpServlet {
 
         try {
             auction = auctionDAO.findAuctionByIdAuction(idAuction);
-            isAuctionNotExpired = auctionDAO.isAuctionNotExpired(idAuction);
+            isAuctionNotExpired = auctionDAO.isAuctionNotExpired(idAuction); //rifare senza interrogazione
             articles = articleDAO.findArticlesListByIdAuction(idAuction);
-            maxBid = bidDAO.findMaxBidInAuction(idAuction);
+            maxBid = bidDAO.findMaxBidInAuction(idAuction); // rimuovere e prenderlo da bids
             initialPrice = auction.getInitialPrice();
             bids = bidDAO.findBidsListByIdAuction(idAuction);
         } catch (SQLException e) {
@@ -112,7 +116,7 @@ public class GoToAuction extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Internal db error in retrieving closed auction info");
                 return;
             }
-            request.setAttribute("closedAuctionInfo", closedAuctionInfo);
+            //request.setAttribute("closedAuctionInfo", closedAuctionInfo);
         }
 
         // Salva l'ID dell'asta nella sessione
@@ -127,39 +131,37 @@ public class GoToAuction extends HttpServlet {
         templateVariables.put("initialPrice", initialPrice);
         templateVariables.put("bids", bids);
         templateVariables.put("timeLeftFormatted", formatTimeLeft(auction.getExpirationDateTime()));
+        templateVariables.put("isOpen", auction.isOpen());
+        templateVariables.put("isNotExpired", isAuctionNotExpired);
         if(closedAuctionInfo != null) templateVariables.put("closedAuctionInfo", closedAuctionInfo);
 
-        if (auction.isOpen()) { //checks the isOpen attribute
-            template = "OpenAuctionPage.html";
-        } else {
-            template = "ClosedAuctionPage.html";
-        }
-
-        WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
-        ctx.setVariables(templateVariables);
+        
 
         if(bids.isEmpty()){
-            ctx.setVariable("NoBidsMsg", "There are no bids at this time for this auction.");
+           
         }
 
         String msgBid = (String) request.getAttribute("msgBid");
         if (msgBid != null) {
-            ctx.setVariable("msgBid", msgBid);
+            
         }
         
         String closeMsg = (String) request.getAttribute("closeMsg");
         if (closeMsg != null) {
-            ctx.setVariable("closeMsg", closeMsg);
+            
         }
 
         if(auction.getUserMail().equals(user.getUserMail())) {
-            ctx.setVariable("bidform", "false");
+            templateVariables.put("owner", Boolean.TRUE);
         } else {
-            ctx.setVariable("bidform", "true");
+        	templateVariables.put("owner", Boolean.FALSE);
         }
 
-        String path = "/WEB-INF/templates/" + template;
-        templateEngine.process(path, ctx, response.getWriter());
+        Gson gson = new Gson();
+        String templateVariablesString = gson.toJson(templateVariables);
+        
+       response.setStatus(HttpServletResponse.SC_OK);
+       response.getWriter().println(templateVariablesString);
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

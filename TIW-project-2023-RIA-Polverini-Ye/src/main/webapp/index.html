@@ -22,27 +22,15 @@
 						<p id = "loginErrorMessage"></p>
 					</div>
 					<form action = "#" method = "post" id = "login">
-						<fieldset>
-							<p>
-								E-mail: <input type = "text" name = "userMail" id = "loginUser" required>
-							</p>
-							<p>
-								Password: <input type = "text" name = "password" id = "loginPsw" required>
-							</p>
-							<p>
-								<input type="submit" value="Login" id="loginButton">
-							</p>
-						</fieldset>
+						<label>E-mail</label>
+						<input type = "text" name = "userMail" id = "loginUser" required><br>
+						<label>Password</label>
+						<input type = "password" name = "password" id = "loginPsw" required><br>
+						<div class = "loginBottomSection">
+							<input type="button" value="Login" id="loginButton">
+							<p class = "changeAutMethod">Don't have an account? <a id = "registerAnchor" href = "#">Register</a></p>
+						</div>
 					</form>
-					
-					<div class = "changeAutMethod">
-
-			            <p class = "changeAutMethodInfo">
-			                Don't have an account?
-			                <a id = "registerAnchor" href = "#">Register</a>
-			            </p>
-        			</div>
-        			
 				</div>
 			</div>
 			
@@ -54,56 +42,21 @@
 					<div class = "alertMessage">
 						<p id = "registrationErrorMessage"></p>
 					</div>
-					
-					<form action="#" method="post" id="registration">
-						<h3>Please fill the informations below to register to BidWars:</h3>
-					    <fieldset>
-					        <p>
-					            Name: <input type = "text" name = "name" required><br>
-					        </p>
-					        <p>
-					            Surname: <input type = "text" name = "surname" required><br>
-					        </p>
-					        <p>
-					            E-mail: <input type = "text" name = "email" id = "emailInput" required><br>
-					        </p>
-					        <p>
-					            Password: <input type = "text" name = "password" id = "passwordInput" required><br>
-					        </p>
-					        <p>
-					            Confirm password: <input type = "text" name = "repeatedPassword" id = "repeatPasswordInput" required><br>
-					        </p>
-					        <p>
-					            Telephone: <input type="text" name="telephone" id="telephone"/><br>
-					        </p>
-					        <p>
-					            Address: <input type="text" id="address" name="address" required/>
-					        </p>
-					        <p>
-					            <input type="submit" id = "registrationButton" value="Register" />
-					        </p>
-					    </fieldset>
-					</form>
-					
-					<div class = "registrationBottomSection">
-						<p class = "changeAutMethod">Already have an account? <a id = "loginAnchor" href = "#">Login<br></a></p>
-					</div>
-					
-					
-					<!-- te l'ho cancellato così il css è uguale all'altro, però dovrei aver rimesso i nomi giusti
 					<form action = "#" method = "post" id = "registration">
 						<label>Name</label>
 						<input type = "text" name = "name" required><br>
 						<label>Surname</label>
 						<input type = "text" name = "surname" required><br>
 						<label>Email</label>
-						<input type = "text" name = "email" id = "emailInput" required><br>
+						<input type = "email" name = "email" id = "emailInput" required><br>
 						<label>Password</label>
-						<input type = "text" name = "password" id = "passwordInput" required><br>
+						<input type = "password" name = "password" id = "passwordInput" required><br>
 						<label>Repeat Password</label>
-						<input type = "text" name = "repeatedPassword" id = "repeatPasswordInput" required><br>
+						<input type = "password" name = "repeatedPassword" id = "repeatPasswordInput" required><br>
 						<label>Telephone Number</label>
-						<input type = "text" name="telephone" id="telephone"/><br>
+						<input type="text" id="telephone" name="telephone"/>
+						<!-- <input type="tel" id="telephone" name="telephone" placeholder="Insert Your Telephone Number" required><br> 
+						mi dà problemi a runnare-->
 						
 						<label>Address</label>
 						<input type = "text" name = "address" required><br>
@@ -112,7 +65,6 @@
 							<p class = "changeAutMethod">Already have an account? <a id = "loginAnchor" href = "#">Login</a></p>
 						</div>
 					</form>
-					 -->
 				</div>
 			</div>
 			

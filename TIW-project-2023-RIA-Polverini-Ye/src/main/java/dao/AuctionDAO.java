@@ -43,6 +43,9 @@ public class AuctionDAO {
                 if (pStatement != null) {
                     pStatement.close();
                 }
+                if (keys != null) {
+                	keys.close();
+                }
             } catch (Exception e2) {
                 throw new SQLException(e2);
             }
@@ -188,7 +191,16 @@ public class AuctionDAO {
                 auction.setExpirationDateTime(result.getTimestamp("expirationDateTime"));
                 auction.setUserMail(result.getString("userMail"));
                 auction.setOpen(result.getBoolean("isOpen"));
-                auctions.add(auction);
+                boolean found = false;
+                for(Auction auction1 : auctions) {
+                	if(auction.getIdAuction() == auction1.getIdAuction()) {
+                		found = true;
+                	}
+                }
+                if(found == false) {
+                	auctions.add(auction);
+                }
+                
             }
         } catch (SQLException e) {
             throw new SQLException(e);

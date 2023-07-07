@@ -11,12 +11,16 @@ import utilis.ConnectionHandler;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import com.google.gson.Gson;
 
 @WebServlet("/MakeBid")
 public class MakeBid extends HttpServlet {
@@ -45,32 +49,35 @@ public class MakeBid extends HttpServlet {
         boolean isValid = true;
 
         int idAuction = (int) session.getAttribute("idAuction");
-        if(request.getParameter("idAuction") == null || request.getParameter("idAuction").isEmpty() ){
+        /*if(request.getParameter("idAuction") == null || request.getParameter("idAuction").isEmpty() ){ 
             isValid = false;
             request.setAttribute("msgBid", "idAuction value null or empty");
-        }
+        }*/
 
-        float bidValue = Float.parseFloat(request.getParameter("bidValue"));
+        
         if(request.getParameter("bidValue") == null || request.getParameter("bidValue").isEmpty() ){
             isValid = false;
             request.setAttribute("msgBid", "Bid value null or empty");
         }
 
+        float bidValue = Float.parseFloat(request.getParameter("bidValue"));
+        Bid responseBid = null;
+        
         if(bidValue <= 0){
-            request.setAttribute("msgBid", "Bid value must be greater than 0");
+            //request.setAttribute("msgBid", "Bid value must be greater than 0"); ERRORE
         } else {
             try {
                 Auction auction = auctionDAO.findAuctionByIdAuction(idAuction);
 
                 if(userMail.equals(auction.getUserMail())) {
                     isValid = false;
-                    request.setAttribute("msgBid", "You created this auction! You cannot place a bid!");
+                    //request.setAttribute("msgBid", "You created this auction! You cannot place a bid!");
                 } else if(!auction.isOpen()){
                     isValid = false;
-                    request.setAttribute("msgBid", "Auction is closed");
+                    //request.setAttribute("msgBid", "Auction is closed");
                 } else if(!auctionDAO.isAuctionNotExpired(idAuction)) {
                 	isValid = false;
-                    request.setAttribute("msgBid", "Auction is expired");
+                    //request.setAttribute("msgBid", "Auction is expired");
                 }
 
                 float minRise = auction.getMinRise();
@@ -82,19 +89,19 @@ public class MakeBid extends HttpServlet {
                 }
                 if(maxBidderMail != null && maxBidderMail.equals(userMail)){
                     isValid = false;
-                    request.setAttribute("msgBid", "You are the current max bidder! You cannot place a bid!");
+                    //request.setAttribute("msgBid", "You are the current max bidder! You cannot place a bid!");
                 }
 
                 if(maxBid == null){
                     if(bidValue <= auction.getInitialPrice()) {
                         isValid = false;
-                        request.setAttribute("msgBid", "Bid value too low (must be greater than/equal the initial price (" + auction.getInitialPrice() + "))");
+                        //request.setAttribute("msgBid", "Bid value too low (must be greater than/equal the initial price (" + auction.getInitialPrice() + "))");
                     }
                 } else {
                     float maxBidValue = maxBid.getBidValue();
                     if(bidValue < maxBidValue + minRise) {
                         isValid = false;
-                        request.setAttribute("msgBid", "Bid value too low (must be greater than the current bid value (" + maxBidValue + ") + min rise (" + minRise + "))");
+                        //request.setAttribute("msgBid", "Bid value too low (must be greater than the current bid value (" + maxBidValue + ") + min rise (" + minRise + "))");
                     }
                 }
             } catch (SQLException e) {
@@ -102,11 +109,13 @@ public class MakeBid extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error in db. Please, retry later.");
                 return;
             }
-            
+            int idToReturn=0;
             if(isValid){
                 try {
-                    bidDAO.createBid(bidValue, userMail, idAuction);
-                    request.setAttribute("msgBid", "Bid successfully created!");
+                	Timestamp bidDateTime = new Timestamp(System.currentTimeMillis());
+                	idToReturn=bidDAO.createBid(bidValue, userMail, idAuction, bidDateTime);
+                	responseBid = new Bid(idToReturn, user.getUserMail(), bidValue, bidDateTime, idAuction);
+                    //request.setAttribute("msgBid", "Bid successfully created!");
                 } catch (SQLException e) {
                     e.printStackTrace();
                     response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error in db, bid not created. Please, retry later.");
@@ -114,7 +123,10 @@ public class MakeBid extends HttpServlet {
                 }
             }
         }
-
-        request.getRequestDispatcher("/GoToAuction").forward(request, response);
+        Gson gson = new Gson();
+        String object = gson.toJson(responseBid);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().println(object);
+        //request.getRequestDispatcher("/GoToAuction").forward(request, response);
     }
 }

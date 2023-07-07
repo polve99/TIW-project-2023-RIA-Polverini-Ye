@@ -24,9 +24,10 @@ public class LoginFilter extends HttpFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 		HttpSession session = req.getSession();
 		if (session.isNew() || session.getAttribute("user") == null) {
-			res.sendRedirect("Welcome");
+			res.sendRedirect("index.html");
 			return;
 		}
+
 		chain.doFilter(request, response);
 	}
 }

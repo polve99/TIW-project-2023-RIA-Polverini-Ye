@@ -21,10 +21,10 @@ public class Logout extends HttpServlet{
         //Invalidate session
         if (session != null) {
             session.invalidate();
-            response.sendRedirect("GoToHomePage");
-            return;
+            response.setStatus(HttpServletResponse.SC_OK);
+            //return;
         }
 
-        response.sendRedirect("GoToHomePage");
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
 }

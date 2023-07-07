@@ -10,6 +10,7 @@
   // Crea l'intestazione della tabella
   var table1 = document.createElement("table");
   table1.className = "tableOwn";
+  table1.id = "tableOwn_id";
   var thead1 = document.createElement("thead");
   var headerRow1 = document.createElement("tr");
   var headers1 = ["ID Auction", "Articles", "Max Bid", "Min Rise", "Time Left"];
@@ -25,12 +26,13 @@
 
   // Crea il corpo della tabella con i dati dell'asta
   var tbody1 = document.createElement("tbody");
+  tbody1.id="tbodyown_id";
 
   yourAuctionInfoList.forEach(function(auctionInfo1) {
     var row1 = document.createElement("tr");
 
     // ID Auction
-    var idAuctionCell1 = document.createElement("td");
+    let idAuctionCell1 = document.createElement("td");
     idAuctionCell1.textContent = auctionInfo1.idAuction;
     row1.appendChild(idAuctionCell1);
 
