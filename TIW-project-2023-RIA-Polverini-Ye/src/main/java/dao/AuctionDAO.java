@@ -7,6 +7,7 @@ import beans.User;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class AuctionDAO {
 
@@ -478,5 +479,54 @@ public class AuctionDAO {
 
         return auctionClosedInfos;
     }
+    
+    public ArrayList<Auction> findAuctionsListByCookie(String idAuction) throws SQLException {
+        ArrayList<Auction> auctions = new ArrayList<Auction>();
+        String[] string = idAuction.split(",");
+        String placeHolders = String.join(",", Collections.nCopies(string.length, "?"));
+        String query = "SELECT * FROM dbaste.auctions " +
+                "WHERE (dbaste.auctions.idAuction IN ("+placeHolders+") ) " +
+                "AND dbaste.auctions.isOpen = 1 " +
+                "ORDER BY dbaste.auctions.expirationDateTime ASC";
+        PreparedStatement pStatement = null;
+        ResultSet result = null;
+        
+        try {
+            pStatement = connection.prepareStatement(query);
+            int i = 1;
+            for (String param : string) {
+            	pStatement.setInt(i++,Integer.parseInt(param));
+            }
+            
+            result = pStatement.executeQuery();
+            System.out.println(idAuction);
+            while (result.next()) {
+                Auction auction = new Auction();
+                auction.setIdAuction(result.getInt("idAuction"));
+                auction.setInitialPrice(result.getFloat("initialPrice"));
+                auction.setMinRise(result.getFloat("minRise"));
+                auction.setExpirationDateTime(result.getTimestamp("expirationDateTime"));
+                auction.setUserMail(result.getString("userMail"));
+                auction.setOpen(result.getBoolean("isOpen"));
+                auctions.add(auction);
+                System.out.println(auction.getIdAuction());
+                
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        } finally {
+            try {
+                if (pStatement != null) {
+                    pStatement.close();
+                }
+                if (result != null) {
+                	result.close();
+                }
+            } catch (Exception e2) {
+                throw new SQLException(e2);
+            }
+        }
+        return auctions;
+    } 
 
 }

@@ -71,12 +71,15 @@ public class MakeBid extends HttpServlet {
 
                 if(userMail.equals(auction.getUserMail())) {
                     isValid = false;
+                    System.out.println(1);
                     //request.setAttribute("msgBid", "You created this auction! You cannot place a bid!");
                 } else if(!auction.isOpen()){
                     isValid = false;
+                    System.out.println(2);
                     //request.setAttribute("msgBid", "Auction is closed");
                 } else if(!auctionDAO.isAuctionNotExpired(idAuction)) {
                 	isValid = false;
+                	System.out.println(3);
                     //request.setAttribute("msgBid", "Auction is expired");
                 }
 
@@ -89,18 +92,21 @@ public class MakeBid extends HttpServlet {
                 }
                 if(maxBidderMail != null && maxBidderMail.equals(userMail)){
                     isValid = false;
+                    System.out.println(4);
                     //request.setAttribute("msgBid", "You are the current max bidder! You cannot place a bid!");
                 }
 
                 if(maxBid == null){
                     if(bidValue <= auction.getInitialPrice()) {
                         isValid = false;
+                        System.out.println(5);
                         //request.setAttribute("msgBid", "Bid value too low (must be greater than/equal the initial price (" + auction.getInitialPrice() + "))");
                     }
                 } else {
                     float maxBidValue = maxBid.getBidValue();
                     if(bidValue < maxBidValue + minRise) {
                         isValid = false;
+                        System.out.println(6);
                         //request.setAttribute("msgBid", "Bid value too low (must be greater than the current bid value (" + maxBidValue + ") + min rise (" + minRise + "))");
                     }
                 }
@@ -115,6 +121,11 @@ public class MakeBid extends HttpServlet {
                 	Timestamp bidDateTime = new Timestamp(System.currentTimeMillis());
                 	idToReturn=bidDAO.createBid(bidValue, userMail, idAuction, bidDateTime);
                 	responseBid = new Bid(idToReturn, user.getUserMail(), bidValue, bidDateTime, idAuction);
+                	Gson gson = new Gson();
+                    String object = gson.toJson(responseBid);
+                    System.out.println(object);
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.getWriter().println(object);
                     //request.setAttribute("msgBid", "Bid successfully created!");
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -123,10 +134,11 @@ public class MakeBid extends HttpServlet {
                 }
             }
         }
-        Gson gson = new Gson();
+        /*Gson gson = new Gson();
         String object = gson.toJson(responseBid);
+        System.out.println(object);
         response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println(object);
+        response.getWriter().println(object);*/
         //request.getRequestDispatcher("/GoToAuction").forward(request, response);
     }
 }

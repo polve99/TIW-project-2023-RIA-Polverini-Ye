@@ -54,15 +54,15 @@ function getIdFromCookieSet(username) {
 	const aste_set = new Set();
 
 	for (const asta of cookieComponents) {
-		aste_set.add(asta);
+		if(!aste_set.has(asta) && asta !== "sell"){
+			aste_set.add(asta);
+		}
 	}
-
-	//nice, così funziona anche
-	//aste_set.forEach(a => console.log(a));
-	var lista_asteId = Array.from(aste_set).join(' ');
-	lista_asteId.replace("%", ",");
-
-	return lista_asteId;
+	var lista_asteId = Array.from(aste_set).join(',');
+	lista_asteId.replace("%", ","); //levare
+	
+	
+	return lista_asteId.substring(0,lista_asteId.length - 1);
 
 }
 
@@ -78,6 +78,101 @@ function returnLastValueCookie(username) {
 	var lastNotEmptyValue = arrayCookie[arrayCookie.length - 2];
 
 	return lastNotEmptyValue;
-}/**
+}
+
+function getCookiesAuctions(username){
+	let cookieAuctionsId = getIdFromCookieSet(username);
+	makeCall("GET", "CookieController?listAsteId="+cookieAuctionsId, null, function(response){
+		if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
+			let message = JSON.parse(response.responseText);
+			console.log(message);
+			createCookieAuctionTable(message);
+		} else {
+			//ERRORI ECCEZIONI DB
+		}
+	});
+};
+
+
+function createCookieAuctionTable(yourAuctionInfoList){
+
+  // Trova l'elemento HTML in cui verrà generata la tabella
+  let tableContainer1 = document.getElementById("cookieTable");
+
+  // Crea l'intestazione della tabella
+  let table1 = document.createElement("table");
+  table1.className = "tableCookie";
+  table1.id = "tableCookie_id";
+  let thead1 = document.createElement("thead");
+  let headerRow1 = document.createElement("tr");
+  let headers1 = ["ID Auction", "Articles", "Max Bid", "Min Rise", "Time Left"];
+
+  headers1.forEach(function(headerText1) {
+    let header1 = document.createElement("th");
+    header1.textContent = headerText1;
+    headerRow1.appendChild(header1);
+  });
+
+  thead1.appendChild(headerRow1);
+  table1.appendChild(thead1);
+
+  // Crea il corpo della tabella con i dati dell'asta
+  let tbody1 = document.createElement("tbody");
+  tbody1.id="tbodyCookie_id";
+
+  yourAuctionInfoList.forEach(function(auctionInfo1) {
+    let row1 = document.createElement("tr");
+    row1.id = "idCookie_" + auctionInfo1.idAuction;
+
+    // ID Auction
+    let idAuctionCell1 = document.createElement("td");
+    idAuctionCell1.textContent = auctionInfo1.idAuction;
+    row1.appendChild(idAuctionCell1);
+
+    //Articles
+    let articlesCell1 = document.createElement("td");
+    let articlesList1 = document.createElement("ul");
+    
+    auctionInfo1.articles.forEach(function(article1) {
+      let listItem1 = document.createElement("li");
+      listItem1.textContent = article1.articleName;
+      //listItem1.id = article1.image;
+      listItem1.className = article1.image;
+      //var imageItem = document.createElement("img");
+      //imageItem.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+article.image;
+      //imageItem.style.width = "30px";
+  	  //imageItem.style.height = "30px";
+      //listItem.appendChild(imageItem);
+      articlesList1.appendChild(listItem1);
+    });
+    articlesCell1.appendChild(articlesList1);
+    row1.appendChild(articlesCell1);
+
+    // Max Bid Value
+    let maxBidValueCell1 = document.createElement("td");
+    maxBidValueCell1.textContent = auctionInfo1.maxBidValue;
+    row1.appendChild(maxBidValueCell1);
+    
+    //Min Rise
+    let minRiseCell1 = document.createElement("td");
+    minRiseCell1.textContent = auctionInfo1.minRise;
+    row1.appendChild(minRiseCell1);
+    
+    //Time Left Formatted
+    let timeLeftFormattedCell1 = document.createElement("td");
+    timeLeftFormattedCell1.textContent = auctionInfo1.timeLeftFormatted;
+    row1.appendChild(timeLeftFormattedCell1);
+
+    tbody1.appendChild(row1);
+  });
+
+  table1.appendChild(tbody1);
+
+  // Aggiungi la tabella al container HTML
+  tableContainer1.appendChild(table1);
+
+};
+
+/**
  * 
  */

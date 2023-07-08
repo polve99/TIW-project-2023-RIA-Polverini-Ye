@@ -89,9 +89,9 @@
 		//resetInputFieldsAndMessages();
 		if (form.checkValidity()) {
 			makeCall("post", "CreateAuction", form, function(x) {
-				console.log("prova per vedere se entra nella makecall");
+				
 				let message;
-				console.log(x.responseText);
+				
 				try {
 				  message = JSON.parse(x.responseText);
 				} catch (error) {
@@ -102,6 +102,8 @@
 				if (x.readyState == XMLHttpRequest.DONE) {
 					switch(x.status) {
 						case 200:
+							var oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
+							updateOldCookie(sessionStorage.getItem("userMail"), oldCookie + "sell" + ",");
 							appendNewRow(message);
 							break;
 						default:
@@ -317,7 +319,7 @@ function isTimeGreaterThan(timeA, timeB) {
   }
 
   return false;
-}
+};
  
  
  //funzione crea bid
@@ -329,11 +331,48 @@ function isTimeGreaterThan(timeA, timeB) {
 		 makeCall("POST", "MakeBid?bidValue="+formData.get("bidValue"), null, function(response){
 			 if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
 				var response = JSON.parse(response.responseText);
-			    //CREARE FUNZIONE PER APPENDERE LA NUOVA BID
+			    appendBid(response);
 			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
 				//mettere futuri errori
 			}
 		 });
 	 });
  };
+ 
+ function appendBid(bid){
+	 let bidHistoryBody = document.getElementById("id_auctionDetailsBids_body");
+	 
+	 let newRow = document.createElement("tr");
+	 
+	 //id Bid
+  	 let idBidCell = document.createElement("td");
+     idBidCell.textContent=bid.idBid;
+ 	 newRow.appendChild(idBidCell);
+	
+	 //user
+	 let bidUser = document.createElement("td");
+	 bidUser.textContent = bid.userMail;
+	 newRow.appendChild(bidUser);
+	
+	 //bid
+	 let bidCell = document.createElement("td");
+	 bidCell.textContent = bid.bidValue;
+	 newRow.appendChild(bidCell);
+	
+	 //date Time
+	 let dateTimeCell = document.createElement("td");
+	 dateTimeCell.textContent = bid.bidDateTime;
+	 newRow.appendChild(dateTimeCell);
+	 
+	 bidHistoryBody.appendChild(newRow);
+
+
+	 //AGGIORNO I VALORI DELLE MAX BID NELLE TABELLE
+	 let idValueBid = "value_" + bid.idAuction;   
+	 document.getElementById(idValueBid).textContent = bid.bidValue; 
+	 document.getElementById("detailValue_"+bid.idAuction).textContent = bid.bidValue;	 
+	 
+ };
+ 
+
  

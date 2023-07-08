@@ -50,6 +50,7 @@ public class CloseAuction extends HttpServlet {
         BidDAO bidDAO = new BidDAO(connection);
         AuctionDAO auctionDAO = new AuctionDAO(connection);
         ArticleDAO articleDAO = new ArticleDAO(connection);
+        Bid maxBid = null;
 
         int idAuction = (int) session.getAttribute("idAuction");
         if (request.getParameter("idAuction") == null || request.getParameter("idAuction").isEmpty()) {
@@ -87,7 +88,7 @@ public class CloseAuction extends HttpServlet {
         if(isValid){
             try {
                 auctionDAO.closeAuction(idAuction);
-                Bid maxBid = bidDAO.findMaxBidInAuction(idAuction);
+                maxBid = bidDAO.findMaxBidInAuction(idAuction);
 
                 if(maxBid==null){
                     ArrayList<Article> articles = articleDAO.findArticlesListByIdAuction(idAuction);
@@ -108,7 +109,12 @@ public class CloseAuction extends HttpServlet {
         }
         if (closeMsg !=null) request.setAttribute("closeMsg", closeMsg);
 
-        request.getRequestDispatcher("/GoToAuction").forward(request, response);
+        response.setStatus(HttpServletResponse.SC_OK);
+        if (maxBid == null) {
+        	response.getWriter().print("no one");
+        } else {
+        	response.getWriter().print(maxBid.getBidValue());
+        }
 
     }
 }

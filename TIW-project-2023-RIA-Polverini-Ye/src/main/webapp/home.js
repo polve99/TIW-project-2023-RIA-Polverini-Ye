@@ -14,7 +14,7 @@ const home = () => {
 		document.getElementById("sellSection").className = "sellPage";
 		document.getElementById("prev").className = "prevPage";
 	});
-	document.getElementById("customTitle").appendChild(document.createTextNode("Hi "+ sessionStorage.getItem("name")+", what do you want to do?"))
+	document.getElementById("customTitle").appendChild(document.createTextNode("Hi "+ sessionStorage.getItem("userMail")+", what do you want to do?"))
 };
 
 const previous = () => {
@@ -39,6 +39,7 @@ const previous = () => {
 			
 			if(detOpen.className === "OpenAuctionMacroTable"){
 				document.getElementById("bidform").className = "bidform";
+				document.getElementById("closeform").className = "closeform";
 				detOpen.className = "hiddenElement";
 				document.getElementById("BuyPage_ClassicInitialPage").className = "BuyPage_ClassicInitialPage";
 			} else if(detClose.className === "BuyPage_ClosedAuctions"){
@@ -62,6 +63,7 @@ const main1 = () => {
 
 const main2 = () => {
 	aucDetails();
+	createBid();
 };
 
 const floatImage = () => {
@@ -80,7 +82,7 @@ const logoutEvent = () => {
 	document.getElementById("logout_id").addEventListener("click", () =>{
 		makeCall("GET", "Logout", null, function(response){
 			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
-				//sessionStorage.clear();
+				sessionStorage.clear();
 				window.location.href = "index.html";
 			} else {
 				window.location.href = "index.html";
@@ -89,11 +91,31 @@ const logoutEvent = () => {
 	})};
 
 window.addEventListener("load", () => {
-	if (sessionStorage.getItem("name") == null){
+	if (sessionStorage.getItem("userMail") == null){
+		console.log("dio bestia");
 		window.location.href = "index.html";
 		
 	} else {
+		
 		main1();
+		
+		if (!cookieExistence(sessionStorage.getItem("userMail"))){
+			console.log("qui");
+			createNewCookie(sessionStorage.getItem("userMail"),"");
+			document.getElementById("home").className = "hiddenElement";
+			document.getElementById("sellSection").className = "hiddenElement";
+			document.getElementById("buySection").className = "buyPage";
+			document.getElementById("prev").className = "prevPage";
+		} else {
+			let idList = getIdFromCookieSet(sessionStorage.getItem("userMail"));
+			
+			getCookiesAuctions(sessionStorage.getItem("userMail"));
+			
+			console.log(idList);
+		}
+		
+		
+		
 		keyWordTable();
 		
 		if(document.getElementById("id_goToBuy").className !== "hiddenElement"){

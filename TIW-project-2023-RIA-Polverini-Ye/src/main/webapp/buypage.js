@@ -11,6 +11,7 @@ function createOpenAuctionTable(auctionInfoList) {
 
   auctionInfoList.forEach(function(auctionInfo) {
     var row = document.createElement("tr");
+    row.id = "rowOpen_"+ auctionInfo.idAuction;
 
     //ID Auction
     var idAuctionCell = document.createElement("td");
@@ -43,6 +44,7 @@ function createOpenAuctionTable(auctionInfoList) {
     //Max Bid Value
     var maxBidValueCell = document.createElement("td");
     maxBidValueCell.textContent = auctionInfo.maxBidValue;
+    maxBidValueCell.id = "value_" + auctionInfo.idAuction;
     row.appendChild(maxBidValueCell);
 
     //Min Rise
@@ -201,6 +203,11 @@ const aucDetails = () => {
 					document.getElementById("BuyPage_ClosedAuctions").className = "BuyPage_ClosedAuctions";
 					document.getElementById("BuyPage_ClassicInitialPage").className = "hiddenElement";
 				}
+				//AGGIUNTA A COOKIE ASTA VISIONATA
+				var oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
+				updateOldCookie(sessionStorage.getItem("userMail"), oldCookie + ids[i].textContent + ",");
+				
+				
 				document.getElementById("BuyPage_ClassicInitialPage").className = "hiddenElement";
 				buildTableDetails(response);
 			} else {
@@ -259,6 +266,7 @@ function buildTableDetails(details){
 	    } else {
 			highBidCell.textContent = details.maxBid.bidValue;
 		}
+		highBidCell.id = "detailValue_" + details.auction.idAuction;
 	    row.appendChild(highBidCell);
 	    
 	    //time left
@@ -267,8 +275,11 @@ function buildTableDetails(details){
 	    row.appendChild(timeLeftCell);
 	    openAuctionBody.appendChild(row);
 	    
-	    if (details.isNotExpired || details.owner){
+	    if (!details.isNotExpired || details.owner){
 			document.getElementById("bidform").className = "hiddenElement";
+		}
+		if (details.auction.userMail !== details.user.userMail){
+			document.getElementById("closeform").className = "hiddenElement";
 		}
 		
 		let bidHistoryBody = document.getElementById("id_auctionDetailsBids_body");

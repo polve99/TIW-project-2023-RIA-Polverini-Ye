@@ -30,6 +30,7 @@
 
   yourAuctionInfoList.forEach(function(auctionInfo1) {
     var row1 = document.createElement("tr");
+    row1.id = "idOwn_" + auctionInfo1.idAuction;
 
     // ID Auction
     let idAuctionCell1 = document.createElement("td");
