@@ -51,6 +51,8 @@ public class Registration extends HttpServlet {
 		boolean emailValid = emailPattern.matcher(userMail).matches();
 		boolean isBadRequest = true;
 		String badRequestMessage = "";
+		UserDAO userDAO = new UserDAO(connection);
+		
 		if (name == null || password == null || repeatedPassword == null || userMail == null || surname == null || address == null ||
 				name.isBlank() || password.isBlank() || repeatedPassword.isBlank() || userMail.isBlank() || surname.isBlank() || address.isBlank()) {
 			badRequestMessage = "Missing parameters";
@@ -63,14 +65,24 @@ public class Registration extends HttpServlet {
 		} else if(telephone != null && !telValid) {
 			badRequestMessage = "Telephone number not valid";
 		} else {
-			isBadRequest = false;
+			try {
+	            if(userDAO.isUserMailInDB(userMail)) {
+	            	badRequestMessage = "Email already in use";
+	            } else {
+	            	isBadRequest = false;
+	            }
+	        } catch (SQLException e) {
+	        	response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				response.getWriter().println("Internal server error, please retry later");
+				return;
+	        }
 		}
 		if (isBadRequest) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println(badRequestMessage);
 			return;
 		}
-		UserDAO userDAO = new UserDAO(connection);
+		
 		User user = null;
 		try {
 			user = userDAO.createUser(userMail, password, name, surname, telephone, address);
