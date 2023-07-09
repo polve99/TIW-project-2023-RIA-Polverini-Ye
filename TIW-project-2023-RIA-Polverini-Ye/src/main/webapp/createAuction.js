@@ -147,8 +147,8 @@ function appendNewRow(message){
     linkId.textContent = message.idAuction;
     idAuctionCell.appendChild(linkId);
     let linkId1 = document.createElement("a");
-    linkId.className = "id";
-    linkId.textContent = message.idAuction;;
+    linkId1.className = "id";
+    linkId1.textContent = message.idAuction;;
     idAuctionCell1.appendChild(linkId1);
     newRow.appendChild(idAuctionCell1);
     newRow1.appendChild(idAuctionCell);
@@ -408,9 +408,9 @@ function removeRow(message){
 	//document.getElementById("tbodyown_id").removeChild(copyRow);
 	document.getElementById("rowOwn_"+message.idAuction).remove();
 	
-	
-	if (document.getElementById("rowCookie_"+message.idAuction) !== undefined){
-		document.getElementById("rowCookie_"+message.idAuction).remove();
+	let cookieRow = document.getElementById("rowCookie_"+message.idAuction);
+	if (cookieRow !== null){
+		cookieRow.remove();
 	}
 	
 	removeIdFromCookie(sessionStorage.getItem("userMail"), message.idAuction);
