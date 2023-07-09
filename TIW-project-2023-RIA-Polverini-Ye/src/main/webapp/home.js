@@ -21,10 +21,11 @@ const previous = () => {
 	document.getElementById("previousPage_id").addEventListener("click", () => {
 		
 		let homeP = document.getElementById("home");
+		let aucD = document.getElementById("aucPageDetails");
 		let sellP = document.getElementById("sellSection");
 		let buyP = document.getElementById("buySection");
 		
-		if(sellP.className === buyP.className){
+		if(homeP.className !== "hiddenElement"){
 			document.getElementById("prev").className = "hiddenElement";
 		} else if(sellP.className === "sellPage"){
 			
@@ -34,24 +35,35 @@ const previous = () => {
 			
 		} else if(buyP.className === "buyPage"){
 			
-			let detOpen = document.getElementById("OpenAuctionMacroTable");
-			let detClose = document.getElementById("BuyPage_ClosedAuctions");
+			document.getElementById("home").className = "homeLinks";
+			document.getElementById("prev").className = "hiddenElement";
+			buyP.className = "hiddenElement";
 			
-			if(detOpen.className === "OpenAuctionMacroTable"){
-				document.getElementById("bidform").className = "bidform";
+		} else if (aucD.className === "buy") {
+			if(document.getElementById("OpenAuctionMacroTable").className === "OpenAuctionMacroTable"){
+				aucD.className = "hiddenElement";
+				document.getElementById("BuyPage_ClosedAuctions").className = "BuyPage_ClosedAuctions";
+				document.getElementById("bidform").className = "bidForm";
 				document.getElementById("closeform").className = "closeform";
-				detOpen.className = "hiddenElement";
-				document.getElementById("BuyPage_ClassicInitialPage").className = "BuyPage_ClassicInitialPage";
-			} else if(detClose.className === "BuyPage_ClosedAuctions"){
-				detClose.className = "hiddenElement";
-				document.getElementById("BuyPage_ClassicInitialPage").className = "BuyPage_ClassicInitialPage";
-			} else if (detOpen.className === detClose.className){
-			
-				document.getElementById("home").className = "homeLinks";
-				document.getElementById("prev").className = "hiddenElement";
-				buyP.className = "hiddenElement";
+				buyP.className = "buyPage";
+			} else {
+				aucD.className = "hiddenElement";
+				document.getElementById("OpenAuctionMacroTable").className = "OpenAuctionMacroTable";
+				buyP.className = "buyPage";
 			}
-		} 
+		} else if(aucD.className === "sell") {
+			if(document.getElementById("OpenAuctionMacroTable").className === "OpenAuctionMacroTable"){
+				aucD.className = "hiddenElement";
+				document.getElementById("BuyPage_ClosedAuctions").className = "BuyPage_ClosedAuctions";
+				document.getElementById("bidform").className = "bidForm";
+				document.getElementById("closeform").className = "closeform";
+				sellP.className = "sellPage";
+			} else {
+				aucD.className = "hiddenElement";
+				document.getElementById("OpenAuctionMacroTable").className = "OpenAuctionMacroTable";
+				sellP.className = "sellPage";
+			}
+		}
 	})};
 
 const main1 = () => {
@@ -92,7 +104,6 @@ const logoutEvent = () => {
 
 window.addEventListener("load", () => {
 	if (sessionStorage.getItem("userMail") == null){
-		console.log("dio bestia");
 		window.location.href = "index.html";
 		
 	} else {
@@ -100,7 +111,6 @@ window.addEventListener("load", () => {
 		main1();
 		
 		if (!cookieExistence(sessionStorage.getItem("userMail"))){
-			console.log("qui");
 			createNewCookie(sessionStorage.getItem("userMail"),"");
 			document.getElementById("home").className = "hiddenElement";
 			document.getElementById("sellSection").className = "hiddenElement";
@@ -131,7 +141,7 @@ window.addEventListener("load", () => {
 			    createWonAuctionTable(wonAuctionInfoList);
 			    main2();
 			    floatImage();
-					    
+				//closeAuction();	   //NON SO SE POSSO CHIAMARLA IN DUE POSTI SEPARATAMENTE 
 			  }
 			});
 		}
@@ -152,10 +162,12 @@ window.addEventListener("load", () => {
 				    createArticlePage(imageList);
 				    addArticlePost();
 				    createAuctionPost();
+				    aucDetails();
 				    floatImage();
+				    //closeAuction(); //NON SO SE POSSO CHIAMARLA IN DUE POSTI SEPARATAMENTE
 			  }
 			});
 		}
-					
+		closeAuction();
 	}
 });

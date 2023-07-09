@@ -30,11 +30,15 @@
 
   yourAuctionInfoList.forEach(function(auctionInfo1) {
     var row1 = document.createElement("tr");
-    row1.id = "idOwn_" + auctionInfo1.idAuction;
+    row1.id = "rowOwn_" + auctionInfo1.idAuction;
 
     // ID Auction
     let idAuctionCell1 = document.createElement("td");
-    idAuctionCell1.textContent = auctionInfo1.idAuction;
+    idAuctionCell1.id = "idOwnOpenRow"+auctionInfo1.idAuction;
+    let linkId = document.createElement("a");
+    linkId.className = "id";
+    linkId.textContent = auctionInfo1.idAuction;
+    idAuctionCell1.appendChild(linkId);
     row1.appendChild(idAuctionCell1);
 
     //Articles
@@ -107,10 +111,15 @@ function createOwnWonAuctionTable(wonAuctionInfoList){
 
   wonAuctionInfoList.forEach(function(auctionInfo) {
     var row = document.createElement("tr");
+    row.id = "rowOwnClosed_" + auctionInfo.idAuction;
 
     // ID Auction
     var idAuctionCell = document.createElement("td");
-    idAuctionCell.textContent = auctionInfo.idAuction;
+    idAuctionCell.id = "idOwnOpenRow"+auctionInfo.idAuction;
+    let linkId = document.createElement("a");
+    linkId.className = "id";
+    linkId.textContent = auctionInfo.idAuction;
+    idAuctionCell.appendChild(linkId);
     row.appendChild(idAuctionCell);
 
     //Articles

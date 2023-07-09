@@ -5,7 +5,7 @@
  function addArticlePage(){
 	 let formContainer = document.getElementById("addArticle_section");
 	 let titolo = document.createElement("h2");
-	 titolo.textContent = "Form per l'Aggiunta di un Articolo";
+	 titolo.textContent = "Form to Add an Article";
 	 formContainer.appendChild(titolo);
 	 let form = document.createElement("form");
 	 form.action = "#";

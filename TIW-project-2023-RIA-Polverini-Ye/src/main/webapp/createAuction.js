@@ -137,8 +137,16 @@ function appendNewRow(message){
 	// ID Auction
     let idAuctionCell1 = document.createElement("td");
     let idAuctionCell = document.createElement("td");
-    idAuctionCell1.textContent = message.idAuction;
-    idAuctionCell.textContent = message.idAuction;
+    idAuctionCell1.id = "idOpenRow"+message.idAuction;
+    idAuctionCell.id = "idOwnOpenRow"+message.idAuction;
+    let linkId = document.createElement("a");
+    linkId.className = "id";
+    linkId.textContent = message.idAuction;
+    idAuctionCell.appendChild(linkId);
+    let linkId1 = document.createElement("a");
+    linkId.className = "id";
+    linkId.textContent = message.idAuction;;
+    idAuctionCell1.appendChild(linkId1);
     newRow.appendChild(idAuctionCell1);
     newRow1.appendChild(idAuctionCell);
     
@@ -374,5 +382,27 @@ function isTimeGreaterThan(timeA, timeB) {
 	 
  };
  
+const closeAuction = () => {
+	document.getElementById("closeAuctionButton").addEventListener("click", () => {
+		makeCall("POST", "CloseAuction", null, function(response){
+			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
+				let message = JSON.parse(response.responseText);
+			    removeRow(message);
+			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
+				//mettere futuri errori
+			}
+		});
+	});
+}
 
+function removeRow(message){
+	document.getElementById("rowOpen_"+message.idAuction).remove();
+	document.getElementById("rowOwn_"+message.idAuction).remove();
+	
+	if (document.getElementById("rowOpen_"+message.idAuction) !== undefined){
+		document.getElementById("rowOpen_"+message.idAuction).remove();
+	}
+	
+	removeIdFromCookie(sessionStorage.getItem("userMail"), message.idAuction);
+}
  

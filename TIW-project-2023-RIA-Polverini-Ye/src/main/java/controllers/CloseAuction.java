@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
+
 @WebServlet("/CloseAuction")
 public class CloseAuction extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -51,6 +53,7 @@ public class CloseAuction extends HttpServlet {
         AuctionDAO auctionDAO = new AuctionDAO(connection);
         ArticleDAO articleDAO = new ArticleDAO(connection);
         Bid maxBid = null;
+        ArrayList<Article> articles = null;
 
         int idAuction = (int) session.getAttribute("idAuction");
         if (request.getParameter("idAuction") == null || request.getParameter("idAuction").isEmpty()) {
@@ -91,7 +94,7 @@ public class CloseAuction extends HttpServlet {
                 maxBid = bidDAO.findMaxBidInAuction(idAuction);
 
                 if(maxBid==null){
-                    ArrayList<Article> articles = articleDAO.findArticlesListByIdAuction(idAuction);
+                    articles = articleDAO.findArticlesListByIdAuction(idAuction);
                     auctionDAO.putBackArticles(idAuction);
                     closeMsg = "Auction closed successfully. It had No bids so all articles will be put back: ";
                     for (Article article : articles) {
@@ -107,13 +110,21 @@ public class CloseAuction extends HttpServlet {
                 return;
             }
         }
-        if (closeMsg !=null) request.setAttribute("closeMsg", closeMsg);
+        if (closeMsg !=null) /*request.setAttribute("closeMsg", closeMsg)*/;
 
-        response.setStatus(HttpServletResponse.SC_OK);
+        Gson gson = new Gson();
+        String articlesString = gson.toJson(articles);
+        
+        //String finalObject1 = "{\"articles\": " + articlesString + ",\n" + "\"ownClosedAuctionInfoList\": " + ownClosedAuctionInfoListString + ",\n" + "\"imageList\": " + imageList1String + "\n}";
+        
         if (maxBid == null) {
-        	response.getWriter().print("no one");
+            String finalObject1 = "{\"articles\": " + articlesString + ",\n" + "\"bidValue\": " + "no one" + ",\n" + "\"idAuction\": " + idAuction + "\n}";
+        	response.setStatus(HttpServletResponse.SC_OK);
+        	response.getWriter().print(finalObject1);
         } else {
-        	response.getWriter().print(maxBid.getBidValue());
+            String finalObject1 = "{\"articles\": " + articlesString + ",\n" + "\"bidValue\": " + maxBid.getBidValue() + ",\n" + "\"idAuction\": " + idAuction + "\n}";
+        	response.setStatus(HttpServletResponse.SC_OK);
+        	response.getWriter().print(finalObject1);
         }
 
     }

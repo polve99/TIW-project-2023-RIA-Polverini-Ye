@@ -66,6 +66,22 @@ function getIdFromCookieSet(username) {
 
 }
 
+function removeIdFromCookie(username, idToRemove) {
+  let cookieValue = getCookieValue(username);
+  let cookieComponents = cookieValue.split(',');
+
+  // Crea un nuovo array filtrando gli ID da rimuovere
+  let newComponents = cookieComponents.filter(function(id) {
+    return id !== idToRemove && id !== 'sell';
+  });
+
+  // Crea la nuova stringa di ID separati da virgole
+  let newCookieValue = newComponents.join(',');
+
+  // Aggiorna il cookie con i nuovi ID
+  updateOldCookie(username, newCookieValue);
+}
+
 function returnLastValueCookie(username) {
 	//ritorna l'ultima istanza del campo value di un determinato cookie
 	var rawCookies = getCookieValue(username);
@@ -122,7 +138,7 @@ function createCookieAuctionTable(yourAuctionInfoList){
 
   yourAuctionInfoList.forEach(function(auctionInfo1) {
     let row1 = document.createElement("tr");
-    row1.id = "idCookie_" + auctionInfo1.idAuction;
+    row1.id = "rowCookie_" + auctionInfo1.idAuction;
 
     // ID Auction
     let idAuctionCell1 = document.createElement("td");

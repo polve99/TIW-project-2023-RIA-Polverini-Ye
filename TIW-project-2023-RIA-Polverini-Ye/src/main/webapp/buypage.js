@@ -6,17 +6,17 @@
 function createOpenAuctionTable(auctionInfoList) {
   
   //Cerca il corpo della tabella con i dati dell'asta
-  var tbody = document.getElementById("id_auctionInfoListOpen_body");
+  let tbody = document.getElementById("id_auctionInfoListOpen_body");
   tbody.innerHTML = "";
 
   auctionInfoList.forEach(function(auctionInfo) {
-    var row = document.createElement("tr");
+    let row = document.createElement("tr");
     row.id = "rowOpen_"+ auctionInfo.idAuction;
 
     //ID Auction
-    var idAuctionCell = document.createElement("td");
+    let idAuctionCell = document.createElement("td");
     //idAuctionCell.textContent = auctionInfo.idAuction;
-    idAuctionCell.id = auctionInfo.idAuction;
+    idAuctionCell.id = "idOpenRow"+auctionInfo.idAuction;
     let linkId = document.createElement("a");
     linkId.className = "id";
     linkId.textContent = auctionInfo.idAuction;
@@ -24,14 +24,14 @@ function createOpenAuctionTable(auctionInfoList) {
     row.appendChild(idAuctionCell);
 
     //Articles
-    var articlesCell = document.createElement("td");
-    var articlesList = document.createElement("ul");
+    let articlesCell = document.createElement("td");
+    let articlesList = document.createElement("ul");
     
     auctionInfo.articles.forEach(function(article) {
-      var listItem = document.createElement("li");
+      let listItem = document.createElement("li");
       listItem.textContent = article.articleName;
       listItem.className = "notOver";
-      var imageItem = document.createElement("img");
+      let imageItem = document.createElement("img");
       imageItem.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+article.image;
       imageItem.style.width = "30px";
   	  imageItem.style.height = "30px";
@@ -42,18 +42,18 @@ function createOpenAuctionTable(auctionInfoList) {
     row.appendChild(articlesCell);
     
     //Max Bid Value
-    var maxBidValueCell = document.createElement("td");
+    let maxBidValueCell = document.createElement("td");
     maxBidValueCell.textContent = auctionInfo.maxBidValue;
     maxBidValueCell.id = "value_" + auctionInfo.idAuction;
     row.appendChild(maxBidValueCell);
 
     //Min Rise
-    var minRiseCell = document.createElement("td");
+    let minRiseCell = document.createElement("td");
     minRiseCell.textContent = auctionInfo.minRise;
     row.appendChild(minRiseCell);
 
     //Time Left
-    var timeLeftCell = document.createElement("td");
+    let timeLeftCell = document.createElement("td");
     timeLeftCell.textContent = auctionInfo.timeLeftFormatted;
     row.appendChild(timeLeftCell);
 
@@ -66,17 +66,17 @@ function createOpenAuctionTable(auctionInfoList) {
 function createWonAuctionTable(wonAuctionInfoList){
 
   // Trova l'elemento HTML in cui verrà generata la tabella
-  var tableContainer = document.getElementById("id_auctionInfoListWon");
+  let tableContainer = document.getElementById("id_auctionInfoListWon");
 
   // Crea l'intestazione della tabella
-  var table = document.createElement("table");
+  let table = document.createElement("table");
   table.className = "tableWon";
-  var thead = document.createElement("thead");
-  var headerRow = document.createElement("tr");
-  var headers = ["ID Auction", "Articles", "Winning bid"];
+  let thead = document.createElement("thead");
+  let headerRow = document.createElement("tr");
+  let headers = ["ID Auction", "Articles", "Winning bid"];
 
   headers.forEach(function(headerText) {
-    var header = document.createElement("th");
+    let header = document.createElement("th");
     header.textContent = headerText;
     headerRow.appendChild(header);
   });
@@ -85,15 +85,15 @@ function createWonAuctionTable(wonAuctionInfoList){
   table.appendChild(thead);
 
   // Crea il corpo della tabella con i dati dell'asta
-  var tbody = document.createElement("tbody");
+  let tbody = document.createElement("tbody");
 
   wonAuctionInfoList.forEach(function(auctionInfo) {
-    var row = document.createElement("tr");
+    let row = document.createElement("tr");
+    row.id = "rowWon_" + auctionInfo.idAuction;
 
     // ID Auction
-    var idAuctionCell = document.createElement("td");
-    //idAuctionCell.textContent = auctionInfo.idAuction;
-    idAuctionCell.id = auctionInfo.idAuction;
+    let idAuctionCell = document.createElement("td");
+    idAuctionCell.id = "idClosedRow"+auctionInfo.idAuction;
     let linkId1 = document.createElement("a");
     linkId1.className = "id";
     linkId1.textContent = auctionInfo.idAuction;
@@ -101,11 +101,11 @@ function createWonAuctionTable(wonAuctionInfoList){
     row.appendChild(idAuctionCell);
 
     //Articles
-    var articlesCell = document.createElement("td");
-    var articlesList = document.createElement("ul");
+    let articlesCell = document.createElement("td");
+    let articlesList = document.createElement("ul");
     
     auctionInfo.articles.forEach(function(article) {
-      var listItem = document.createElement("li");
+      let listItem = document.createElement("li");
       listItem.textContent = article.articleName;
       //listItem.id = article.image;
       listItem.className = article.image;
@@ -120,7 +120,7 @@ function createWonAuctionTable(wonAuctionInfoList){
     row.appendChild(articlesCell);
 
     // Max Bid Value
-    var maxBidValueCell = document.createElement("td");
+    let maxBidValueCell = document.createElement("td");
     maxBidValueCell.textContent = auctionInfo.maxBidValue;
     row.appendChild(maxBidValueCell);
 
@@ -193,22 +193,46 @@ const aucDetails = () => {
 	for (let i = 0; i < ids.length; i++){
 		console.log(ids[i].textContent);
 		ids[i].addEventListener("click", () => {
+			console.log(ids[i]);
 		makeCall("GET", "GoToAuction?idAuction="+ids[i].textContent,null, function(response){
 			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
 				var response = JSON.parse(response.responseText);
+				
+				let buySec = document.getElementById("buySection");
+				let sellSec = document.getElementById("sellSection");
+				
 				if(response.isOpen === true){
-					document.getElementById("BuyPage_ClassicInitialPage").className = "hiddenElement";
-					document.getElementById("OpenAuctionMacroTable").className = "OpenAuctionMacroTable";
+					if(buySec.className === "buyPage"){
+						buySec.className = "hiddenElement";
+						document.getElementById("aucPageDetails").className = "buy";
+						document.getElementById("OpenAuctionMacroTable").className = "OpenAuctionMacroTable";
+						document.getElementById("BuyPage_ClosedAuctions").className = "hiddenElement";
+					} else if (sellSec.className === "sellPage") {
+						sellSec.className = "hiddenElement";
+						document.getElementById("aucPageDetails").className = "sell";
+						document.getElementById("OpenAuctionMacroTable").className = "OpenAuctionMacroTable";
+						document.getElementById("BuyPage_ClosedAuctions").className = "hiddenElement";
+					}
+					
 				} else {
-					document.getElementById("BuyPage_ClosedAuctions").className = "BuyPage_ClosedAuctions";
-					document.getElementById("BuyPage_ClassicInitialPage").className = "hiddenElement";
+					
+					if(buySec.className === "buyPage"){
+						buySec.className = "hiddenElement";
+						document.getElementById("aucPageDetails").className = "buy";
+						document.getElementById("OpenAuctionMacroTable").className = "hiddenElement";
+						document.getElementById("BuyPage_ClosedAuctions").className = "BuyPage_ClosedAuctions";
+					} else if (sellSec.className === "sellPage") {
+						sellSec.className = "hiddenElement";
+						document.getElementById("aucPageDetails").className = "sell";
+						document.getElementById("OpenAuctionMacroTable").className = "hiddenElement";
+						document.getElementById("BuyPage_ClosedAuctions").className = "BuyPage_ClosedAuctions";
+					}
 				}
 				//AGGIUNTA A COOKIE ASTA VISIONATA
 				var oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
 				updateOldCookie(sessionStorage.getItem("userMail"), oldCookie + ids[i].textContent + ",");
 				
-				
-				document.getElementById("BuyPage_ClassicInitialPage").className = "hiddenElement";
+				//document.getElementById("BuyPage_ClassicInitialPage").className = "hiddenElement";
 				buildTableDetails(response);
 			} else {
 				//INSERIRE GLI ERRORI
