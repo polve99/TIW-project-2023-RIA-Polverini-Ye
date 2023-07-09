@@ -55,14 +55,14 @@
 		 let articleInput = document.createElement("input");
 		 articleInput.type = "checkbox";
 		 articleInput.name = "articleToUpload";
-		 articleInput.value = article1;
-		 articleInput.id = "articleToUpload-"+article1;
+		 articleInput.value = article1.image;
+		 articleInput.id = "articleToUpload-"+article1.image;
 		 //articleInput.required = false;
 		 let p = document.createElement("p");
-		 p.textContent = article1;
+		 p.textContent = article1.articleName;
 		 p.appendChild(articleInput);
 		 let articleImage = document.createElement("img");
-		 articleImage.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/" + article1;
+		 articleImage.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/" + article1.image;
 	     articleImage.style.width = "50px";
 	  	 articleImage.style.height = "50px";
 	  	 p.appendChild(articleImage);
@@ -102,6 +102,7 @@
 				if (x.readyState == XMLHttpRequest.DONE) {
 					switch(x.status) {
 						case 200:
+							removeIdFromCookie(sessionStorage.getItem("userMail"), "sell");
 							var oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
 							updateOldCookie(sessionStorage.getItem("userMail"), oldCookie + "sell" + ",");
 							appendNewRow(message);
@@ -130,7 +131,9 @@ function appendNewRow(message){
 	
 	// Create a new table row
 	let newRow = document.createElement("tr");
+	newRow.id = "rowOwn_" + message.idAuction;
 	let newRow1 = document.createElement("tr");
+	newRow1.id = "rowOpen_" + message.idAuction;
 	
 	
 	
@@ -149,6 +152,9 @@ function appendNewRow(message){
     idAuctionCell1.appendChild(linkId1);
     newRow.appendChild(idAuctionCell1);
     newRow1.appendChild(idAuctionCell);
+    
+    addListener(linkId);
+    addListener(linkId1);
     
     //Articles
     let articlesCell1 = document.createElement("td");
@@ -383,7 +389,8 @@ function isTimeGreaterThan(timeA, timeB) {
  };
  
 const closeAuction = () => {
-	document.getElementById("closeAuctionButton").addEventListener("click", () => {
+	document.getElementById("closeAuctionButton").addEventListener("click", (e) => {
+		e.preventDefault();
 		makeCall("POST", "CloseAuction", null, function(response){
 			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
 				let message = JSON.parse(response.responseText);
@@ -397,12 +404,107 @@ const closeAuction = () => {
 
 function removeRow(message){
 	document.getElementById("rowOpen_"+message.idAuction).remove();
+	//document.getElementById("rowOwn_"+message.idAuction);
+	//document.getElementById("tbodyown_id").removeChild(copyRow);
 	document.getElementById("rowOwn_"+message.idAuction).remove();
 	
-	if (document.getElementById("rowOpen_"+message.idAuction) !== undefined){
-		document.getElementById("rowOpen_"+message.idAuction).remove();
+	
+	if (document.getElementById("rowCookie_"+message.idAuction) !== undefined){
+		document.getElementById("rowCookie_"+message.idAuction).remove();
 	}
 	
 	removeIdFromCookie(sessionStorage.getItem("userMail"), message.idAuction);
+	
+	let bodyOwnClosed = document.getElementById("tbodyOwnClosed_id");
+	
+    var row = document.createElement("tr");
+    row.id = "rowOwnClosed_" + message.idAuction;
+
+    // ID Auction
+    var idAuctionCell = document.createElement("td");
+    idAuctionCell.id = "idOwnOpenRow"+message.idAuction;
+    let linkId = document.createElement("a");
+    linkId.className = "id";
+    linkId.textContent = message.idAuction;
+    idAuctionCell.appendChild(linkId);
+    row.appendChild(idAuctionCell);
+
+    //Articles
+    var articlesCell = document.createElement("td");
+    var articlesList = document.createElement("ul");
+    
+    message.articles.forEach(function(article) {
+      var listItem = document.createElement("li");
+      listItem.textContent = article.articleName;
+      //listItem.id = article.image;
+      listItem.className = article.image;
+      //var imageItem = document.createElement("img");
+      //imageItem.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+article.image;
+      //imageItem.style.width = "30px";
+  	  //imageItem.style.height = "30px";
+      //listItem.appendChild(imageItem);
+      articlesList.appendChild(listItem);
+    });
+    articlesCell.appendChild(articlesList);
+    row.appendChild(articlesCell);
+
+    // Max Bid Value
+    var maxBidValueCell = document.createElement("td");
+    maxBidValueCell.textContent = message.bidValue;
+    //console.log(message.maxBidValue);
+    row.appendChild(maxBidValueCell);
+
+    bodyOwnClosed.appendChild(row);
+    
+    let buyP = document.getElementById("buySection");
+    let sellP = document.getElementById("sellSection");
+    let aucD = document.getElementById("aucPageDetails");
+    
+    if (aucD.className === "buy") {
+		if(document.getElementById("OpenAuctionMacroTable").className === "OpenAuctionMacroTable"){
+			aucD.className = "hiddenElement";
+			document.getElementById("BuyPage_ClosedAuctions").className = "BuyPage_ClosedAuctions";
+			document.getElementById("bidform").className = "bidForm";
+			document.getElementById("closeform").className = "closeform";
+			buyP.className = "buyPage";
+		} else {
+			aucD.className = "hiddenElement";
+			document.getElementById("OpenAuctionMacroTable").className = "OpenAuctionMacroTable";
+			buyP.className = "buyPage";
+		}
+	} else if(aucD.className === "sell") {
+		if(document.getElementById("OpenAuctionMacroTable").className === "OpenAuctionMacroTable"){
+			aucD.className = "hiddenElement";
+			document.getElementById("BuyPage_ClosedAuctions").className = "BuyPage_ClosedAuctions";
+			document.getElementById("bidform").className = "bidForm";
+			document.getElementById("closeform").className = "closeform";
+			sellP.className = "sellPage";
+		} else {
+			aucD.className = "hiddenElement";
+			document.getElementById("OpenAuctionMacroTable").className = "OpenAuctionMacroTable";
+			sellP.className = "sellPage";
+		}
+	}
+    
+    addListener(linkId);
+    message.articles.forEach(function(article){
+	    let imageToUploadContainer = document.getElementById("articleToUpload_id");
+		let articleInput = document.createElement("input");
+	    articleInput.type = "checkbox";
+	    articleInput.value = article.image;
+	    articleInput.name = "articleToUpload";
+	    articleInput.id = "articleToUpload-"+article.image;
+	    articleInput.required = true;
+	    let p = document.createElement("p");
+	    p.textContent = article.articleName;
+	    p.appendChild(articleInput);
+	    let articleImage = document.createElement("img");
+	    articleImage.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/" + article.image;
+	    articleImage.style.width = "50px";
+	    articleImage.style.height = "50px";
+	    p.appendChild(articleImage);
+	    imageToUploadContainer.appendChild(p);
+    });
+	
 }
  

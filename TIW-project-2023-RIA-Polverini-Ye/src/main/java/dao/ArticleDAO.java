@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class ArticleDAO {
@@ -221,9 +222,9 @@ public class ArticleDAO {
         return articles;
     }
     
-    public ArrayList<String> findImagesByUser (String userMail) throws SQLException {
-    	ArrayList<String> images = new ArrayList<String>();
-    	String query = "SELECT image FROM dbaste.articles WHERE userMail = ? AND idAuction IS NULL";
+    public ArrayList<Article> findImagesByUser (String userMail) throws SQLException {
+    	ArrayList<Article> images = new ArrayList<Article>();
+    	String query = "SELECT * FROM dbaste.articles WHERE userMail = ? AND idAuction IS NULL";
     	 ResultSet resultSet = null;
          PreparedStatement pStatement = null;
          try {
@@ -232,7 +233,7 @@ public class ArticleDAO {
              resultSet = pStatement.executeQuery();
 
              while (resultSet.next()) {
-                 images.add(resultSet.getString("image"));
+                 images.add(new Article(resultSet.getInt("articleCode"),resultSet.getString("articleName"),resultSet.getString("articleDescription"),resultSet.getString("image"),resultSet.getFloat("articlePrice"), resultSet.getString("userMail")));
              }
          } catch (SQLException e) {
              throw new SQLException(e);

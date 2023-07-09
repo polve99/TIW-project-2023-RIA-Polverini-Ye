@@ -22,6 +22,14 @@ public class Article {
         this.articlePrice = articlePrice;
         this.userMail = userMail;
     }
+    
+    public Article(String articleName, String articleDescription, float articlePrice, String image, String userMail) {
+        this.articleName = articleName;
+        this.articleDescription = articleDescription;
+        this.image = image;
+        this.articlePrice = articlePrice;
+        this.userMail = userMail;
+    }
 
     public int getArticleCode() {
         return articleCode;

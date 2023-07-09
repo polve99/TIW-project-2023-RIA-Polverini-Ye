@@ -21,7 +21,10 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import com.google.gson.Gson;
+
 import dao.ArticleDAO;
+import beans.Article;
 import beans.User;
 import utilis.ConnectionHandler;
 
@@ -60,7 +63,7 @@ public class AddArticle extends HttpServlet{
 	    //System.out.println(uploadDirectory);
 	    
 	    
-	    
+	    Article articlesObject = null;
 	    
 
 	    // crea nuova directory se non esiste
@@ -130,7 +133,9 @@ public class AddArticle extends HttpServlet{
 	       //fileName = filePart.getSubmittedFileName(); 
 	       String fileExtension = getFileExtension(fileName);
 	       if(isAllowedExtension(fileExtension)) {
-	       	article.createArticle(articleName, articleDesc, price, fileName ,user.getUserMail());
+	    	    
+	       		article.createArticle(articleName, articleDesc, price, fileName ,user.getUserMail());
+	       		articlesObject = new Article(articleName, articleDesc, price, fileName, user.getUserMail());
 	       }
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -138,10 +143,13 @@ public class AddArticle extends HttpServlet{
 			return;
 		}
 	   
+	   Gson gson = new Gson();
+	   String articlesObjectString = gson.toJson(articlesObject);
+	   
 	  response.setStatus(HttpServletResponse.SC_OK);
 	  response.setContentType("application/json");
 	  response.setCharacterEncoding("UTF-8");
-	  response.getWriter().print(fileName);
+	  response.getWriter().print(articlesObjectString);
 	}
 
 	//TODO: INUTILE?

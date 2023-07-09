@@ -107,7 +107,7 @@ public class GoToSell extends HttpServlet {
 
         
         ArrayList<Map<String, Object>> ownClosedAuctionInfoList = new ArrayList<>();
-        List<String> imageList1 = new ArrayList<>();
+        List<Article> imageList1 = new ArrayList<>();
         
         try {
             ArrayList<Auction> ownClosedAuctions = auctionDAO.getAllClosedAuctionsByUser(user.getUserMail());

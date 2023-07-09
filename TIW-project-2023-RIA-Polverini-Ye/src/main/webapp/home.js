@@ -119,16 +119,26 @@ window.addEventListener("load", () => {
 		} else {
 			let idList = getIdFromCookieSet(sessionStorage.getItem("userMail"));
 			
-			getCookiesAuctions(sessionStorage.getItem("userMail"));
 			
-			console.log(idList);
+			
+			if (returnLastValueCookie(sessionStorage.getItem("userMail")) === "sell"){
+				document.getElementById("home").className = "hiddenElement";
+				document.getElementById("sellSection").className = "sellPage";
+				document.getElementById("buySection").className = "hiddenElement";
+				document.getElementById("prev").className = "prevPage";
+			} else {
+				document.getElementById("home").className = "hiddenElement";
+				document.getElementById("sellSection").className = "hiddenElement";
+				document.getElementById("buySection").className = "buyPage";
+				document.getElementById("prev").className = "prevPage";
+			}
 		}
 		
 		
 		
 		keyWordTable();
 		
-		if(document.getElementById("id_goToBuy").className !== "hiddenElement"){
+		if(/*document.getElementById("id_goToBuy").className !== "hiddenElement"*/ 1===1){
 			//GET gotobuy
 			makeCall("GET", "GoToBuy", null, function(response) {
 		  	if (response.readyState == XMLHttpRequest.DONE && response.status == 200) {
@@ -139,13 +149,14 @@ window.addEventListener("load", () => {
 			    // Utilizza i dati dell'oggetto JSON come desideri
 			    createOpenAuctionTable(auctionInfoList);
 			    createWonAuctionTable(wonAuctionInfoList);
+			    getCookiesAuctions(sessionStorage.getItem("userMail"));
 			    main2();
 			    floatImage();
 				//closeAuction();	   //NON SO SE POSSO CHIAMARLA IN DUE POSTI SEPARATAMENTE 
 			  }
 			});
 		}
-		if(document.getElementById("id_goToSell").className !== "hiddenElement"){	
+		if(/*document.getElementById("id_goToSell").className !== "hiddenElement"*/ 1===1){	
 			//GET gotosell
 			makeCall("GET", "GoToSell", null, function(response1) {
 				

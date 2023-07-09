@@ -56,10 +56,11 @@ public class CloseAuction extends HttpServlet {
         ArrayList<Article> articles = null;
 
         int idAuction = (int) session.getAttribute("idAuction");
-        if (request.getParameter("idAuction") == null || request.getParameter("idAuction").isEmpty()) {
+        //System.out.println(idAuction);
+        /*if (request.getParameter("idAuction") == null || request.getParameter("idAuction").isEmpty()) {
             isValid = false;
             request.setAttribute("errorString", "idAuction value null or empty");
-        }
+        }*/
 
         Auction auction = null;
         try {
@@ -116,9 +117,9 @@ public class CloseAuction extends HttpServlet {
         String articlesString = gson.toJson(articles);
         
         //String finalObject1 = "{\"articles\": " + articlesString + ",\n" + "\"ownClosedAuctionInfoList\": " + ownClosedAuctionInfoListString + ",\n" + "\"imageList\": " + imageList1String + "\n}";
-        
+        System.out.println("fino a qua tutto ok");
         if (maxBid == null) {
-            String finalObject1 = "{\"articles\": " + articlesString + ",\n" + "\"bidValue\": " + "no one" + ",\n" + "\"idAuction\": " + idAuction + "\n}";
+            String finalObject1 = "{\"articles\": " + articlesString + ",\n" + "\"bidValue\": " + "\"no one\"" + ",\n" + "\"idAuction\": " + idAuction + "\n}";
         	response.setStatus(HttpServletResponse.SC_OK);
         	response.getWriter().print(finalObject1);
         } else {

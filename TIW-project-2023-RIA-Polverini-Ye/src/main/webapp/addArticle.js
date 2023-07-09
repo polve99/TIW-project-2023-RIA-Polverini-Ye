@@ -92,7 +92,7 @@
 		//resetInputFieldsAndMessages();
 		if (form.checkValidity()) {
 			makeCall("post", "AddArticle", form, function(x) {
-				let message = x.responseText;
+				let message = JSON.parse(x.responseText);
 				if (x.readyState == XMLHttpRequest.DONE) {
 					switch(x.status) {
 						case 200:
@@ -100,15 +100,15 @@
 							let imageToUploadContainer = document.getElementById("articleToUpload_id");
 							let articleInput = document.createElement("input");
 						    articleInput.type = "checkbox";
-						    articleInput.value =message;
+						    articleInput.value =message.image;
 						    articleInput.name = "articleToUpload";
-						    articleInput.id = "articleToUpload-"+message;
+						    articleInput.id = "articleToUpload-"+message.image;
 						    articleInput.required = true;
 						    let p = document.createElement("p");
-						    p.textContent = message;
+						    p.textContent = message.articleName;
 						    p.appendChild(articleInput);
 						    let articleImage = document.createElement("img");
-						    articleImage.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/" + message;
+						    articleImage.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/" + message.image;
 					        articleImage.style.width = "50px";
 					   	    articleImage.style.height = "50px";
 					  	    p.appendChild(articleImage);

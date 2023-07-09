@@ -72,7 +72,7 @@ function removeIdFromCookie(username, idToRemove) {
 
   // Crea un nuovo array filtrando gli ID da rimuovere
   let newComponents = cookieComponents.filter(function(id) {
-    return id !== idToRemove && id !== 'sell';
+    return id !== String(idToRemove);
   });
 
   // Crea la nuova stringa di ID separati da virgole

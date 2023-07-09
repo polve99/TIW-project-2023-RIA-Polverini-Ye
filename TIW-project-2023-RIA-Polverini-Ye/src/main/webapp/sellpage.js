@@ -107,7 +107,8 @@ function createOwnWonAuctionTable(wonAuctionInfoList){
   table.appendChild(thead);
 
   // Crea il corpo della tabella con i dati dell'asta
-  var tbody = document.createElement("tbody");
+  let tbody = document.createElement("tbody");
+  tbody.id = "tbodyOwnClosed_id";
 
   wonAuctionInfoList.forEach(function(auctionInfo) {
     var row = document.createElement("tr");

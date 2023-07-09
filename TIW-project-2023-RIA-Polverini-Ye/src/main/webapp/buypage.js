@@ -192,9 +192,10 @@ const aucDetails = () => {
 	console.log(ids.length);
 	for (let i = 0; i < ids.length; i++){
 		console.log(ids[i].textContent);
-		ids[i].addEventListener("click", () => {
+		ids[i].addEventListener("click", (e) => {
+			console.log(e.target);
 			console.log(ids[i]);
-		makeCall("GET", "GoToAuction?idAuction="+ids[i].textContent,null, function(response){
+		makeCall("GET", "GoToAuction?idAuction="+e.target.textContent,null, function(response){
 			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
 				var response = JSON.parse(response.responseText);
 				
@@ -229,8 +230,10 @@ const aucDetails = () => {
 					}
 				}
 				//AGGIUNTA A COOKIE ASTA VISIONATA
+				
+				removeIdFromCookie(sessionStorage.getItem("userMail"), e.target.textContent);
 				var oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
-				updateOldCookie(sessionStorage.getItem("userMail"), oldCookie + ids[i].textContent + ",");
+				updateOldCookie(sessionStorage.getItem("userMail"), oldCookie + e.target.textContent + ",");
 				
 				//document.getElementById("BuyPage_ClassicInitialPage").className = "hiddenElement";
 				buildTableDetails(response);
