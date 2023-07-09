@@ -19,13 +19,13 @@
 	 let labelPrice = document.createElement("label");
 	 let labelImage = document.createElement("label");
 	 labelName.htmlFor = "articleName";
-	 labelName.textContent = "Inserisci il Nome dell'Articolo";
+	 labelName.textContent = "Article name:";
 	 labelDesc.htmlFor = "articleDesc";
-	 labelDesc.textContent = "Inserisci la Descrizione dell'Articolo";
+	 labelDesc.textContent = "Description";
 	 labelPrice.htmlFor = "articlePrice";
-	 labelPrice.textContent = "Inserisci il Prezzo dell'Articolo";
+	 labelPrice.textContent = "Price";
 	 labelImage.htmlFor = "articleImage";
-	 labelImage.textContent = "Inserisci l'Immagine dell'Articolo";
+	 labelImage.textContent = "Image";
 	 fieldset.appendChild(labelName);
 	 fieldset.appendChild(labelDesc);
 	 fieldset.appendChild(labelPrice);

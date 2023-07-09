@@ -17,11 +17,11 @@
 	 let labelDuration = document.createElement("label");
 	 let labelMinRise = document.createElement("label");
 	 let labelArticle = document.createElement("label");
-	 labelDuration.textContent = "Inserisci la durata dell'asta (min 1, max 20)";
+	 labelDuration.textContent = "Days before ending (min 1, max 20)";
 	 labelDuration.htmlFor = "duration";
-	 labelMinRise.textContent = "Inserisci il rialzo minimo per la tua asta";
+	 labelMinRise.textContent = "Minimun rise to offer";
 	 labelMinRise.htmlFor = "minRise";
-	 labelArticle.textContent = "Seleziona l'articolo o gli articoli che vuoi inserire nella tua asta";
+	 labelArticle.textContent = "Select the article or articles you want to add to the auction";
 	 labelArticle.htmlFor = "articleToUpload";
 	 labelArticle.id = "articleToUpload_id";
 	 fieldset.appendChild(labelDuration);

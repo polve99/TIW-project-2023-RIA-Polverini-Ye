@@ -28,15 +28,6 @@ import com.google.gson.Gson;
 
 import utilis.ConnectionHandler;
 
-/* 	es errori di input
-   response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-   response.getWriter().println("minimum rise provided with the wrong format");
-   
-    es errori db interni
-    e.printStackTrace();
-    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error in db, bid not created. Please, retry later.");
-    return;
- */
 
 @WebServlet("/GoToBuy")
 public class GoToBuy extends HttpServlet {
@@ -191,6 +182,11 @@ public class GoToBuy extends HttpServlet {
 
     private String formatTimeLeft(Timestamp expirationDateTime) {
         long timeLeftMillis = expirationDateTime.getTime() - System.currentTimeMillis();
+        
+        if(timeLeftMillis<0) {
+        	String msg = "expired";
+        	return msg;
+        }
 
         long seconds = timeLeftMillis / 1000;
         long days = seconds / (24 * 60 * 60);

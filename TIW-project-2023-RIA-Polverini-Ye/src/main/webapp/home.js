@@ -7,12 +7,16 @@ const home = () => {
 		document.getElementById("sellSection").className = "hiddenElement";
 		document.getElementById("buySection").className = "buyPage";
 		document.getElementById("prev").className = "prevPage";
+		document.getElementById("buySectionTitle").classList.remove("hiddenElement");
+		document.getElementById("sellSectionTitle").classList.add("hiddenElement");
 	});
 	document.getElementById("id_goToSell").addEventListener("click", () => {
 		document.getElementById("home").className = "hiddenElement";
 		document.getElementById("buySection").className = "hiddenElement";
 		document.getElementById("sellSection").className = "sellPage";
 		document.getElementById("prev").className = "prevPage";
+		document.getElementById("buySectionTitle").classList.add("hiddenElement");
+		document.getElementById("sellSectionTitle").classList.remove("hiddenElement");
 	});
 	document.getElementById("customTitle").appendChild(document.createTextNode("Hi "+ sessionStorage.getItem("userMail")+", what do you want to do?"))
 };
@@ -24,6 +28,9 @@ const previous = () => {
 		let aucD = document.getElementById("aucPageDetails");
 		let sellP = document.getElementById("sellSection");
 		let buyP = document.getElementById("buySection");
+		
+		document.getElementById("sellSectionTitle").classList.add("hiddenElement");
+		document.getElementById("buySectionTitle").classList.add("hiddenElement");
 		
 		if(homeP.className !== "hiddenElement"){
 			document.getElementById("prev").className = "hiddenElement";
@@ -116,9 +123,12 @@ window.addEventListener("load", () => {
 			document.getElementById("sellSection").className = "hiddenElement";
 			document.getElementById("buySection").className = "buyPage";
 			document.getElementById("prev").className = "prevPage";
-		} else {
-			let idList = getIdFromCookieSet(sessionStorage.getItem("userMail"));
+			document.getElementById("buySectionTitle").classList.remove("hiddenElement");
+			document.getElementById("sellSectionTitle").classList.add("hiddenElement");
 			
+			//TODO DA MANDARE ALLA HOME PAGE- E NON NELLA BUY
+		} else {
+			//let idList = getIdFromCookieSet(sessionStorage.getItem("userMail")); non è usato
 			
 			
 			if (returnLastValueCookie(sessionStorage.getItem("userMail")) === "sell"){
@@ -126,11 +136,15 @@ window.addEventListener("load", () => {
 				document.getElementById("sellSection").className = "sellPage";
 				document.getElementById("buySection").className = "hiddenElement";
 				document.getElementById("prev").className = "prevPage";
+				document.getElementById("buySectionTitle").classList.add("hiddenElement");
+				document.getElementById("sellSectionTitle").classList.remove("hiddenElement");
 			} else {
 				document.getElementById("home").className = "hiddenElement";
 				document.getElementById("sellSection").className = "hiddenElement";
 				document.getElementById("buySection").className = "buyPage";
 				document.getElementById("prev").className = "prevPage";
+				document.getElementById("buySectionTitle").classList.remove("hiddenElement");
+				document.getElementById("sellSectionTitle").classList.add("hiddenElement");
 			}
 		}
 		

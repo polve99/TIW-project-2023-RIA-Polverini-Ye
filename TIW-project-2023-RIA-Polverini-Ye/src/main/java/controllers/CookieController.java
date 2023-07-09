@@ -55,10 +55,10 @@ public class CookieController extends HttpServlet{
 	            return;
 	        }
 
-	        User user = (User) session.getAttribute("user");
 	        String listAsteId = request.getParameter("listAsteId");
-	        
-	        
+	        if(listAsteId=="") {
+                return;
+	        }
 
 	        //here starts the retreiving infos for open auctions table
 
@@ -84,7 +84,7 @@ public class CookieController extends HttpServlet{
 	                }
 	            } catch (SQLException e) {
 	                e.printStackTrace();
-	                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Internal db error in finding auctions' informations");
+	                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal db error in finding auctions' informations");
 	                return;
 	            }
 	            Timestamp expirationDateTime = auction.getExpirationDateTime();
@@ -101,8 +101,6 @@ public class CookieController extends HttpServlet{
 	        Gson gson = new Gson();
 	        String auctionInfoListString = gson.toJson(auctionInfoList);
 
-	        
-
 	        response.setStatus(HttpServletResponse.SC_OK);
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
@@ -111,6 +109,11 @@ public class CookieController extends HttpServlet{
 	    
 	    private String formatTimeLeft(Timestamp expirationDateTime) {
 	        long timeLeftMillis = expirationDateTime.getTime() - System.currentTimeMillis();
+	        
+	        if(timeLeftMillis<0) {
+	        	String msg = "expired";
+	        	return msg;
+	        }
 
 	        long seconds = timeLeftMillis / 1000;
 	        long days = seconds / (24 * 60 * 60);

@@ -15,7 +15,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
-
 import beans.User;
 import dao.UserDAO;
 import utilis.ConnectionHandler;
@@ -25,7 +24,6 @@ import utilis.ConnectionHandler;
 public class Login extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private Connection connection = null;
- 
 
     public Login() {
         super();
@@ -57,11 +55,9 @@ public class Login extends HttpServlet {
 
         UserDAO userDAO = new UserDAO(connection);
         User user = null;
-
        
         try {
             user = userDAO.getUserAfterAuthentication(userMail, passw);
-
         } catch (SQLException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal error in retreiving user from db, please retry later");
             return;
@@ -71,7 +67,6 @@ public class Login extends HttpServlet {
 			response.getWriter().println("User not found: username or password are not correct");
 			return;
         }
-        
 
         HttpSession session = request.getSession(true);
 		session.setAttribute("user", user);

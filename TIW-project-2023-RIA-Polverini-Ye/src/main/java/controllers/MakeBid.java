@@ -47,14 +47,6 @@ public class MakeBid extends HttpServlet {
         AuctionDAO auctionDAO = new AuctionDAO(connection);
 
         int idAuction = (int) session.getAttribute("idAuction");
-        /* è sempre null quindi darebbe sempre errore(?)
-          if(request.getParameter("idAuction") == null || request.getParameter("idAuction").isEmpty() ){ 
-            //isValid = false;
-            //request.setAttribute("msgBid", "idAuction value null or empty");
-        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().println("idAuction value null or empty");
-            return;
-        }*/
         
         if(request.getParameter("bidValue") == null || request.getParameter("bidValue").isEmpty() ){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

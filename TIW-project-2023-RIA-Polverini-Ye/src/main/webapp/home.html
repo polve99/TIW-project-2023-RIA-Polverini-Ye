@@ -40,9 +40,8 @@
 
 <!-- BUY PAGE SECTION ----------------------------------------------------------------------------------------------- -->
 
-
+<h1 class = "hiddenElement" id = "buySectionTitle">BidWars' Buy section</h1>
 <div class = "hiddenElement" id = "buySection">
-    <h1 style="text-align: center;">BidWars' Buy section</h1>
     <div class = "errorString">
         <p id = "errorString" class="error"></p>
     </div>
@@ -238,42 +237,50 @@
 </div>
 
 <!-- SELL PAGE SECTION --------------------------------------------------------------------------------------------- -->
+<h1 class = "hiddenElement" id = "sellSectionTitle">BidWars' Sell section</h1>
 <div class = "hiddenElement" id = "sellSection">
-	<h1 style="text-align: center;">BidWars' Sell section</h1>
     <div class = "errorString">
         <p id = "errorString" class="error"></p>
     </div>
 
     <br><br>
-    	<div id = "firstTableSell">
-		    <h1>List of your open auctions</h1>
-	        <div id = "id_empty_yourAuctionInfoListOpen">
-	            <p id = "NoOpenAuctionsMsg"></p>
-	        </div>
-	        <div class="container">
-	            <div id = "id_yourAuctionInfoListOpen_listContainer">
-	                
-	            </div>
-	        </div>
-        </div>
-        
-        <div id = "secondTableSell">
-        	<h1>List of your auctions closed</h1>
-        	<div id = "id_empty_yourAuctionInfoListOpen">
-	            <p id = "NoOpenAuctionsMsg"></p>
-	            <div id = "id_yourClosedAuctionInfoListOpen_listContainer">
-	                
-	            </div>
-	        </div>
-        </div>
-        <br><br>
-        <div id = "addArticle_section">
-        	<!-- SEZIONE PER CREARE NUOVI ARTICOLI, VIENE CREATA INTERAMENTE ATTRAVERSO JAVASCRIPT NELLA FUNZIONE addArticlePage() -->
-        </div>
-        <div id = "createAuction_section">
-        	<!-- SEZIONE PER CREARE NUOVE ASTE, VIENE CREATA INTERAMENTE ATTRAVERSO JAVASCRIPT NELLA FUNZIONE createAuctionPage() -->
-        </div>
-        
+    <div id="SellPage">
+    	<fieldset>
+    		<div class="container">
+                <div class="row">
+    
+			    	<div id = "firstTableSell">
+					    <h1>List of your open auctions</h1>
+				        <div id = "id_empty_yourAuctionInfoListOpen">
+				            <p id = "NoOpenAuctionsMsg"></p>
+				        </div>
+				        <div class="container">
+				            <table class="table" id = "id_yourAuctionInfoListOpen_listContainer">
+				                
+				            </table>
+				        </div>
+			        </div>
+			        
+			        <div id = "secondTableSell">
+			        	<h1>List of your auctions closed</h1>
+			        	<div id = "id_empty_yourAuctionInfoListOpen">
+				            <p id = "NoOpenAuctionsMsg"></p>
+				            <table class="table" id = "id_yourClosedAuctionInfoListOpen_listContainer">
+				                
+				            </table>
+				        </div>
+			        </div>
+			        <br><br>
+			        <div id = "addArticle_section">
+			        	<!-- SEZIONE PER CREARE NUOVI ARTICOLI, VIENE CREATA INTERAMENTE ATTRAVERSO JAVASCRIPT NELLA FUNZIONE addArticlePage() -->
+			        </div>
+			        <div id = "createAuction_section">
+			        	<!-- SEZIONE PER CREARE NUOVE ASTE, VIENE CREATA INTERAMENTE ATTRAVERSO JAVASCRIPT NELLA FUNZIONE createAuctionPage() -->
+			        </div>
+			     </div>
+		     </div>
+        </fieldset>
+    </div>    
 
 </div>
 

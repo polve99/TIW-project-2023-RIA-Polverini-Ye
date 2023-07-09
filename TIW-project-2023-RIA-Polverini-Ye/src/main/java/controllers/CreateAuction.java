@@ -148,6 +148,11 @@ public class CreateAuction extends HttpServlet{
     
     private String formatTimeLeft(Timestamp expirationDateTime) {
         long timeLeftMillis = expirationDateTime.getTime() - System.currentTimeMillis();
+        
+        if(timeLeftMillis<0) {
+        	String msg = "expired";
+        	return msg;
+        }
 
         long seconds = timeLeftMillis / 1000;
         long days = seconds / (24 * 60 * 60);

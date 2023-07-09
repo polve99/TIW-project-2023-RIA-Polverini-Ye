@@ -103,8 +103,10 @@ function getCookiesAuctions(username){
 			let message = JSON.parse(response.responseText);
 			console.log(message);
 			createCookieAuctionTable(message);
-		} else {
+		} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
 			//ERRORI ECCEZIONI DB
+			var errorMessage = response.responseText;
+      		alert(errorMessage);
 		}
 	});
 };
