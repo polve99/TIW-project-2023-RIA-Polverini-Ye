@@ -56,12 +56,18 @@ public class Registration extends HttpServlet {
 		if (name == null || password == null || repeatedPassword == null || userMail == null || surname == null || address == null ||
 				name.isBlank() || password.isBlank() || repeatedPassword.isBlank() || userMail.isBlank() || surname.isBlank() || address.isBlank()) {
 			badRequestMessage = "Missing parameters";
-		} else if (!emailValid) {
-			badRequestMessage = "Email not valid";
+		} else if (name.length()<2 || name.length()>20) {
+			badRequestMessage = "Name must be between 2 and 20 characters";
+		} else if (surname.length()<2 || surname.length()>20) {
+			badRequestMessage = "Surname must be between 2 and 20 characters";
+		} else if (!emailValid || userMail.length()<5 || userMail.length()>50) {
+			badRequestMessage = "Invalid email. Email must be between 5 and 50 characters and have a valid format (e.g., email@mail.com)";
 		} else if (!password.equals(repeatedPassword)) {
-			badRequestMessage = "Password and repeated password are different";
-		} else if (password.length() < 8) {
-			badRequestMessage = "Password must be at least of 8 characters";
+			badRequestMessage = "Password and repeated password do not match";
+		} else if (password.length()<8 || password.length()>50) {
+			badRequestMessage = "Password must be between 8 and 50 characters";
+		} else if (address.length()<1 || address.length()>50) {
+			badRequestMessage = "Address must be between 1 and 50 characters";
 		} else if(telephone != null && !telValid) {
 			badRequestMessage = "Telephone number not valid";
 		} else {
@@ -89,11 +95,6 @@ public class Registration extends HttpServlet {
 		} catch (SQLException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().println("Internal server error, please retry later");
-			return;
-		}
-		if (user == null) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().println("Username or password are not correct");
 			return;
 		}
 		HttpSession session = request.getSession(true);

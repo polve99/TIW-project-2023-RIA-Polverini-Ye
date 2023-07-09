@@ -120,6 +120,7 @@
 			                //document.getElementById("articleDesc").className = "inputWithError";
 			                //document.getElementById("articlePrice").className = "inputWithError";
 			                //document.getElementById("articleImage").className = "inputWithError";
+     						alert(message);
 			                break;
 					}
 				}

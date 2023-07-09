@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -23,13 +22,10 @@ import beans.User;
 import dao.ArticleDAO;
 import dao.AuctionDAO;
 import dao.BidDAO;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 
 import com.google.gson.Gson;
 
 import utilis.ConnectionHandler;
-import utilis.ThymeleafTemplateEngineCreator;
 
 @WebServlet("/GoToAuction")
 @MultipartConfig
@@ -61,7 +57,8 @@ public class GoToAuction extends HttpServlet {
         String idAuctionParam = request.getParameter("idAuction");
         request.setAttribute("idAuction", idAuctionParam);
         if (idAuctionParam == null || idAuctionParam.isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid auction ID");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().println("Invalid auction ID");
             return;
         }
 
@@ -70,6 +67,7 @@ public class GoToAuction extends HttpServlet {
         try {
             idAuction = Integer.parseInt(idAuctionParam);
             if(!auctionDAO.isAuctionInDB(idAuction)){
+            	/*
                 String errorString = "Previous idAuction in request not found. Back to previous page.";
                 request.setAttribute("errorString", errorString);
                 
@@ -82,8 +80,13 @@ public class GoToAuction extends HttpServlet {
                 	response.sendRedirect("GoToHome");
                 }
                 return;
+                */
+                
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().println("idAuction in request not found.");
+                return;
             }
-        } catch (SQLException | ServletException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
@@ -104,7 +107,7 @@ public class GoToAuction extends HttpServlet {
             bids = bidDAO.findBidsListByIdAuction(idAuction);
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Internal db error in retrieving auction details");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal db error in retrieving auction details");
             return;
         }
         
@@ -113,17 +116,16 @@ public class GoToAuction extends HttpServlet {
                 closedAuctionInfo = auctionDAO.getAuctionClosedInfos(auction);
             } catch (SQLException e) {
                 e.printStackTrace();
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Internal db error in retrieving closed auction info");
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal db error in retrieving closed auction info");
                 return;
             }
-            //request.setAttribute("closedAuctionInfo", closedAuctionInfo);
+            //request.setAttribute("closedAuctionInfo", closedAuctionInfo); questo perchè commentato?
         }
 
         // Salva l'ID dell'asta nella sessione
         session.setAttribute("idAuction", idAuction);
 
-        String template;
-        Map<String, Object> templateVariables = new HashMap<>();
+        HashMap<String, Object> templateVariables = new HashMap<>();
         templateVariables.put("user", user);
         templateVariables.put("auction", auction);
         templateVariables.put("articles", articles);
@@ -135,22 +137,27 @@ public class GoToAuction extends HttpServlet {
         templateVariables.put("isNotExpired", isAuctionNotExpired);
         if(closedAuctionInfo != null) templateVariables.put("closedAuctionInfo", closedAuctionInfo);
 
-        
+        /*
+        HashMap<String,String> errMsg = new HashMap<>();
 
         if(bids.isEmpty()){
-           
+        	//errMsg.put("NoBidsMsg", "There are no bids at this time for this auction.");
+        	//ctx.setVariable("NoBidsMsg", "There are no bids at this time for this auction.");
         }
 
         String msgBid = (String) request.getAttribute("msgBid");
         if (msgBid != null) {
-            
+        	//errMsg.put("msgBid",msgBid);
+        	//ctx.setVariable("msgBid", msgBid);
         }
         
         String closeMsg = (String) request.getAttribute("closeMsg");
         if (closeMsg != null) {
-            
+        	//errMsg.put("closeMsg", closeMsg);
+        	//ctx.setVariable("closeMsg", closeMsg);
         }
-
+         */
+        
         if(auction.getUserMail().equals(user.getUserMail())) {
             templateVariables.put("owner", Boolean.TRUE);
         } else {
@@ -159,9 +166,13 @@ public class GoToAuction extends HttpServlet {
 
         Gson gson = new Gson();
         String templateVariablesString = gson.toJson(templateVariables);
+        //String errMsgString = gson.toJson(errMsg);
         
-       response.setStatus(HttpServletResponse.SC_OK);
-       response.getWriter().println(templateVariablesString);
+        //String finalObject = "{\"templateVariables\": " + templateVariablesString + "\"errMsg\": " + errMsgString + "\n}";
+        
+        response.setStatus(HttpServletResponse.SC_OK);
+        //response.getWriter().println(finalObject);
+        response.getWriter().println(templateVariablesString);
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

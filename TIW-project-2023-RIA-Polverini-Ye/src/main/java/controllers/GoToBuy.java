@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,13 +23,20 @@ import beans.User;
 import dao.ArticleDAO;
 import dao.AuctionDAO;
 import dao.BidDAO;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 
 import com.google.gson.Gson;
 
 import utilis.ConnectionHandler;
-import utilis.ThymeleafTemplateEngineCreator;
+
+/* 	es errori di input
+   response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+   response.getWriter().println("minimum rise provided with the wrong format");
+   
+    es errori db interni
+    e.printStackTrace();
+    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error in db, bid not created. Please, retry later.");
+    return;
+ */
 
 @WebServlet("/GoToBuy")
 public class GoToBuy extends HttpServlet {
@@ -47,7 +53,6 @@ public class GoToBuy extends HttpServlet {
     @Override
     public void init() throws ServletException {
         connection = ConnectionHandler.getConnection(getServletContext());
-        ServletContext servletContext = getServletContext();
         
         auctionDAO = new AuctionDAO(connection);
         articleDAO = new ArticleDAO(connection);
@@ -75,7 +80,7 @@ public class GoToBuy extends HttpServlet {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Internal db error in finding auctions");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal db error in finding auctions");
             return;
         }
 
@@ -94,7 +99,7 @@ public class GoToBuy extends HttpServlet {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Internal db error in finding auctions' informations");
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal db error in finding auctions' informations");
                 return;
             }
             Timestamp expirationDateTime = auction.getExpirationDateTime();
@@ -130,14 +135,49 @@ public class GoToBuy extends HttpServlet {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error retrieving won auctions");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal db errori in retrieving won auctions");
             return;
         }
         
+        if (auctionInfoList.isEmpty()) {
+            if (keyword != null && !keyword.isBlank()) {
+            	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().println("There are no open auctions for the keyword: "+keyword+".");
+                return;
+             }
+        }
+        
+        /*
+        HashMap<String,String> errMsg = new HashMap<>();
+        
+        if (auctionInfoList.isEmpty()) {
+            if (keyword != null && !keyword.isBlank()) {
+            	errMsg.put("NoOpenAuctionsMsg", "There are no open auctions for the keyword: "+keyword+".");
+                //ctx.setVariable("NoOpenAuctionsMsg", "There are no open auctions for the keyword: "+keyword+".");
+            } else {
+            	errMsg.put("NoOpenAuctionsMsg", "There are no open auctions at this time.");
+                //ctx.setVariable("NoOpenAuctionsMsg", "There are no open auctions at this time.");
+            }
+        }
+
+        if (wonAuctionInfoList.isEmpty()) {
+        	errMsg.put("NoWonAuctionsMsg", "You haven't won any auctions yet.");
+            //ctx.setVariable("NoWonAuctionsMsg", "You haven't won any auctions yet.");
+        }
+
+        String errorString = (String) request.getAttribute("errorString"); //from GoToAuction servlet
+        if (errorString != null) {
+        	errMsg.put("errorString", errorString);
+            //ctx.setVariable("errorString", errorString);
+        }
+        
+        session.setAttribute("from", "BuyPage"); //used in GoToAuction for handling errors
+        
+        */
+        
         String wonAuctionInfoListString = gson.toJson(wonAuctionInfoList);
         String finalObject = "{\"auctionInfoList\": " + auctionInfoListString + ",\n" + "\"wonAuctionInfoList\": " + wonAuctionInfoListString + "\n}";
-        //System.out.println(finalObject);
-
+        
         response.setStatus(HttpServletResponse.SC_OK);
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");

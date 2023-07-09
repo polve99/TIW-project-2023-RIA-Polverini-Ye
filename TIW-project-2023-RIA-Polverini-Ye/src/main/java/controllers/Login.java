@@ -44,14 +44,14 @@ public class Login extends HttpServlet {
 
         if (userMail==null || userMail.isBlank() || userMail.length() < 5 || userMail.length() > 50 || !emailValid) {
         	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().println("Missing parameters or not valid");
+			response.getWriter().println("Invalid email. Email must be between 5 and 50 characters and have a valid format (e.g., email@mail.com)");
 			return;
         }
 
         String passw = StringEscapeUtils.escapeJava(request.getParameter("password"));
         if (passw==null || passw.isBlank() || passw.length() < 8 || passw.length() > 50) {
         	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().println("Missing parameters or not valid");
+			response.getWriter().println("Password must be between 8 and 50 characters");
 			return;
         }
 

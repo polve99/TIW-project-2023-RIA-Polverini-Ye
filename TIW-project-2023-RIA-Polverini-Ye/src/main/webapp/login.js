@@ -4,20 +4,15 @@
 		let form = e.target.closest("form");
 		resetInputFieldsAndMessages();
 		if (form.checkValidity()) {
-			makeCall("POST", "Login", form, function(x) {
-				let message = x.responseText;
-				if (x.readyState == XMLHttpRequest.DONE) {
-					switch(x.status) {
-						case 200:
-							sessionStorage.setItem("userMail", message);
-							window.location.href = "home.html";
-							break;
-						default:
-			                document.getElementById("loginErrorMessage").textContent = message;
-			                document.getElementById("loginUser").className = "inputWithError";
-			                document.getElementById("loginPsw").className = "inputWithError";
-			                break;
-					}
+			makeCall("POST", "Login", form, function(response) {
+				let message = response.responseText;
+				if (response.readyState == XMLHttpRequest.DONE && response.status == 200) {
+					sessionStorage.setItem("userMail", message);
+					window.location.href = "home.html";
+				} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
+      				document.getElementById("loginErrorMessage").textContent = message;
+			        document.getElementById("loginUser").className = "inputWithError";
+			        document.getElementById("loginPsw").className = "inputWithError";
 				}
 			});
 		} else {
@@ -41,18 +36,13 @@ const registration = () => {
 		resetInputFieldsAndMessages();
 		let formValidity = form.checkValidity();
 		if (formValidity && checkRegistration(form)) {
-			makeCall("POST", "Registration", form, function(x) {
-				let message = x.responseText;
-				if (x.readyState == XMLHttpRequest.DONE) {
-					switch(x.status) {
-						case 200:
-							sessionStorage.setItem("userMail", message);
-							window.location.href = "home.html";
-							break;
-		                default:
-			                document.getElementById("registrationErrorMessage").textContent = message;
-			                break;
-					}
+			makeCall("POST", "Registration", form, function(response) {
+				let message = response.responseText;
+				if (response.readyState == XMLHttpRequest.DONE && response.status == 200) {
+					sessionStorage.setItem("userMail", message);
+					window.location.href = "home.html";
+				}else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
+      				document.getElementById("registrationErrorMessage").textContent = message;
 				}
 			});
 		} else if (!formValidity){

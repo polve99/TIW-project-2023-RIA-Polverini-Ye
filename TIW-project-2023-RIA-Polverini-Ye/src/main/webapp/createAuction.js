@@ -113,6 +113,7 @@
 			                //document.getElementById("articleDesc").className = "inputWithError";
 			                //document.getElementById("articlePrice").className = "inputWithError";
 			                //document.getElementById("articleImage").className = "inputWithError";
+			                alert(message);
 			                break;
 					}
 				}
@@ -347,7 +348,8 @@ function isTimeGreaterThan(timeA, timeB) {
 				var response = JSON.parse(response.responseText);
 			    appendBid(response);
 			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
-				//mettere futuri errori
+				var errorMessage = response.responseText;
+      			alert(errorMessage);
 			}
 		 });
 	 });
@@ -396,7 +398,8 @@ const closeAuction = () => {
 				let message = JSON.parse(response.responseText);
 			    removeRow(message);
 			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
-				//mettere futuri errori
+				var errorMessage = response.responseText;
+      			alert(errorMessage);
 			}
 		});
 	});

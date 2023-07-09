@@ -1,23 +1,13 @@
 package controllers;
-import java.io.File;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -26,11 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.http.Part;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 
 import com.google.gson.Gson;
 
@@ -39,7 +26,6 @@ import dao.AuctionDAO;
 import beans.User;
 import beans.Article;
 import utilis.ConnectionHandler;
-import utilis.ThymeleafTemplateEngineCreator;
 
 
 @WebServlet("/CreateAuction")
@@ -48,7 +34,6 @@ import utilis.ThymeleafTemplateEngineCreator;
 public class CreateAuction extends HttpServlet{
 	private static final long serialVersionUID = 1L;
     private Connection connection = null;
-    //private TemplateEngine templateEngine = null;
 
     public CreateAuction() {
         super();
@@ -58,7 +43,6 @@ public class CreateAuction extends HttpServlet{
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
         connection = ConnectionHandler.getConnection(servletContext);
-        //templateEngine = ThymeleafTemplateEngineCreator.getTemplateEngine(servletContext);
         
     }
     
@@ -71,19 +55,21 @@ public class CreateAuction extends HttpServlet{
     	float initialPrice = 0;
     	
     	LocalDateTime dateTime = LocalDateTime.now();
-    	System.out.println("funziona fino a qui?"); //SI
         int daysToAdd = Integer.parseInt(StringEscapeUtils.escapeJava(request.getParameter("duration"))); 
+        
+        if (daysToAdd < 1 || daysToAdd > 20) {
+        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().println("the number inserted doesn't respect the range of possibilities proposed");
+            return;
+        }
 
         LocalDateTime newDateTime = dateTime.plusDays(daysToAdd); 
         Timestamp time = Timestamp.valueOf(newDateTime);
-
-        //System.out.println(time +" "+ dateTime);
-    	
-        //System.out.println(daysToAdd);
     	
         String minRise =StringEscapeUtils.escapeJava(request.getParameter("minRise"));
         String[] selectedImages = request.getParameterValues("articleToUpload");
         String[] escapedImages = new String[selectedImages.length];
+        
         for (int j = 0; j < selectedImages.length; j++) {
           escapedImages[j] = StringEscapeUtils.escapeJava(selectedImages[j]);
         }
@@ -118,13 +104,16 @@ public class CreateAuction extends HttpServlet{
         float rise = 0;
         try {
         	rise = Float.parseFloat(minRise);
+        	if (rise <= 0) {
+        		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().println("the rise must be greater than zero");
+                return;
+        	}
         } catch (Exception e) {
         	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        	response.getWriter().println("minimum rise provided with the wrong format");  //ESEMPIO DI ERRORE DA FARE OVUNQUE
+        	response.getWriter().println("the rise inserted doesn't have the right format");
+        	return;
         }
-        
-        //TODO: fare controlli su rise
-        
         
         try {
 			aucId = auctionDAO.createAuction(initialPrice, rise, time, user.getUserMail());
@@ -139,9 +128,6 @@ public class CreateAuction extends HttpServlet{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-        
-        
         
         Map<String,Object> AuctionMapToAddLater = new HashMap<String, Object>();
         AuctionMapToAddLater.put("idAuction", aucId);

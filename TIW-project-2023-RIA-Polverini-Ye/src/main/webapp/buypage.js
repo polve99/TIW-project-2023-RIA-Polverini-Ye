@@ -237,8 +237,8 @@ const aucDetails = () => {
 				
 				//document.getElementById("BuyPage_ClassicInitialPage").className = "hiddenElement";
 				buildTableDetails(response);
-			} else {
-				//INSERIRE GLI ERRORI
+			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
+				alert(response);
 			}
 			
 		});
@@ -408,11 +408,12 @@ const keyWordTable = () => {
 				    createOpenAuctionTable(auctionInfoList);
 				    main2();
 			    } else {
-					//messaggio errore nessun oggetto con keyword
+					//messaggio errore nessun oggetto con keyword -- messo giù
 				}
 			
 			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
-				//mettere futuri errori
+				var errorMessage = response.responseText;
+      			alert(errorMessage);
 			}
 		});
 		

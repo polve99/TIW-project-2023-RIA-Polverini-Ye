@@ -79,7 +79,11 @@ public class AddArticle extends HttpServlet{
 
 	    try {
 	        Part filePart = request.getPart("articleImage"); // riceve la image part dalla richiesta
-	        if(filePart == null) System.out.println("errore");
+	        if(filePart == null) {
+	        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	            response.getWriter().println("no file uploaded");
+	            return;
+	        }
 	        fileName = System.currentTimeMillis() + "_" + filePart.getSubmittedFileName(); // estrae il nome
 	        String fileExtension = getFileExtension(fileName);
 
@@ -102,12 +106,17 @@ public class AddArticle extends HttpServlet{
 	            //response.getWriter().println("File uploaded successfully!");
 	            
 	        } else {
+	        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	            response.getWriter().println("Invalid file type. Only JPG, JPEG, PNG, and GIF files are allowed.");
+	            return;
 	        	
 	            //response.getWriter().println("Invalid file type. Only JPG, JPEG, PNG, and GIF files are allowed.");
 	        }
 	    } catch (Exception ex) {
 	    	ex.printStackTrace();
+	        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 	        response.getWriter().println("Error uploading file: " + ex.getMessage());
+            return;
 	    }
 	
 	    float price = 0;
@@ -119,23 +128,36 @@ public class AddArticle extends HttpServlet{
 	    if (articlePrice != null && !articlePrice.isEmpty()) {
 	        try {
 	            price = Float.parseFloat(articlePrice);
+	            if(price<0) {
+	            	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		            response.getWriter().println("price must be greater or equal to zero");
+		            return;
+	            }
 	        } catch (NumberFormatException e) {
-	            response.getWriter().println("Il valore inserito non è un numero valido.");
+	        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	            response.getWriter().println("Price in input is not a valid number");
+	            return;
 	        }
 	    } else {
-	        response.getWriter().println("Il numero non è stato fornito nella richiesta.");
+	    	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().println("Price is null");
+            return;
 	    }
 	    
 	    ArticleDAO article = new ArticleDAO(connection);
 	    //PER CONTROLLARE IN FUTURO IL PATH DOVE VENGONO SALVATE LE IMMAGINI, COMMENTARE DAL TRY FINO A DOPO LA SENDREDIRECT E DECOMMENTARE LE RESPONSE.GETWRITER()
 	   try {
-		   Part filePart = request.getPart("articleImage"); 
+		   //Part filePart = request.getPart("articleImage"); 
 	       //fileName = filePart.getSubmittedFileName(); 
 	       String fileExtension = getFileExtension(fileName);
 	       if(isAllowedExtension(fileExtension)) {
 	    	    
 	       		article.createArticle(articleName, articleDesc, price, fileName ,user.getUserMail());
 	       		articlesObject = new Article(articleName, articleDesc, price, fileName, user.getUserMail());
+	       } else {
+	    	    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	            response.getWriter().println("Invalid file type. Only JPG, JPEG and PNG files are allowed.");
+	            return;
 	       }
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -146,10 +168,10 @@ public class AddArticle extends HttpServlet{
 	   Gson gson = new Gson();
 	   String articlesObjectString = gson.toJson(articlesObject);
 	   
-	  response.setStatus(HttpServletResponse.SC_OK);
-	  response.setContentType("application/json");
-	  response.setCharacterEncoding("UTF-8");
-	  response.getWriter().print(articlesObjectString);
+	   response.setStatus(HttpServletResponse.SC_OK);
+	   response.setContentType("application/json");
+	   response.setCharacterEncoding("UTF-8");
+	   response.getWriter().print(articlesObjectString);
 	}
 
 	//TODO: INUTILE?
