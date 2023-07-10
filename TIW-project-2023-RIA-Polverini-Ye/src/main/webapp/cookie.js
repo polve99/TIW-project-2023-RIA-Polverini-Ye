@@ -2,9 +2,6 @@
  * 
  */
 
-//TODO: ancora da adattare alla specifica!! e controllare
-
-
 function createNewCookie(username, asta_id) {
 	//per evitare problemi di formattazione
 	const d = new Date();
@@ -90,7 +87,6 @@ function returnLastValueCookie(username) {
 	var arrayCookie = Array.from(rawSplitCookies);
 
 	//getta l'ultimo elemento
-
 	var lastNotEmptyValue = arrayCookie[arrayCookie.length - 2];
 
 	return lastNotEmptyValue;
@@ -104,7 +100,6 @@ function getCookiesAuctions(username){
 			console.log(message);
 			createCookieAuctionTable(message);
 		} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
-			//ERRORI ECCEZIONI DB
 			var errorMessage = response.responseText;
       		alert(errorMessage);
 		}
@@ -190,7 +185,3 @@ function createCookieAuctionTable(yourAuctionInfoList){
   tableContainer1.appendChild(table1);
 
 };
-
-/**
- * 
- */

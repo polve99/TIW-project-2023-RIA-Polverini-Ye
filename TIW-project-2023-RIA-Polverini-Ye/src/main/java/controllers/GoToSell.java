@@ -108,7 +108,6 @@ public class GoToSell extends HttpServlet {
                 Map<String, Object> auctionInfo = new HashMap<>();
                 
                 auctionInfo.put("idAuction", auction.getIdAuction());
-               
                 
                 if(auctionClosedInfos.get(0)==null) {
                 	auctionInfo.put("maxBidValue", "No bidders.");

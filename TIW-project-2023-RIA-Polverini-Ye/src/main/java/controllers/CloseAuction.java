@@ -87,33 +87,31 @@ public class CloseAuction extends HttpServlet {
             response.getWriter().println("Auction already closed");
             return;
         }
+        try {
+            auctionDAO.closeAuction(idAuction);
+            maxBid = bidDAO.findMaxBidInAuction(idAuction);
 
-            try {
-                auctionDAO.closeAuction(idAuction);
-                maxBid = bidDAO.findMaxBidInAuction(idAuction);
-
-                if(maxBid==null){
-                    articles = articleDAO.findArticlesListByIdAuction(idAuction);
-                    auctionDAO.putBackArticles(idAuction);
-                    closeMsg = "Auction closed successfully. It had No bids so all articles will be put back: ";
-                    for (Article article : articles) {
-                        closeMsg += " " + article.getArticleName();
-                    }
-                    closeMsg += ".";
-                } else {
-                    closeMsg = "Auction closed successfully.";
+            if(maxBid==null){
+                articles = articleDAO.findArticlesListByIdAuction(idAuction);
+                auctionDAO.putBackArticles(idAuction);
+                closeMsg = "Auction closed successfully. It had No bids so all articles will be put back: ";
+                for (Article article : articles) {
+                    closeMsg += " " + article.getArticleName();
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to close auction in database");
-                return;
+                closeMsg += ".";
+            } else {
+                closeMsg = "Auction closed successfully.";
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to close auction in database");
+            return;
+        }
 
         Gson gson = new Gson();
         String articlesString = gson.toJson(articles);
         
-        System.out.println("fino a qua tutto ok");
         if (maxBid == null) {
             String finalObject1 = "{\"articles\": " + articlesString + ",\n" + "\"bidValue\": " + "\"no one\"" + ",\n" + "\"idAuction\": " + idAuction + ",\n" + "\"closeMsg\": " +"\""+closeMsg+"\""+"\n}";
         	response.setStatus(HttpServletResponse.SC_OK);
@@ -123,6 +121,5 @@ public class CloseAuction extends HttpServlet {
         	response.setStatus(HttpServletResponse.SC_OK);
         	response.getWriter().print(finalObject1);
         }
-
     }
 }

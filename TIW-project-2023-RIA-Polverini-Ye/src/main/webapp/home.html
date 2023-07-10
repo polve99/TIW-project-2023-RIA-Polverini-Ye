@@ -27,12 +27,7 @@
         <a href="#" id="id_goToBuy" class="buy-button">BUY SOMETHING</a>
         <a href="#" id="id_goToSell" class="sell-button">SELL SOMETHING</a>
     </div>
-    <!-- <div class="logout-button">
-        <a href="Logout" class="logout-button-small">Logout</a>
-    </div>  -->
 </div>
-
-
 
 <div class = "hiddenElement" id = "prev">
 	<a id = "previousPage_id"> <img src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/previmg/left.png" alt = "prev page"  width="35" height="35"></a>
@@ -125,13 +120,6 @@
 						</div>
                     </div>
 
-                    <!-- OpenAuctionPage con tabella di articoli, tabella di bids, form per fare bid o per chiudere asta -->
-
-                    
-
-                    
-                       
-
                 </div>
             </div>
             </div>
@@ -190,7 +178,6 @@
                              <p id = "msgBid"></p>
                          </div>
                          <form action = "#" method = "post" id = "MakeBid">
-                             <!-- <input type="hidden" name="idAuction" th:value="${auction.idAuction}" /> TODO non so come mettere la idAuction in automatico -->
                              <label>Bid Value:</label>
                              <input type="number" id="bidValue" name="bidValue" required />
                              <button id = "createBidButton">Place Bid</button>
@@ -203,7 +190,6 @@
                              <p id = "closeMsg"></p>
                          </div>
                          <form action = "#" method = "post" id = "CloseAuction">
-                             <!-- <input type="hidden" name="idAuction" th:value="${auction.idAuction}" /> TODO non so come mettere la idAuction in automatico -->
                              <button id = "closeAuctionButton">Close auction</button>
                          </form>
                      </div>
@@ -288,9 +274,6 @@
 <div>
 	<a id = "logout_id" class="logout-button-small">Logout</A>
 </div>
-
-
-
 
 </body>
 </html>

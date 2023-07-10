@@ -28,7 +28,6 @@ import beans.User;
 import beans.Article;
 import utilis.ConnectionHandler;
 
-
 @WebServlet("/CreateAuction")
 @MultipartConfig
 
@@ -48,7 +47,6 @@ public class CreateAuction extends HttpServlet{
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	
     	ArrayList<Article> articleList = new ArrayList<Article>();
     	User user = (User) request.getSession().getAttribute("user");
     	
@@ -60,8 +58,7 @@ public class CreateAuction extends HttpServlet{
             response.getWriter().println("missing duration or wrong format");
             return;
 		} 
-        int daysToAdd = Integer.parseInt(StringEscapeUtils.escapeJava(request.getParameter("duration"))); 
-       
+        int daysToAdd = Integer.parseInt(StringEscapeUtils.escapeJava(request.getParameter("duration")));
         if (daysToAdd < 1 || daysToAdd > 20) {
         	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println("the number inserted doesn't respect the range of possibilities proposed");
@@ -75,7 +72,7 @@ public class CreateAuction extends HttpServlet{
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println("missing minRise or wrong format");
             return;
-		} 
+		}
         String minRise =StringEscapeUtils.escapeJava(request.getParameter("minRise"));
         String[] selectedImages = request.getParameterValues("articleToUpload");
         String[] escapedImages = new String[selectedImages.length];
@@ -160,7 +157,6 @@ public class CreateAuction extends HttpServlet{
   	    response.setContentType("application/json");
   	    response.setCharacterEncoding("UTF-8");
   	    response.getWriter().println(AuctionMapToAddLaterString); // message da prendere una volta che ho fatto la makecall nel case 200 per creare l'asta
-        
     }
     
     private String formatTimeLeft(Timestamp expirationDateTime) {
@@ -192,5 +188,3 @@ public class CreateAuction extends HttpServlet{
     }
 
 }
-
-

@@ -68,8 +68,9 @@
 				}
 				//document.getElementById("BuyPage_ClassicInitialPage").className = "hiddenElement";
 				buildTableDetails(response);
-			} else {
-				//INSERIRE GLI ERRORI
+			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
+				var errorMessage = response.responseText;
+      			alert(errorMessage);
 			}
 			
 		});

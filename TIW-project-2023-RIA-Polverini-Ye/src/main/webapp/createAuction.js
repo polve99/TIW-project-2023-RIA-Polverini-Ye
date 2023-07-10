@@ -153,8 +153,6 @@ function appendNewRow(message){
 	let newRow1 = document.createElement("tr");
 	newRow1.id = "rowOpen_" + message.idAuction;
 	
-	
-	
 	// ID Auction
     let idAuctionCell1 = document.createElement("td");
     let idAuctionCell = document.createElement("td");
@@ -280,7 +278,6 @@ function appendNewRow(message){
 	  tableBody.appendChild(newRow);
 	}
 	
-	
 	insertIndex = -1;
 	// append new line in auctions table
 	for (var i = 0; i < rowCount1; i++) {
@@ -308,8 +305,6 @@ function appendNewRow(message){
 	}
 	
 };
-
-
 
 // Helper function to parse the time value into an object
 function parseTimeValue(timeValue) {
@@ -353,9 +348,7 @@ function isTimeGreaterThan(timeA, timeB) {
   return false;
 };
  
- 
- //funzione crea bid
- const createBid = () => {
+const createBid = () => {
 	 document.getElementById("createBidButton").addEventListener("click", (e) => {
 		 e.preventDefault();
 		 let form = e.target.closest("form");
@@ -378,7 +371,7 @@ function isTimeGreaterThan(timeA, timeB) {
 	 });
  };
  
- function appendBid(bid){
+function appendBid(bid){
 	 let bidHistoryBody = document.getElementById("id_auctionDetailsBids_body");
 	 
 	 let newRow = document.createElement("tr");
@@ -405,7 +398,6 @@ function isTimeGreaterThan(timeA, timeB) {
 	 
 	 bidHistoryBody.appendChild(newRow);
 
-
 	 //AGGIORNO I VALORI DELLE MAX BID NELLE TABELLE
 	 let idValueBid = "value_" + bid.idAuction;   
 	 document.getElementById(idValueBid).textContent = bid.bidValue; 
@@ -420,11 +412,9 @@ const closeAuction = () => {
 			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
 				let message = JSON.parse(response.responseText);
 			    removeRow(message);
-			    //document.getElementById("closeMsg").textContent=message.closeMsg;
 			    alert(message.closeMsg);
 			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
 				let errorMessage = response.responseText;
-      			//document.getElementById("closeMsg").textContent=errorMessage;
       			alert(errorMessage);
 			}
 		});
@@ -537,7 +527,7 @@ function removeRow(message){
 	
 }
  
- const resetInputFieldsAndMessages = () => {
+const resetInputFieldsAndMessages = () => {
 	var previousErrorFields = document.getElementsByClassName("inputWithError");
 	var elementsLength = previousErrorFields.length;
 	for (var i = 0; i < elementsLength; i++) {

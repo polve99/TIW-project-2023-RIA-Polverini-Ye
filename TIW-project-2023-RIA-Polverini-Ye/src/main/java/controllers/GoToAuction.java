@@ -85,7 +85,7 @@ public class GoToAuction extends HttpServlet {
 
         try {
             auction = auctionDAO.findAuctionByIdAuction(idAuction);
-            isAuctionNotExpired = auctionDAO.isAuctionNotExpired(idAuction); //rifare senza interrogazione
+            isAuctionNotExpired = auctionDAO.isAuctionNotExpired(idAuction);
             articles = articleDAO.findArticlesListByIdAuction(idAuction);
             maxBid = bidDAO.findMaxBidInAuction(idAuction); // rimuovere e prenderlo da bids
             initialPrice = auction.getInitialPrice();
@@ -106,7 +106,6 @@ public class GoToAuction extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal db error in retrieving closed auction info");
                 return;
             }
-            //request.setAttribute("closedAuctionInfo", closedAuctionInfo); questo perchè commentato?
         }
 
         // Salva l'ID dell'asta nella sessione
@@ -132,12 +131,8 @@ public class GoToAuction extends HttpServlet {
 
         Gson gson = new Gson();
         String templateVariablesString = gson.toJson(templateVariables);
-        //String errMsgString = gson.toJson(errMsg);
-        
-        //String finalObject = "{\"templateVariables\": " + templateVariablesString + "\"errMsg\": " + errMsgString + "\n}";
         
         response.setStatus(HttpServletResponse.SC_OK);
-        //response.getWriter().println(finalObject);
         response.getWriter().println(templateVariablesString);
     }
     

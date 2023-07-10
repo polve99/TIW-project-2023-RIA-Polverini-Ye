@@ -63,10 +63,8 @@ public class AddArticle extends HttpServlet{
 	    String fileName = null;
 	    //System.out.println(uploadDirectory);
 	    
-	    
 	    Article articlesObject = null;
 	    
-
 	    // crea nuova directory se non esiste
 	    File dir = new File(uploadDirectory);
 	    if (!dir.exists()) {
@@ -110,8 +108,6 @@ public class AddArticle extends HttpServlet{
 	        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 	            response.getWriter().println("Invalid file type. Only JPG, JPEG, PNG, and GIF files are allowed.");
 	            return;
-	        	
-	            //response.getWriter().println("Invalid file type. Only JPG, JPEG, PNG, and GIF files are allowed.");
 	        }
 	    } catch (Exception ex) {
 	    	ex.printStackTrace();
@@ -219,6 +215,4 @@ public class AddArticle extends HttpServlet{
 			return false;
 		}
     }
-	
-	
 }

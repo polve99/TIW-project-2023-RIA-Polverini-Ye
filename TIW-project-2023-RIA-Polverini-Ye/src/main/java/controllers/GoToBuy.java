@@ -28,7 +28,6 @@ import com.google.gson.Gson;
 
 import utilis.ConnectionHandler;
 
-
 @WebServlet("/GoToBuy")
 public class GoToBuy extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -52,10 +51,6 @@ public class GoToBuy extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect(request.getContextPath() + "/Login");
-            return;
-        }
 
         User user = (User) session.getAttribute("user");
         String keyword = request.getParameter("keyword");
@@ -82,7 +77,7 @@ public class GoToBuy extends HttpServlet {
             Bid maxBid = null;
             float maxBidValue;
             try {
-                articles = articleDAO.findArticlesListByIdAuction(auction.getIdAuction());  //fare join tra article e auctions per prendere questo
+                articles = articleDAO.findArticlesListByIdAuction(auction.getIdAuction());
                 maxBid = bidDAO.findMaxBidInAuction(auction.getIdAuction());
                 if(maxBid==null) {
                 	maxBidValue = auction.getInitialPrice();

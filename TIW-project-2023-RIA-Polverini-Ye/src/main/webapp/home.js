@@ -29,12 +29,11 @@ const previous = () => {
 		let sellP = document.getElementById("sellSection");
 		let buyP = document.getElementById("buySection");
 		
-		
-		
 		if(homeP.className !== "hiddenElement"){
 			document.getElementById("buySectionTitle").classList.add("hiddenElement");
 			document.getElementById("sellSectionTitle").classList.add("hiddenElement");
 			document.getElementById("prev").className = "hiddenElement";
+			
 		} else if(sellP.className === "sellPage"){
 			document.getElementById("sellSectionTitle").classList.add("hiddenElement");
 			document.getElementById("home").className = "homeLinks";
@@ -62,6 +61,7 @@ const previous = () => {
 				document.getElementById("OpenAuctionMacroTable").className = "OpenAuctionMacroTable";
 				buyP.className = "buyPage";
 			}
+			
 		} else if(aucD.className === "sell") {
 			
 			document.getElementById("sellSectionTitle").classList.remove("hiddenElement");
@@ -134,8 +134,6 @@ window.addEventListener("load", () => {
 			document.getElementById("sellSectionTitle").classList.add("hiddenElement");
 			
 		} else {
-			//let idList = getIdFromCookieSet(sessionStorage.getItem("userMail")); non è usato
-			
 			
 			if (returnLastValueCookie(sessionStorage.getItem("userMail")) === "sell"){
 				document.getElementById("home").className = "hiddenElement";
@@ -153,8 +151,6 @@ window.addEventListener("load", () => {
 				document.getElementById("sellSectionTitle").classList.add("hiddenElement");
 			}
 		}
-		
-		
 		
 		keyWordTable();
 		

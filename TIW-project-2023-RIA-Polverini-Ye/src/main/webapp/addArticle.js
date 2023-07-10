@@ -130,7 +130,7 @@
 	});
 };
 
-  const checkAddArticle = (articleForm) => {
+const checkAddArticle = (articleForm) => {
 	let formData = new FormData(articleForm);
 	let articleName = formData.get("articleName");
 	let articleDesc = formData.get("articleDesc");

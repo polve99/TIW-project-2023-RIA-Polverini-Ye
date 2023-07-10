@@ -2,7 +2,6 @@
  * 
  */
 
-
 function createOpenAuctionTable(auctionInfoList) {
   
   //Cerca il corpo della tabella con i dati dell'asta
@@ -60,8 +59,6 @@ function createOpenAuctionTable(auctionInfoList) {
     tbody.appendChild(row);
   });
 };
-
-
 
 function createWonAuctionTable(wonAuctionInfoList){
 
@@ -134,10 +131,6 @@ function createWonAuctionTable(wonAuctionInfoList){
 
 };
 
-
-
-
-
 // Funzione per mostrare l'immagine fluttuante sopra il cursore
 function showFloatingImage(event, image) {
 	//console.log("showFloatingImage called");
@@ -146,7 +139,6 @@ function showFloatingImage(event, image) {
   floatingImage.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+image; // Sostituisci con il percorso corretto dell'immagine
   floatingImage.style.position = 'absolute';
   floatingImage.style.width = '100px'; // Imposta la larghezza desiderata per l'immagine
-  // Puoi aggiungere ulteriori stili CSS all'elemento dell'immagine qui
 
   // Posizione iniziale dell'immagine sopra il cursore
   floatingImage.style.left = (event.clientX + window.scrollX) + 'px';
@@ -412,9 +404,7 @@ const keyWordTable = () => {
 			    if (auctionInfoList.length > 0){
 				    createOpenAuctionTable(auctionInfoList);
 				    main2();
-			    } else {
-					//messaggio errore nessun oggetto con keyword -- messo giù
-				}
+			    }
 			
 			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
 				var errorMessage = response.responseText;

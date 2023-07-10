@@ -8,21 +8,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
 import beans.Article;
 import beans.Auction;
 import beans.Bid;
-import beans.User;
 import dao.ArticleDAO;
 import dao.AuctionDAO;
 import dao.BidDAO;
@@ -49,12 +45,6 @@ public class CookieController extends HttpServlet{
 	    }
 
 	    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	        HttpSession session = request.getSession(false);
-	        if (session == null || session.getAttribute("user") == null) {
-	            response.sendRedirect(request.getContextPath() + "/Login");
-	            return;
-	        }
-
 	        String listAsteId = request.getParameter("listAsteId");
 	        if(listAsteId=="") {
                 return;
@@ -75,7 +65,7 @@ public class CookieController extends HttpServlet{
 	            Bid maxBid = null;
 	            float maxBidValue;
 	            try {
-	                articles = articleDAO.findArticlesListByIdAuction(auction.getIdAuction());  //fare join tra article e auctions per prendere questo
+	                articles = articleDAO.findArticlesListByIdAuction(auction.getIdAuction());
 	                maxBid = bidDAO.findMaxBidInAuction(auction.getIdAuction());
 	                if(maxBid==null) {
 	                	maxBidValue = auction.getInitialPrice();
