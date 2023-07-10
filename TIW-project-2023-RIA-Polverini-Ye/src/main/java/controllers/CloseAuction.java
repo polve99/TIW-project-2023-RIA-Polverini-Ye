@@ -46,7 +46,6 @@ public class CloseAuction extends HttpServlet {
         User user = (User) session.getAttribute("user");
         String userMail = user.getUserMail();
 
-        boolean isValid = true;
         String closeMsg = null;
 
         BidDAO bidDAO = new BidDAO(connection);
@@ -62,11 +61,13 @@ public class CloseAuction extends HttpServlet {
             auction = auctionDAO.findAuctionByIdAuction(idAuction);
         } catch (SQLException e) {
             e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover auction in database");
             return;
         }
 
         if (auction == null) {
+        	response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Auction not found");
             return;
         }
@@ -74,26 +75,19 @@ public class CloseAuction extends HttpServlet {
         Timestamp now = new Timestamp(System.currentTimeMillis());
 
         if(!auction.getUserMail().equals(userMail)) {
-            //closeMsg = "You are not the owner of this auction";
-            //isValid = false;
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println("You are not the owner of this auction");
             return;
         } else if (auction.getExpirationDateTime().after(now)){
-            //closeMsg = "Auction not expired yet. Check Time Left.";
-            //isValid = false;
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println("Auction not expired yet. Check Time Left.");
             return;
         } else if (!auction.isOpen()) {
-            //closeMsg = "Auction already closed";
-            //isValid = false;
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println("Auction already closed");
             return;
         }
 
-        //if(isValid){
             try {
                 auctionDAO.closeAuction(idAuction);
                 maxBid = bidDAO.findMaxBidInAuction(idAuction);
@@ -111,23 +105,21 @@ public class CloseAuction extends HttpServlet {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to close auction in database");
                 return;
             }
-        //}
-        if (closeMsg !=null) /*request.setAttribute("closeMsg", closeMsg)*/;
 
         Gson gson = new Gson();
         String articlesString = gson.toJson(articles);
         
-        //String finalObject1 = "{\"articles\": " + articlesString + ",\n" + "\"ownClosedAuctionInfoList\": " + ownClosedAuctionInfoListString + ",\n" + "\"imageList\": " + imageList1String + "\n}";
         System.out.println("fino a qua tutto ok");
         if (maxBid == null) {
-            String finalObject1 = "{\"articles\": " + articlesString + ",\n" + "\"bidValue\": " + "\"no one\"" + ",\n" + "\"idAuction\": " + idAuction + "\n}";
+            String finalObject1 = "{\"articles\": " + articlesString + ",\n" + "\"bidValue\": " + "\"no one\"" + ",\n" + "\"idAuction\": " + idAuction + ",\n" + "\"closeMsg\": " +"\""+closeMsg+"\""+"\n}";
         	response.setStatus(HttpServletResponse.SC_OK);
         	response.getWriter().print(finalObject1);
         } else {
-            String finalObject1 = "{\"articles\": " + articlesString + ",\n" + "\"bidValue\": " + maxBid.getBidValue() + ",\n" + "\"idAuction\": " + idAuction + "\n}";
+            String finalObject1 = "{\"articles\": " + articlesString + ",\n" + "\"bidValue\": " + maxBid.getBidValue() + ",\n" + "\"idAuction\": " + idAuction + ",\n" + "\"closeMsg\": " +"\""+closeMsg+"\""+"\n}";
         	response.setStatus(HttpServletResponse.SC_OK);
         	response.getWriter().print(finalObject1);
         }

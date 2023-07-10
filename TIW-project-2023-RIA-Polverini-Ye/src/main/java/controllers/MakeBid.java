@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -54,6 +55,12 @@ public class MakeBid extends HttpServlet {
             return;
         }
 
+        if(!isNumber(request.getParameter("bidValue"))) {
+        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().println("Bid value must be a number");
+            return;
+        }
+        
         float bidValue = Float.parseFloat(request.getParameter("bidValue"));
         Bid responseBid = null;
         
@@ -108,6 +115,7 @@ public class MakeBid extends HttpServlet {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error in db. Please, retry later.");
                 return;
             }
@@ -123,9 +131,18 @@ public class MakeBid extends HttpServlet {
 	            response.getWriter().println(object);
            } catch (SQLException e) {
                	e.printStackTrace();
+               	response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                	response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error in db, bid not created. Please, retry later.");
                	return;
            }
         }
+    }
+    private boolean isNumber(String num) {
+    	Pattern numberPattern = Pattern.compile("\\d+");
+		if (num.length()>0) {
+			return numberPattern.matcher(num).matches();
+		} else {
+			return false;
+		}
     }
 }

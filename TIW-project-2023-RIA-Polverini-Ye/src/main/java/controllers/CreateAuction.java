@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -54,21 +55,36 @@ public class CreateAuction extends HttpServlet{
     	int i = 0;
     	float initialPrice = 0;
     	
-    	LocalDateTime dateTime = LocalDateTime.now();
+		if (!isNumber(StringEscapeUtils.escapeJava(request.getParameter("duration")))) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().println("missing duration or wrong format");
+            return;
+		} 
         int daysToAdd = Integer.parseInt(StringEscapeUtils.escapeJava(request.getParameter("duration"))); 
-        
+       
         if (daysToAdd < 1 || daysToAdd > 20) {
         	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println("the number inserted doesn't respect the range of possibilities proposed");
             return;
         }
-
+        LocalDateTime dateTime = LocalDateTime.now();
         LocalDateTime newDateTime = dateTime.plusDays(daysToAdd); 
         Timestamp time = Timestamp.valueOf(newDateTime);
     	
+        if (!isNumber(StringEscapeUtils.escapeJava(request.getParameter("minRise")))) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().println("missing minRise or wrong format");
+            return;
+		} 
         String minRise =StringEscapeUtils.escapeJava(request.getParameter("minRise"));
         String[] selectedImages = request.getParameterValues("articleToUpload");
         String[] escapedImages = new String[selectedImages.length];
+        
+        if(selectedImages.length<=0) {
+        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().println("missing article");
+            return;
+        }
         
         for (int j = 0; j < selectedImages.length; j++) {
           escapedImages[j] = StringEscapeUtils.escapeJava(selectedImages[j]);
@@ -93,6 +109,7 @@ public class CreateAuction extends HttpServlet{
         		
         	} catch (SQLException e) {
     			e.printStackTrace();
+    			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error, retry later");
     			return;
     		}
@@ -163,6 +180,15 @@ public class CreateAuction extends HttpServlet{
         seconds %= 60;
 
         return String.format("%d days, %02d:%02d:%02d", days, hours, minutes, seconds);
+    }
+    
+    private boolean isNumber(String num) {
+    	Pattern numberPattern = Pattern.compile("\\d+");
+		if (num.length()>0) {
+			return numberPattern.matcher(num).matches();
+		} else {
+			return false;
+		}
     }
 
 }

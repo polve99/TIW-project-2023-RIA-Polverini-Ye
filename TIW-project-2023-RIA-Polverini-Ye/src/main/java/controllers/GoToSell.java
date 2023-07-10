@@ -52,10 +52,6 @@ public class GoToSell extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect(request.getContextPath() + "/Login");
-            return;
-        }
 
         User user = (User) session.getAttribute("user");
 
@@ -64,7 +60,8 @@ public class GoToSell extends HttpServlet {
          auctionListOpen = auctionDAO.getAllOpenAuctionsByUser(user.getUserMail());
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Internal db error in finding auctions");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal db error in finding auctions");
             return;
         }
         
@@ -83,7 +80,8 @@ public class GoToSell extends HttpServlet {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Internal db error in finding auctions' informations");
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal db error in finding auctions' informations");
                 return;
             }
             Timestamp expirationDateTime = auction.getExpirationDateTime();
@@ -127,23 +125,17 @@ public class GoToSell extends HttpServlet {
         	try {
     			imageList1 = articleDAO.findImagesByUser(user.getUserMail());
     		} catch (SQLException e) {
-    			// TODO Auto-generated catch block
     			e.printStackTrace();
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in db");
+                return;
     		}
-        	/*List<String> imageList = new ArrayList<>();
-        	for (String image : imageList1) {
-        		String userHome = System.getProperty("user.home");
-                String pathString = userHome + "/git/TIW-project-2023-pure-HTML-Polverini-Ye/TIW-project-2023-pure-HTML-Polverini-Ye/src/main/webapp";
-                Path imagePath = Paths.get(pathString);
-        		//System.out.println("Webapp path: " + webappPath);
-
-        		String imageDirectory = imagePath+image;
-        		imageList.add(imageDirectory);
-        	}*/
             
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error retrieving won auctions");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving won auctions");
+            return;
         }
         
         Gson gson = new Gson();

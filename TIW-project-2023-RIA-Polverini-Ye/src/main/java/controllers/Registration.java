@@ -43,10 +43,10 @@ public class Registration extends HttpServlet {
 		String telephone = StringEscapeUtils.escapeJava(request.getParameter("telephone"));
 		String address = StringEscapeUtils.escapeJava(request.getParameter("address"));
 		Pattern emailPattern = Pattern.compile("^(.+)@(.+)$");
-		Pattern telehonePattern = Pattern.compile("\\d+");
+		Pattern telephonePattern = Pattern.compile("\\d+");
 		boolean telValid = false;;
 		if (telephone.length()>0) {
-			telValid = telehonePattern.matcher(telephone).matches();
+			telValid = telephonePattern.matcher(telephone).matches();
 		}
 		boolean emailValid = emailPattern.matcher(userMail).matches();
 		boolean isBadRequest = true;

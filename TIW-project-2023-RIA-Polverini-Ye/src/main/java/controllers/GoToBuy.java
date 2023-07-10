@@ -71,6 +71,7 @@ public class GoToBuy extends HttpServlet {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal db error in finding auctions");
             return;
         }
@@ -90,6 +91,7 @@ public class GoToBuy extends HttpServlet {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal db error in finding auctions' informations");
                 return;
             }
@@ -126,6 +128,7 @@ public class GoToBuy extends HttpServlet {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal db errori in retrieving won auctions");
             return;
         }
@@ -137,34 +140,6 @@ public class GoToBuy extends HttpServlet {
                 return;
              }
         }
-        
-        /*
-        HashMap<String,String> errMsg = new HashMap<>();
-        
-        if (auctionInfoList.isEmpty()) {
-            if (keyword != null && !keyword.isBlank()) {
-            	errMsg.put("NoOpenAuctionsMsg", "There are no open auctions for the keyword: "+keyword+".");
-                //ctx.setVariable("NoOpenAuctionsMsg", "There are no open auctions for the keyword: "+keyword+".");
-            } else {
-            	errMsg.put("NoOpenAuctionsMsg", "There are no open auctions at this time.");
-                //ctx.setVariable("NoOpenAuctionsMsg", "There are no open auctions at this time.");
-            }
-        }
-
-        if (wonAuctionInfoList.isEmpty()) {
-        	errMsg.put("NoWonAuctionsMsg", "You haven't won any auctions yet.");
-            //ctx.setVariable("NoWonAuctionsMsg", "You haven't won any auctions yet.");
-        }
-
-        String errorString = (String) request.getAttribute("errorString"); //from GoToAuction servlet
-        if (errorString != null) {
-        	errMsg.put("errorString", errorString);
-            //ctx.setVariable("errorString", errorString);
-        }
-        
-        session.setAttribute("from", "BuyPage"); //used in GoToAuction for handling errors
-        
-        */
         
         String wonAuctionInfoListString = gson.toJson(wonAuctionInfoList);
         String finalObject = "{\"auctionInfoList\": " + auctionInfoListString + ",\n" + "\"wonAuctionInfoList\": " + wonAuctionInfoListString + "\n}";

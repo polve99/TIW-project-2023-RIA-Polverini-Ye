@@ -7,6 +7,12 @@
 	 let titolo = document.createElement("h2");
 	 titolo.textContent = "Form per la Creazione di un'Asta";
 	 formContainer.appendChild(titolo);
+	 let alert = document.createElement("div");
+	 alert.className="alertMessage";
+	 let alertMessage = document.createElement("p");
+	 alertMessage.id = "auctionErrorMessage";
+	 alert.appendChild(alertMessage);
+	 formContainer.appendChild(alert);
 	 let form = document.createElement("form");
 	 form.action = "#";
 	 form.method = "post";
@@ -27,7 +33,6 @@
 	 fieldset.appendChild(labelDuration);
 	 fieldset.appendChild(labelMinRise);
 	 fieldset.appendChild(labelArticle);
-
 	 
 	 //input per la durata
 	 let durationInput = document.createElement("input");
@@ -35,8 +40,8 @@
 	 durationInput.name = "duration";
 	 durationInput.id = "duration";
 	 durationInput.step = 1;
-	 durationInput.max = 20;
-	 durationInput.min = 1;
+	 //durationInput.max = 20;
+	 //durationInput.min = 1;
 	 durationInput.required = true;
 	 labelDuration.appendChild(durationInput);
 	 
@@ -47,17 +52,16 @@
 	 minRiseInput.id = "minRise";
 	 minRiseInput.step = 0.1;
 	 minRiseInput.required = true;
+	 //minRiseInput.min = 0.1;
 	 labelMinRise.appendChild(minRiseInput);
 	 
 	 //input per la selezione degli articoli
-	 
 	 article.forEach(function(article1){
 		 let articleInput = document.createElement("input");
 		 articleInput.type = "checkbox";
 		 articleInput.name = "articleToUpload";
 		 articleInput.value = article1.image;
 		 articleInput.id = "articleToUpload-"+article1.image;
-		 //articleInput.required = false;
 		 let p = document.createElement("p");
 		 p.textContent = article1.articleName;
 		 p.appendChild(articleInput);
@@ -74,11 +78,7 @@
   	 //createAuctionButton.type = "submit";
   	 createAuctionButton.id = "createAuctionButton";
   	 fieldset.appendChild(createAuctionButton);
-	 
-	 
  };
- 
- 
  
  const createAuctionPost = () => {
 	document.getElementById("createAuctionButton").addEventListener('click', (e) => {
@@ -87,19 +87,10 @@
 		let formatData = new FormData(form);
 		let images = formatData.get("articleToUpload");
 		console.log(images);
-		//resetInputFieldsAndMessages();
-		if (form.checkValidity()) {
+		resetInputFieldsAndMessages();
+		if (form.checkValidity() && checkCreateAuction(form)) {
 			makeCall("post", "CreateAuction", form, function(x) {
-				
-				let message;
-				
-				try {
-				  message = JSON.parse(x.responseText);
-				} catch (error) {
-				  // Errore di parsing JSON
-				  console.error("Errore di parsing JSON:", error);
-				  return;
-				}
+				let message = JSON.parse(x.responseText);
 				if (x.readyState == XMLHttpRequest.DONE) {
 					switch(x.status) {
 						case 200:
@@ -109,12 +100,7 @@
 							appendNewRow(message);
 							break;
 						default:
-			                //document.getElementById("loginErrorMessage").textContent = message;
-			                //document.getElementById("articleName").className = "inputWithError";
-			                //document.getElementById("articleDesc").className = "inputWithError";
-			                //document.getElementById("articlePrice").className = "inputWithError";
-			                //document.getElementById("articleImage").className = "inputWithError";
-			                alert(message);
+			                document.getElementById("auctionErrorMessage").textContent=message;
 			                break;
 					}
 				}
@@ -124,6 +110,36 @@
 			form.reset();
 		}
 	});
+};
+
+ const checkCreateAuction = (auctionForm) => {
+	let formData = new FormData(auctionForm);
+	let duration = formData.get("duration");
+	let minRise = formData.get("minRise");
+	let articleToUpload = formData.get("articleToUpload");
+	
+	if(minRise<=0){
+		document.getElementById("auctionErrorMessage").textContent = "the rise must be greater than zero";
+		document.getElementById("minRise").className = "inputWithError";
+		return false;
+	} else if(minRise.length<=0){
+		document.getElementById("auctionErrorMessage").textContent = "missing rise";
+		document.getElementById("minRise").className = "inputWithError";
+		return false;
+	} else if(duration.length<=0){
+		document.getElementById("auctionErrorMessage").textContent = "missing duration";
+		document.getElementById("duration").className = "inputWithError";
+		return false;
+	} else if (duration < 1 || duration > 20) {
+		document.getElementById("auctionErrorMessage").textContent = "the number inserted doesn't respect the range of possibilities proposed";
+		document.getElementById("duration").className = "inputWithError";
+		return false;
+	} else if(articleToUpload===null){
+		document.getElementById("auctionErrorMessage").textContent = "missing article";
+		return false;
+	} else {
+		return true;
+	}
 };
 
 function appendNewRow(message){
@@ -208,7 +224,7 @@ function appendNewRow(message){
     let maxBidValueCell1 = document.createElement("td");
     let maxBidValueCell = document.createElement("td");
     maxBidValueCell1.textContent = message.MaxBidValue;
-     maxBidValueCell.textContent = message.MaxBidValue;
+    maxBidValueCell.textContent = message.MaxBidValue;
     newRow.appendChild(maxBidValueCell1);
     newRow1.appendChild(maxBidValueCell);
     
@@ -344,15 +360,21 @@ function isTimeGreaterThan(timeA, timeB) {
 		 e.preventDefault();
 		 let form = e.target.closest("form");
 		 let formData = new FormData(form);
-		 makeCall("POST", "MakeBid?bidValue="+formData.get("bidValue"), null, function(response){
-			 if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
-				var response = JSON.parse(response.responseText);
-			    appendBid(response);
-			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
-				var errorMessage = response.responseText;
-      			alert(errorMessage);
-			}
-		 });
+		 if(!isNaN(formData.get("bidValue")) && form.checkValidity()){
+			 makeCall("POST", "MakeBid?bidValue="+formData.get("bidValue"), null, function(response){
+				 if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
+					var response = JSON.parse(response.responseText);
+				    appendBid(response);
+				} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
+					let message = response.responseText;
+	      			document.getElementById("msgBid").textContent(message);
+				}
+			 });
+		 }else{
+			 form.reportValidity();
+			 form.reset();
+		 }
+		 
 	 });
  };
  
@@ -398,8 +420,11 @@ const closeAuction = () => {
 			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
 				let message = JSON.parse(response.responseText);
 			    removeRow(message);
+			    //document.getElementById("closeMsg").textContent=message.closeMsg;
+			    alert(message.closeMsg);
 			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
-				var errorMessage = response.responseText;
+				let errorMessage = response.responseText;
+      			//document.getElementById("closeMsg").textContent=errorMessage;
       			alert(errorMessage);
 			}
 		});
@@ -512,3 +537,11 @@ function removeRow(message){
 	
 }
  
+ const resetInputFieldsAndMessages = () => {
+	var previousErrorFields = document.getElementsByClassName("inputWithError");
+	var elementsLength = previousErrorFields.length;
+	for (var i = 0; i < elementsLength; i++) {
+		previousErrorFields[0].className = "";
+	}
+	document.getElementById("auctionErrorMessage").innerHTML = "";
+};

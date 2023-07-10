@@ -197,10 +197,13 @@ const aucDetails = () => {
 			console.log(ids[i]);
 		makeCall("GET", "GoToAuction?idAuction="+e.target.textContent,null, function(response){
 			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
+				document.getElementById("msgBid").textContent="";
 				var response = JSON.parse(response.responseText);
 				
 				let buySec = document.getElementById("buySection");
 				let sellSec = document.getElementById("sellSection");
+				document.getElementById("buySectionTitle").classList.add("hiddenElement");
+				document.getElementById("sellSectionTitle").classList.add("hiddenElement");
 				
 				if(response.isOpen === true){
 					if(buySec.className === "buyPage"){
@@ -230,14 +233,13 @@ const aucDetails = () => {
 					}
 				}
 				
-				document.getElementById("buySectionTitle").classList.add("hiddenElement");
-				document.getElementById("sellSectionTitle").classList.add("hiddenElement");
 				//AGGIUNTA A COOKIE ASTA VISIONATA
 				
 				removeIdFromCookie(sessionStorage.getItem("userMail"), e.target.textContent);
-				var oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
-				updateOldCookie(sessionStorage.getItem("userMail"), oldCookie + e.target.textContent + ",");
-				
+				if ((e.target.closest("tr").id !== "rowWon_"+e.target.textContent) && (e.target.closest("tr").id !== "rowOwnClosed_"+e.target.textContent)){
+					var oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
+					updateOldCookie(sessionStorage.getItem("userMail"), oldCookie + e.target.textContent + ",");
+				}
 				//document.getElementById("BuyPage_ClassicInitialPage").className = "hiddenElement";
 				buildTableDetails(response);
 			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){

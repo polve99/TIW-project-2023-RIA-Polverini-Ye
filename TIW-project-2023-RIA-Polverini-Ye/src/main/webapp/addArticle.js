@@ -7,6 +7,12 @@
 	 let titolo = document.createElement("h2");
 	 titolo.textContent = "Form to Add an Article";
 	 formContainer.appendChild(titolo);
+	 let alert = document.createElement("div");
+	 alert.className="alertMessage";
+	 let alertMessage = document.createElement("p");
+	 alertMessage.id = "articleErrorMessage";
+	 alert.appendChild(alertMessage);
+	 formContainer.appendChild(alert);
 	 let form = document.createElement("form");
 	 form.action = "#";
 	 form.method = "post";
@@ -37,7 +43,7 @@
 	 //inputName.className = "articleName";
 	 inputName.name = "articleName";
 	 inputName.id = "articleName";
-	 inputName.maxLength = 20;
+	 //inputName.maxLength = 20;
 	 inputName.required = true;
 	 labelName.appendChild(inputName);
 	 
@@ -47,8 +53,7 @@
 	 //inputDesc.className = "articleDesc";
 	 inputDesc.name = "articleDesc";
 	 inputDesc.id = "articleDesc";
-	 inputDesc.maxLength = 255;
-	 inputDesc.required = true;
+	 //inputDesc.maxLength = 255;
 	 labelDesc.appendChild(inputDesc);
 	 
 	 //input prezzo articolo
@@ -58,7 +63,7 @@
 	 inputPrice.name = "articlePrice";
 	 inputPrice.id = "articlePrice";
 	 inputPrice.step = 1;
-	 inputPrice.min = 0;
+	 //inputPrice.min = 0;
 	 inputPrice.required = true;
 	 labelPrice.appendChild(inputPrice);
 	 
@@ -71,8 +76,6 @@
 	 inputImage.accept = ".jpeg, .jpg, .png";
 	 inputImage.required = true;
 	 labelImage.appendChild(inputImage);
-	 
-	 
 	 
 	 let p = document.createElement("p");
 	 fieldset.appendChild(p);
@@ -87,17 +90,16 @@
 	 
  };
  
- const addArticlePost = (/*articleList*/) => {
+ const addArticlePost = () => {
 	document.getElementById("addArticleButton").addEventListener('click', (e) => {
 		let form = e.target.closest("form");
-		//resetInputFieldsAndMessages();
-		if (form.checkValidity()) {
+		resetInputFieldsAndMessages();
+		if (form.checkValidity() && checkAddArticle(form)) {
 			makeCall("post", "AddArticle", form, function(x) {
 				let message = JSON.parse(x.responseText);
 				if (x.readyState == XMLHttpRequest.DONE) {
 					switch(x.status) {
 						case 200:
-							//articleList.push()
 							let imageToUploadContainer = document.getElementById("articleToUpload_id");
 							let articleInput = document.createElement("input");
 						    articleInput.type = "checkbox";
@@ -116,12 +118,7 @@
 					  	    imageToUploadContainer.appendChild(p);
 							break;
 						default:
-			                //document.getElementById("loginErrorMessage").textContent = message;
-			                //document.getElementById("articleName").className = "inputWithError";
-			                //document.getElementById("articleDesc").className = "inputWithError";
-			                //document.getElementById("articlePrice").className = "inputWithError";
-			                //document.getElementById("articleImage").className = "inputWithError";
-     						alert(message);
+     						document.getElementById("articleErrorMessage").textContent=message;
 			                break;
 					}
 				}
@@ -131,5 +128,36 @@
 			form.reset();
 		}
 	});
+};
+
+  const checkAddArticle = (articleForm) => {
+	let formData = new FormData(articleForm);
+	let articleName = formData.get("articleName");
+	let articleDesc = formData.get("articleDesc");
+	let articlePrice = formData.get("articlePrice");
+	let articleImage = formData.get("articleImage");
+	
+	if(articlePrice<0){
+		document.getElementById("articleErrorMessage").textContent = "the price must be greater or equal zero";
+		document.getElementById("articlePrice").className = "inputWithError";
+		return false;
+	} else if(articlePrice===null){
+		document.getElementById("articleErrorMessage").textContent = "missing article price";
+		document.getElementById("articlePrice").className = "inputWithError";
+		return false;
+	} else if(articleName===null || articleName.length<1 ||articleName.length>20){
+		document.getElementById("articleErrorMessage").textContent = "Article name must be at least 1 and max 20";
+		document.getElementById("articleName").className = "inputWithError";
+		return false;
+	} else if (articleDesc!=null && articleDesc.length>255) {
+		document.getElementById("articleErrorMessage").textContent = "Article description must be at max 255";
+		document.getElementById("articleDesc").className = "inputWithError";
+		return false;
+	} else if(articleImage===null){
+		document.getElementById("articleErrorMessage").textContent = "missing article";
+		return false;
+	} else {
+		return true;
+	}
 };
  

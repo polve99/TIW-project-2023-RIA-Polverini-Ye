@@ -9,6 +9,7 @@ import java.nio.file.StandardCopyOption;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -114,7 +115,7 @@ public class AddArticle extends HttpServlet{
 	        }
 	    } catch (Exception ex) {
 	    	ex.printStackTrace();
-	        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	    	response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 	        response.getWriter().println("Error uploading file: " + ex.getMessage());
             return;
 	    }
@@ -123,9 +124,24 @@ public class AddArticle extends HttpServlet{
 	    String articleName =  StringEscapeUtils.escapeJava(request.getParameter("articleName"));
 	    String articleDesc = StringEscapeUtils.escapeJava(request.getParameter("articleDesc"));
 	    String articlePrice = StringEscapeUtils.escapeJava(request.getParameter("articlePrice"));
+	    
+	    if(!isNumber(articlePrice)) {
+	    	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().println("article price has wrong format");
+            return;
+	    }
+	    
 	    User user = (User) request.getSession().getAttribute("user");
 	    
-	    if (articlePrice != null && !articlePrice.isEmpty()) {
+	    if(articleName==null ||articleName.length()<1 || articleName.length()>20) {
+	    	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().println("Article name must be at least 1 and max 20");
+            return;
+	    } else if(articleDesc!=null && articleDesc.length()>255){
+	    	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().println("Article description must be at max 255");
+            return;
+	    } else if (articlePrice != null && !articlePrice.isEmpty()) {
 	        try {
 	            price = Float.parseFloat(articlePrice);
 	            if(price<0) {
@@ -161,6 +177,7 @@ public class AddArticle extends HttpServlet{
 	       }
 		} catch (SQLException e) {
 			e.printStackTrace();
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error, retry later");
 			return;
 		}
@@ -173,18 +190,6 @@ public class AddArticle extends HttpServlet{
 	   response.setCharacterEncoding("UTF-8");
 	   response.getWriter().print(articlesObjectString);
 	}
-
-	//TODO: INUTILE?
-	/*private String getFileName(Part part) {
-	    String contentDisposition = part.getHeader("content-disposition");
-	    String[] tokens = contentDisposition.split(";");
-	    for (String token : tokens) {
-	        if (token.trim().startsWith("filename")) {
-	            return token.substring(token.indexOf("=") + 2, token.length() - 1);
-	        }
-	    }
-	    return "";
-	}*/
 
 	// prende l'estensione del file
 	private String getFileExtension(String fileName) {
@@ -205,7 +210,15 @@ public class AddArticle extends HttpServlet{
 	    }
 	    return false;
 	}
-	
+    
+    private boolean isNumber(String num) {
+    	Pattern numberPattern = Pattern.compile("\\d+");
+		if (num.length()>0) {
+			return numberPattern.matcher(num).matches();
+		} else {
+			return false;
+		}
+    }
 	
 	
 }

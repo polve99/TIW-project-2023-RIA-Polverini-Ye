@@ -67,21 +67,6 @@ public class GoToAuction extends HttpServlet {
         try {
             idAuction = Integer.parseInt(idAuctionParam);
             if(!auctionDAO.isAuctionInDB(idAuction)){
-            	/*
-                String errorString = "Previous idAuction in request not found. Back to previous page.";
-                request.setAttribute("errorString", errorString);
-                
-                //checks attribute 'from' to go back
-                if(session.getAttribute("from").equals("BuyPage")) {
-                	request.getRequestDispatcher("/GoToBuy").forward(request, response);
-                }else if(session.getAttribute("from").equals("SellPage")){
-                	request.getRequestDispatcher("/GoToSell").forward(request, response);
-                }else {
-                	response.sendRedirect("GoToHome");
-                }
-                return;
-                */
-                
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().println("idAuction in request not found.");
                 return;
@@ -107,6 +92,7 @@ public class GoToAuction extends HttpServlet {
             bids = bidDAO.findBidsListByIdAuction(idAuction);
         } catch (SQLException e) {
             e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal db error in retrieving auction details");
             return;
         }
@@ -116,6 +102,7 @@ public class GoToAuction extends HttpServlet {
                 closedAuctionInfo = auctionDAO.getAuctionClosedInfos(auction);
             } catch (SQLException e) {
                 e.printStackTrace();
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal db error in retrieving closed auction info");
                 return;
             }
@@ -136,27 +123,6 @@ public class GoToAuction extends HttpServlet {
         templateVariables.put("isOpen", auction.isOpen());
         templateVariables.put("isNotExpired", isAuctionNotExpired);
         if(closedAuctionInfo != null) templateVariables.put("closedAuctionInfo", closedAuctionInfo);
-
-        /*
-        HashMap<String,String> errMsg = new HashMap<>();
-
-        if(bids.isEmpty()){
-        	//errMsg.put("NoBidsMsg", "There are no bids at this time for this auction.");
-        	//ctx.setVariable("NoBidsMsg", "There are no bids at this time for this auction.");
-        }
-
-        String msgBid = (String) request.getAttribute("msgBid");
-        if (msgBid != null) {
-        	//errMsg.put("msgBid",msgBid);
-        	//ctx.setVariable("msgBid", msgBid);
-        }
-        
-        String closeMsg = (String) request.getAttribute("closeMsg");
-        if (closeMsg != null) {
-        	//errMsg.put("closeMsg", closeMsg);
-        	//ctx.setVariable("closeMsg", closeMsg);
-        }
-         */
         
         if(auction.getUserMail().equals(user.getUserMail())) {
             templateVariables.put("owner", Boolean.TRUE);
