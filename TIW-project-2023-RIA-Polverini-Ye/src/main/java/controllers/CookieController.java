@@ -47,6 +47,7 @@ public class CookieController extends HttpServlet{
 	    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	        String listAsteId = request.getParameter("listAsteId");
 	        if(listAsteId=="") {
+	        	response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return;
 	        }
 

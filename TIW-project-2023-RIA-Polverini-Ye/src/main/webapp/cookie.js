@@ -96,12 +96,12 @@ function getCookiesAuctions(username){
 	let cookieAuctionsId = getIdFromCookieSet(username);
 	makeCall("GET", "CookieController?listAsteId="+cookieAuctionsId, null, function(response){
 		if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
+			document.getElementById("cookieTable").classList.remove("hiddenElement");
 			let message = JSON.parse(response.responseText);
 			console.log(message);
 			createCookieAuctionTable(message);
-		} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
-			var errorMessage = response.responseText;
-      		alert(errorMessage);
+		} else {
+			document.getElementById("cookieTable").classList.add("hiddenElement");
 		}
 	});
 };
