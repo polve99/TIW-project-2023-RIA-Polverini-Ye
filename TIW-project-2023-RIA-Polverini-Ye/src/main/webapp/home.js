@@ -174,7 +174,6 @@ window.addEventListener("load", () => {
 			    getCookiesAuctions(sessionStorage.getItem("userMail"));
 			    main2();
 			    floatImage();
-				//closeAuction();	   //NON SO SE POSSO CHIAMARLA IN DUE POSTI SEPARATAMENTE 
 			  }
 			});
 		}
@@ -193,14 +192,13 @@ window.addEventListener("load", () => {
 				    if(yourAuctionInfoList.length>0){
 						document.getElementById("id_empty_yourAuctionInfoListOpen").classList.add("hiddenElement");
 						document.getElementById("id_yourAuctionInfoListOpen_listContainer").classList.remove("hiddenElement");
-					    createYourAuctionTable(yourAuctionInfoList);
 					}
-					
+					createYourAuctionTable(yourAuctionInfoList);
 					if(ownClosedAuctionInfoList.length>0){
-						document.getElementById("id_empty_yourAuctionInfoListOpen").classList.add("hiddenElement");
+						document.getElementById("id_empty_yourClosedAuctionInfoListOpen").classList.add("hiddenElement");
 						document.getElementById("id_yourClosedAuctionInfoListOpen_listContainer").classList.remove("hiddenElement");
-					    createOwnWonAuctionTable(ownClosedAuctionInfoList);
 					}
+					createOwnWonAuctionTable(ownClosedAuctionInfoList);
 					
 				    addArticlePage();
 				    createArticlePage(imageList);
@@ -208,7 +206,6 @@ window.addEventListener("load", () => {
 				    createAuctionPost();
 				    aucDetails();
 				    floatImage();
-				    //closeAuction(); //NON SO SE POSSO CHIAMARLA IN DUE POSTI SEPARATAMENTE
 			  }
 			});
 		}

@@ -58,9 +58,7 @@ function getIdFromCookieSet(username) {
 	var lista_asteId = Array.from(aste_set).join(',');
 	lista_asteId.replace("%", ","); //levare
 	
-	
 	return lista_asteId.substring(0,lista_asteId.length - 1);
-
 }
 
 function removeIdFromCookie(username, idToRemove) {

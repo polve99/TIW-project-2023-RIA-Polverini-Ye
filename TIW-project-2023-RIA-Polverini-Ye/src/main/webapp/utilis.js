@@ -20,8 +20,7 @@
     
     function addListener(object) {
     object.addEventListener("click", (e) => {
-			console.log(e.target);
-			//console.log(ids[i]);
+		
 		makeCall("GET", "GoToAuction?idAuction="+e.target.textContent,null, function(response){
 			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
 				var response = JSON.parse(response.responseText);
@@ -66,7 +65,6 @@
 					var oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
 					updateOldCookie(sessionStorage.getItem("userMail"), oldCookie + e.target.textContent + ",");
 				}
-				//document.getElementById("BuyPage_ClassicInitialPage").className = "hiddenElement";
 				buildTableDetails(response);
 			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
 				var errorMessage = response.responseText;

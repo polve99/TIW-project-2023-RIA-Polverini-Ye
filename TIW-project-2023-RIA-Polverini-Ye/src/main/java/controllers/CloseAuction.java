@@ -88,6 +88,7 @@ public class CloseAuction extends HttpServlet {
             return;
         }
         try {
+            connection.setAutoCommit(false);
             auctionDAO.closeAuction(idAuction);
             maxBid = bidDAO.findMaxBidInAuction(idAuction);
 
@@ -102,11 +103,23 @@ public class CloseAuction extends HttpServlet {
             } else {
                 closeMsg = "Auction closed successfully.";
             }
+            connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to close auction in database");
             return;
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         Gson gson = new Gson();

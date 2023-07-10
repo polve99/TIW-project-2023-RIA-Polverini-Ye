@@ -32,6 +32,11 @@ public class Registration extends HttpServlet {
     @Override
     public void init() throws ServletException {
     	connection = ConnectionHandler.getConnection(getServletContext());
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -78,12 +83,18 @@ public class Registration extends HttpServlet {
 	            	isBadRequest = false;
 	            }
 	        } catch (SQLException e) {
-	        	response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				response.getWriter().println("Internal server error, please retry later");
-				return;
+                e.printStackTrace();
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error. Please, retry later.");
+                return;
 	        }
 		}
 		if (isBadRequest) {
+			try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println(badRequestMessage);
 			return;
@@ -92,11 +103,24 @@ public class Registration extends HttpServlet {
 		User user = null;
 		try {
 			user = userDAO.createUser(userMail, password, name, surname, telephone, address);
+            connection.commit();
 		} catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().println("Internal server error, please retry later");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error. Please, retry later.");
 			return;
-		}
+		} finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 		HttpSession session = request.getSession(true);
 		session.setAttribute("user", user);
 		response.setStatus(HttpServletResponse.SC_OK);

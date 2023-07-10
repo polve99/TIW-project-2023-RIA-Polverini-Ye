@@ -40,8 +40,6 @@
 	 durationInput.name = "duration";
 	 durationInput.id = "duration";
 	 durationInput.step = 1;
-	 //durationInput.max = 20;
-	 //durationInput.min = 1;
 	 durationInput.required = true;
 	 labelDuration.appendChild(durationInput);
 	 
@@ -52,7 +50,6 @@
 	 minRiseInput.id = "minRise";
 	 minRiseInput.step = 0.1;
 	 minRiseInput.required = true;
-	 //minRiseInput.min = 0.1;
 	 labelMinRise.appendChild(minRiseInput);
 	 
 	 //input per la selezione degli articoli
@@ -71,7 +68,6 @@
 	  	 articleImage.style.height = "50px";
 	  	 p.appendChild(articleImage);
 	  	 labelArticle.appendChild(p);
-	  	 
 	 });
 	 let createAuctionButton = document.createElement("button");
 	 createAuctionButton.textContent = "Create auction";
@@ -199,19 +195,19 @@ function appendNewRow(message){
 		let removeArticleFromForm = document.getElementById(idToRemove);
 		
 		if (removeArticleFromForm) {
-	    let parentElement = removeArticleFromForm.parentElement;
-	
-	    if (parentElement) {
-	      while (parentElement.firstChild) {
-	        parentElement.firstChild.remove();
-	      }
-	      parentElement.remove();
-	    }
+		    let parentElement = removeArticleFromForm.parentElement;
+		
+		    if (parentElement) {
+		      while (parentElement.firstChild) {
+		        parentElement.firstChild.remove();
+		      }
+		      parentElement.remove();
+		    }
 	
 	    removeArticleFromForm.remove();
-      } else {
-	    console.log("Element not found");
-	  } 
+	    } else {
+		    console.log("Element not found");
+		} 
     });
     articlesCell1.appendChild(articlesList1);
     newRow.appendChild(articlesCell1);
@@ -272,7 +268,7 @@ function appendNewRow(message){
 	// Insert the new row at the determined position
 	if (insertIndex !== -1) {
 	  tableBody.insertBefore(newRow, tableBody.children[insertIndex]);
-	  //tableBody.inserRow
+	  
 	} else {
 	  // If the appropriate position is not found, append the new row at the end
 	  tableBody.appendChild(newRow);
@@ -298,7 +294,7 @@ function appendNewRow(message){
 	// Insert the new row at the determined position
 	if (insertIndex !== -1) {
 	  tableBody1.insertBefore(newRow1, tableBody1.children[insertIndex]);
-	  //tableBody.inserRow
+	  
 	} else {
 	  // If the appropriate position is not found, append the new row at the end
 	  tableBody1.appendChild(newRow1);
@@ -373,6 +369,9 @@ const createBid = () => {
  };
  
 function appendBid(bid){
+	document.getElementById("id_empty_auctionDetailsBids").classList.add("hiddenElement");
+	document.getElementById("id_auctionDetailsBids").classList.remove("hiddenElement");
+	
 	 let bidHistoryBody = document.getElementById("id_auctionDetailsBids_body");
 	 
 	 let newRow = document.createElement("tr");
@@ -423,9 +422,10 @@ const closeAuction = () => {
 }
 
 function removeRow(message){
+	if(document.getElementById("rowOwn_"+message.idAuction).closest("tbody").children.length === 1){
+		document.getElementById("id_empty_yourAuctionInfoListOpen").classList.remove("hiddenElement");
+	}
 	document.getElementById("rowOpen_"+message.idAuction).remove();
-	//document.getElementById("rowOwn_"+message.idAuction);
-	//document.getElementById("tbodyown_id").removeChild(copyRow);
 	document.getElementById("rowOwn_"+message.idAuction).remove();
 	
 	let cookieRow = document.getElementById("rowCookie_"+message.idAuction);
@@ -434,6 +434,8 @@ function removeRow(message){
 	}
 	
 	removeIdFromCookie(sessionStorage.getItem("userMail"), message.idAuction);
+	
+	//qui crea una riga nella tabella your own closed
 	
 	let bodyOwnClosed = document.getElementById("tbodyOwnClosed_id");
 	
@@ -471,7 +473,6 @@ function removeRow(message){
     // Max Bid Value
     var maxBidValueCell = document.createElement("td");
     maxBidValueCell.textContent = message.bidValue;
-    //console.log(message.maxBidValue);
     row.appendChild(maxBidValueCell);
 
     bodyOwnClosed.appendChild(row);
@@ -505,6 +506,7 @@ function removeRow(message){
 			sellP.className = "sellPage";
 		}
 	}
+	document.getElementById("id_empty_yourClosedAuctionInfoListOpen").classList.add("hiddenElement");
     
     addListener(linkId);
     message.articles.forEach(function(article){

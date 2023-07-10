@@ -1,4 +1,5 @@
 package controllers;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.regex.Pattern;
@@ -44,6 +44,11 @@ public class AddArticle extends HttpServlet{
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
         connection = ConnectionHandler.getConnection(servletContext);
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -176,7 +181,17 @@ public class AddArticle extends HttpServlet{
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error, retry later");
 			return;
-		}
+		} finally {
+            try {
+                connection.commit();
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in committing transaction");
+                return;
+            }
+        }
 	   
 	   Gson gson = new Gson();
 	   String articlesObjectString = gson.toJson(articlesObject);

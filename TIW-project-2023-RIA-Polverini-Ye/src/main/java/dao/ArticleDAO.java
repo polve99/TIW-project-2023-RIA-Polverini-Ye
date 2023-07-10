@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 public class ArticleDAO {
@@ -18,7 +17,6 @@ public class ArticleDAO {
         this.connection = connection;
     }
 
-    //TODO: da sostituire poi con createArticle quando ho capito come funzionano le image_path
     public boolean createArticle(String articleName, String articleDescription, float articlePrice, String image, String userMail) throws SQLException{
         String query = "INSERT INTO dbaste.articles (articleName, articleDescription, image, articlePrice, userMail) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement pStatement = null;
@@ -43,48 +41,6 @@ public class ArticleDAO {
             }
         }
         return true;
-    }
-    //TODO: gestione immagini -> per ora nella createArticle ho impostato image come un path, è da vedere come impostare FileUtils*/
-    public void createArticle2(Article article) throws SQLException {
-        // caricamento dell'immagine dal file system
-        File imageFile = new File(article.getImage());
-
-        // salvataggio dell'immagine in una cartella specifica
-        String fileName = imageFile.getName();
-        String newFilePath = "path/to/image/folder/" + fileName;
-        File newImageFile = new File(newFilePath);
-
-        //TODO: rimettere dopo aver impostato il pom.xml correttamente
-        //FileUtils.copyFile(imageFile, newImageFile);
-
-        // aggiornamento dell'oggetto "Article" con il nuovo percorso dell'immagine
-        article.setImage(newFilePath);
-
-        // salvataggio dell'articolo nel database
-        String query = "INSERT INTO dbaste.articles (articleCode, articleName, articleDescription, image, articlePrice, idAuction) VALUES (?, ?, ?, ?, ?, ?)";
-        PreparedStatement pStatement = null;
-
-        try {
-            pStatement = connection.prepareStatement(query);
-            pStatement.setInt(1, article.getArticleCode());
-            pStatement.setString(2, article.getArticleName());
-            pStatement.setString(3, article.getArticleDescription());
-            pStatement.setString(4, article.getImage());
-            pStatement.setFloat(5, article.getArticlePrice());
-            pStatement.setInt(6, article.getIdAuction());
-            pStatement.setString(7, article.getUserMail());
-            pStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException("Error saving article", e);
-        } finally {
-            try {
-                if (pStatement != null) {
-                    pStatement.close();
-                }
-            } catch (Exception e2) {
-                throw new SQLException("Error closing statement", e2);
-            }
-        }
     }
 
     public boolean deleteArticle(int articleCode) throws SQLException {
@@ -275,7 +231,6 @@ public class ArticleDAO {
             String img = resultSet.getString("image");
             float artPrice = resultSet.getFloat("articlePrice");
             String userMail = resultSet.getString("userMail");
-            
             
             article = new Article(articleCode,articleName,articleDesc,img,artPrice,userMail);
             

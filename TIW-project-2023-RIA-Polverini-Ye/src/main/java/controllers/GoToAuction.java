@@ -87,7 +87,7 @@ public class GoToAuction extends HttpServlet {
             auction = auctionDAO.findAuctionByIdAuction(idAuction);
             isAuctionNotExpired = auctionDAO.isAuctionNotExpired(idAuction);
             articles = articleDAO.findArticlesListByIdAuction(idAuction);
-            maxBid = bidDAO.findMaxBidInAuction(idAuction); // rimuovere e prenderlo da bids
+            maxBid = bidDAO.findMaxBidInAuction(idAuction);
             initialPrice = auction.getInitialPrice();
             bids = bidDAO.findBidsListByIdAuction(idAuction);
         } catch (SQLException e) {

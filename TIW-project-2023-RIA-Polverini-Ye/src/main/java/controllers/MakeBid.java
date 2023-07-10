@@ -113,27 +113,36 @@ public class MakeBid extends HttpServlet {
                         return;
                     }
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error in db. Please, retry later.");
-                return;
-            }
-            int idToReturn=0;
-            try {
-	            Timestamp bidDateTime = new Timestamp(System.currentTimeMillis());
-	            idToReturn=bidDAO.createBid(bidValue, userMail, idAuction, bidDateTime);
-	            responseBid = new Bid(idToReturn, user.getUserMail(), bidValue, bidDateTime, idAuction);
-	            Gson gson = new Gson();
-	            String object = gson.toJson(responseBid);
-	            System.out.println(object);
-	            response.setStatus(HttpServletResponse.SC_OK);
-	            response.getWriter().println(object);
+
+                connection.setAutoCommit(false);
+
+                Timestamp bidDateTime = new Timestamp(System.currentTimeMillis());
+                int idToReturn = bidDAO.createBid(bidValue, userMail, idAuction, bidDateTime);
+                responseBid = new Bid(idToReturn, user.getUserMail(), bidValue, bidDateTime, idAuction);
+
+                connection.commit();
+
+                Gson gson = new Gson();
+                String object = gson.toJson(responseBid);
+                System.out.println(object);
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().println(object);
            } catch (SQLException e) {
-               	e.printStackTrace();
-               	response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-               	response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error in db, bid not created. Please, retry later.");
-               	return;
+                e.printStackTrace();
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error in db, bid not created. Please, retry later.");
+                return;
+           } finally {
+                try {
+                    connection.setAutoCommit(true);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
            }
         }
     }
@@ -144,5 +153,10 @@ public class MakeBid extends HttpServlet {
 		} else {
 			return false;
 		}
+    }
+
+    @Override
+    public void destroy() {
+        ConnectionHandler.closeConnection(connection);
     }
 }

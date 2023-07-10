@@ -13,7 +13,7 @@ public class User {
     private Date subscription_date;
     private String telephone;
     private String address;
-    private List<String> navigationHistory = new ArrayList<>(); //CANCELLABILE
+    //private List<String> navigationHistory = new ArrayList<>(); //CANCELLABILE
 
     public User() {
         super();
@@ -76,6 +76,7 @@ public class User {
     public void setAddress(String address) {
         this.address = address;
     }
+    /*
     public List<String> getNavigationHistory() {
         return navigationHistory;
     }
@@ -90,5 +91,6 @@ public class User {
     public void addNewPage(String url) {
         this.navigationHistory.add(url);
     }
+    */
 
 }

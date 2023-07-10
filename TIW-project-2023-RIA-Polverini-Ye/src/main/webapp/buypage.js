@@ -14,7 +14,6 @@ function createOpenAuctionTable(auctionInfoList) {
 
     //ID Auction
     let idAuctionCell = document.createElement("td");
-    //idAuctionCell.textContent = auctionInfo.idAuction;
     idAuctionCell.id = "idOpenRow"+auctionInfo.idAuction;
     let linkId = document.createElement("a");
     linkId.className = "id";
@@ -133,7 +132,7 @@ function createWonAuctionTable(wonAuctionInfoList){
 
 // Funzione per mostrare l'immagine fluttuante sopra il cursore
 function showFloatingImage(event, image) {
-	//console.log("showFloatingImage called");
+	
   // Crea l'elemento dell'immagine
   var floatingImage = document.createElement('img');
   floatingImage.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+image; // Sostituisci con il percorso corretto dell'immagine
@@ -232,7 +231,7 @@ const aucDetails = () => {
 					var oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
 					updateOldCookie(sessionStorage.getItem("userMail"), oldCookie + e.target.textContent + ",");
 				}
-				//document.getElementById("BuyPage_ClassicInitialPage").className = "hiddenElement";
+				
 				buildTableDetails(response);
 			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
 				alert(response);
@@ -340,7 +339,7 @@ function buildTableDetails(details){
 			 
 		});
 		} else{
-			//document.getElementById("BuyPage_ClosedAuctions").className = "BuyPage_ClosedAuctions";
+			
 			let closedAuction_body = document.getElementById("id_closedAuctionInfo_body");
 			closedAuction_body.innerHTML = "";
 			let closedAuctionRow = document.createElement("tr");
@@ -388,8 +387,6 @@ function buildTableDetails(details){
 			closedAuction_body.appendChild(closedAuctionRow);
 			
 		}
-	
-	
 };
 
 const keyWordTable = () => {
@@ -402,7 +399,6 @@ const keyWordTable = () => {
 			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
 				var response = JSON.parse(response.responseText);
 			    var auctionInfoList = response.auctionInfoList;
-			    //var wonAuctionInfoList = response.wonAuctionInfoList;
 			
 			    // Utilizza i dati dell'oggetto JSON come desideri
 			    if (auctionInfoList.length > 0){

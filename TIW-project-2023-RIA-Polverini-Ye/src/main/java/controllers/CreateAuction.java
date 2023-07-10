@@ -43,7 +43,11 @@ public class CreateAuction extends HttpServlet{
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
         connection = ConnectionHandler.getConnection(servletContext);
-        
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -86,19 +90,13 @@ public class CreateAuction extends HttpServlet{
         for (int j = 0; j < selectedImages.length; j++) {
           escapedImages[j] = StringEscapeUtils.escapeJava(selectedImages[j]);
         }
-        
-        for(String image1 : escapedImages) {
-        	System.out.println(image1);
-        }
 
-    	//System.out.println(Arrays.toString(escapedImages));
-        
         AuctionDAO auctionDAO = new AuctionDAO(connection);
         ArticleDAO articleDAO = new ArticleDAO(connection);
         
         int aucId = 0;
         
-        for(String image : escapedImages) { //cambiato vedere se funziona
+        for(String image : escapedImages) { 
         	try {
         		Article article = new Article();
         		article = articleDAO.findArticleByImage(image);
@@ -112,7 +110,6 @@ public class CreateAuction extends HttpServlet{
     		}
         	initialPrice += articleList.get(i).getArticlePrice();
         	i++;
-        	System.out.println(initialPrice);
         }
         
         float rise = 0;
@@ -132,15 +129,31 @@ public class CreateAuction extends HttpServlet{
         try {
 			aucId = auctionDAO.createAuction(initialPrice, rise, time, user.getUserMail());
 		} catch (NumberFormatException | SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error, retry later");
+			return;
 		}
         
         try {
 			auctionDAO.addArticlesInAuction(aucId, articleList);
+			connection.commit(); 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error, retry later");
+			return;
+		} finally {
+			try {
+				connection.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
         
         Map<String,Object> AuctionMapToAddLater = new HashMap<String, Object>();
@@ -156,7 +169,7 @@ public class CreateAuction extends HttpServlet{
         response.setStatus(HttpServletResponse.SC_OK);
   	    response.setContentType("application/json");
   	    response.setCharacterEncoding("UTF-8");
-  	    response.getWriter().println(AuctionMapToAddLaterString); // message da prendere una volta che ho fatto la makecall nel case 200 per creare l'asta
+  	    response.getWriter().print(AuctionMapToAddLaterString); 
     }
     
     private String formatTimeLeft(Timestamp expirationDateTime) {
@@ -185,6 +198,11 @@ public class CreateAuction extends HttpServlet{
 		} else {
 			return false;
 		}
+    }
+
+    @Override
+    public void destroy() {
+        ConnectionHandler.closeConnection(connection);
     }
 
 }

@@ -40,37 +40,30 @@
 	 //input nome articolo
 	 let inputName = document.createElement("input");
 	 inputName.type = "text";
-	 //inputName.className = "articleName";
 	 inputName.name = "articleName";
 	 inputName.id = "articleName";
-	 //inputName.maxLength = 20;
 	 inputName.required = true;
 	 labelName.appendChild(inputName);
 	 
 	 //input descrizione articolo
 	 let inputDesc = document.createElement("input");
 	 inputDesc.type = "text";
-	 //inputDesc.className = "articleDesc";
 	 inputDesc.name = "articleDesc";
 	 inputDesc.id = "articleDesc";
-	 //inputDesc.maxLength = 255;
 	 labelDesc.appendChild(inputDesc);
 	 
 	 //input prezzo articolo
 	 let inputPrice = document.createElement("input");
 	 inputPrice.type = "number";
-	 //inputPrice.className = "articlePrice";
 	 inputPrice.name = "articlePrice";
 	 inputPrice.id = "articlePrice";
 	 inputPrice.step = 1;
-	 //inputPrice.min = 0;
 	 inputPrice.required = true;
 	 labelPrice.appendChild(inputPrice);
 	 
 	 //input immagine articolo
 	 let inputImage = document.createElement("input");
 	 inputImage.type = "file";
-	 //inputImage.className = "articleImage";
 	 inputImage.id = "articleImage";
 	 inputImage.name = "articleImage";
 	 inputImage.accept = ".jpeg, .jpg, .png";
