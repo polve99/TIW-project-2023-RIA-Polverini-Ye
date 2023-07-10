@@ -229,6 +229,9 @@ const aucDetails = () => {
 						document.getElementById("BuyPage_ClosedAuctions").className = "BuyPage_ClosedAuctions";
 					}
 				}
+				
+				document.getElementById("buySectionTitle").classList.add("hiddenElement");
+				document.getElementById("sellSectionTitle").classList.add("hiddenElement");
 				//AGGIUNTA A COOKIE ASTA VISIONATA
 				
 				removeIdFromCookie(sessionStorage.getItem("userMail"), e.target.textContent);

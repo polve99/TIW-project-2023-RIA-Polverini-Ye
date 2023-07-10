@@ -37,7 +37,7 @@ public class Registration extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String surname = StringEscapeUtils.escapeJava(request.getParameter("surname"));
 		String name = StringEscapeUtils.escapeJava(request.getParameter("name"));
-		String userMail = StringEscapeUtils.escapeJava(request.getParameter("email"));
+		String userMail = StringEscapeUtils.escapeJava(request.getParameter("userMail"));
 		String password = StringEscapeUtils.escapeJava(request.getParameter("password"));
 		String repeatedPassword = StringEscapeUtils.escapeJava(request.getParameter("repeatedPassword"));
 		String telephone = StringEscapeUtils.escapeJava(request.getParameter("telephone"));
@@ -45,7 +45,7 @@ public class Registration extends HttpServlet {
 		Pattern emailPattern = Pattern.compile("^(.+)@(.+)$");
 		Pattern telehonePattern = Pattern.compile("\\d+");
 		boolean telValid = false;;
-		if (telephone != null) {
+		if (telephone.length()>0) {
 			telValid = telehonePattern.matcher(telephone).matches();
 		}
 		boolean emailValid = emailPattern.matcher(userMail).matches();
@@ -68,7 +68,7 @@ public class Registration extends HttpServlet {
 			badRequestMessage = "Password must be between 8 and 50 characters";
 		} else if (address.length()<1 || address.length()>50) {
 			badRequestMessage = "Address must be between 1 and 50 characters";
-		} else if(telephone != null && !telValid) {
+		} else if(telephone.length()>0 && !telValid) {
 			badRequestMessage = "Telephone number not valid";
 		} else {
 			try {

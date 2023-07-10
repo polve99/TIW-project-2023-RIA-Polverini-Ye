@@ -70,6 +70,7 @@
 	  	 
 	 });
 	 let createAuctionButton = document.createElement("button");
+	 createAuctionButton.textContent = "Create auction";
   	 //createAuctionButton.type = "submit";
   	 createAuctionButton.id = "createAuctionButton";
   	 fieldset.appendChild(createAuctionButton);

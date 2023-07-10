@@ -79,6 +79,7 @@
 	 
 	 //bottone di submit
 	 let addArticleButton = document.createElement("button");
+	 addArticleButton.textContent = "Add article";
 	 //addArticleButton.type = "submit";
 	 addArticleButton.value = "addArticleButton";
 	 addArticleButton.id = "addArticleButton";

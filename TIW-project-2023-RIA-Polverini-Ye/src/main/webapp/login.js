@@ -1,9 +1,9 @@
- 
- const login = () => {
+const login = () => {
 	document.getElementById("loginButton").addEventListener('click', (e) => {
 		let form = e.target.closest("form");
 		resetInputFieldsAndMessages();
-		if (form.checkValidity()) {
+		let formValidity = form.checkValidity();
+		if (formValidity && checkLogin(form)) {
 			makeCall("POST", "Login", form, function(response) {
 				let message = response.responseText;
 				if (response.readyState == XMLHttpRequest.DONE && response.status == 200) {
@@ -41,11 +41,11 @@ const registration = () => {
 				if (response.readyState == XMLHttpRequest.DONE && response.status == 200) {
 					sessionStorage.setItem("userMail", message);
 					window.location.href = "home.html";
-				}else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
+				} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
       				document.getElementById("registrationErrorMessage").textContent = message;
 				}
 			});
-		} else if (!formValidity){
+		} else {
 			form.reportValidity();
 			form.reset();
 		}
@@ -62,24 +62,78 @@ const registration = () => {
 
 const checkRegistration = (registrationForm) => {
 	var formData = new FormData(registrationForm);
+	var name = formData.get("name");
+	var surname = formData.get("surname");
+	var email = formData.get("userMail");
 	var password = formData.get("password");
 	var repeatedPassword = formData.get("repeatedPassword");
-	var email = formData.get("email");
-	if (password.length < 8) {
-		document.getElementById("registrationErrorMessage").textContent = "Password is too short";
+	var telephone = formData.get("telephone");
+	var address = formData.get("address");
+	var telephonePattern = /\\d+/;
+	var telValid = false;
+	var emailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+	var emailValid = false;
+	
+	if (telephone.length>0) {
+	  telValid = telephonePattern.test(telephone);
+	}
+	if (email != null) {
+	  emailValid = emailPattern.test(email);
+	}
+	if(name.length<2 || name.length>20){
+		document.getElementById("registrationErrorMessage").textContent = "Name must be between 2 and 20 characters";
+		document.getElementById("nameInput").className = "inputWithError";
+		return false;
+	} else if(surname.length<2 || surname.length>20){
+		document.getElementById("registrationErrorMessage").textContent = "Surname must be between 2 and 20 characters";
+		document.getElementById("surnameInput").className = "inputWithError";
+		return false;
+	} else if(!emailValid ||email.length<5 || email.length>50){
+		document.getElementById("registrationErrorMessage").textContent = "Invalid email. Email must be between 5 and 50 characters and have a valid format (e.g., email@mail.com)";
+		document.getElementById("emailInput").className = "inputWithError";
+		return false;
+	} else if (password.length<8 || password.legth>50) {
+		document.getElementById("registrationErrorMessage").textContent = "Password must be between 8 and 50 characters";
 		document.getElementById("passwordInput").className = "inputWithError";
 		return false;
 	} else if (password != repeatedPassword) {
-		document.getElementById("registrationErrorMessage").textContent = "Password and repeated password are different";
+		document.getElementById("registrationErrorMessage").textContent = "Password and repeated password do not match";
 		document.getElementById("passwordInput").className = "inputWithError";
 		document.getElementById("repeatPasswordInput").className = "inputWithError";
 		return false;
-	} else if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
-		return true;
-	} else {
-		document.getElementById("emailInput").className = "inputWithError";
-		document.getElementById("registrationErrorMessage").textContent = "Email is not valid";
+	} else if (address.length<1 || address.legth>50) {
+		document.getElementById("registrationErrorMessage").textContent = "Address must be between 1 and 50 characters";
+		document.getElementById("addressInput").className = "inputWithError";
 		return false;
+	} else if (telephone.length>0 && !telValid) {
+		document.getElementById("registrationErrorMessage").textContent = "Telephone number not valid";
+		document.getElementById("telephone").className = "inputWithError";
+		return false;
+	} else {
+		return true;
+	}
+};
+
+const checkLogin = (loginForm) => {
+	var formData = new FormData(loginForm);
+	var email = formData.get("userMail");
+	var password = formData.get("password");
+	var emailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+	var emailValid = false;
+	
+	if (email != null) {
+	  emailValid = emailPattern.test(email);
+	}
+	if(!emailValid ||email.length <2 || email.length>20){
+		document.getElementById("loginErrorMessage").textContent = "Invalid email. Email must be between 5 and 50 characters and have a valid format (e.g., email@mail.com)";
+		document.getElementById("loginUser").className = "inputWithError";
+		return false;
+	} else if (password.length < 8 || password.legth>50) {
+		document.getElementById("loginErrorMessage").textContent = "Password must be between 8 and 50 characters";
+		document.getElementById("loginPsw").className = "inputWithError";
+		return false;
+	} else {
+		return true;
 	}
 };
 

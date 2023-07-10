@@ -29,24 +29,28 @@ const previous = () => {
 		let sellP = document.getElementById("sellSection");
 		let buyP = document.getElementById("buySection");
 		
-		document.getElementById("sellSectionTitle").classList.add("hiddenElement");
-		document.getElementById("buySectionTitle").classList.add("hiddenElement");
+		
 		
 		if(homeP.className !== "hiddenElement"){
+			document.getElementById("buySectionTitle").classList.add("hiddenElement");
+			document.getElementById("sellSectionTitle").classList.add("hiddenElement");
 			document.getElementById("prev").className = "hiddenElement";
 		} else if(sellP.className === "sellPage"){
-			
+			document.getElementById("sellSectionTitle").classList.add("hiddenElement");
 			document.getElementById("home").className = "homeLinks";
 			document.getElementById("prev").className = "hiddenElement";
 			sellP.className = "hiddenElement";
 			
 		} else if(buyP.className === "buyPage"){
-			
+			document.getElementById("buySectionTitle").classList.add("hiddenElement");
 			document.getElementById("home").className = "homeLinks";
 			document.getElementById("prev").className = "hiddenElement";
 			buyP.className = "hiddenElement";
 			
 		} else if (aucD.className === "buy") {
+			
+			document.getElementById("buySectionTitle").classList.remove("hiddenElement");
+			
 			if(document.getElementById("OpenAuctionMacroTable").className === "OpenAuctionMacroTable"){
 				aucD.className = "hiddenElement";
 				document.getElementById("BuyPage_ClosedAuctions").className = "BuyPage_ClosedAuctions";
@@ -59,6 +63,9 @@ const previous = () => {
 				buyP.className = "buyPage";
 			}
 		} else if(aucD.className === "sell") {
+			
+			document.getElementById("sellSectionTitle").classList.remove("hiddenElement");
+			
 			if(document.getElementById("OpenAuctionMacroTable").className === "OpenAuctionMacroTable"){
 				aucD.className = "hiddenElement";
 				document.getElementById("BuyPage_ClosedAuctions").className = "BuyPage_ClosedAuctions";
@@ -126,7 +133,6 @@ window.addEventListener("load", () => {
 			document.getElementById("buySectionTitle").classList.remove("hiddenElement");
 			document.getElementById("sellSectionTitle").classList.add("hiddenElement");
 			
-			//TODO DA MANDARE ALLA HOME PAGE- E NON NELLA BUY
 		} else {
 			//let idList = getIdFromCookieSet(sessionStorage.getItem("userMail")); non è usato
 			
