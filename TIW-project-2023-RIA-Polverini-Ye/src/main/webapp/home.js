@@ -189,8 +189,19 @@ window.addEventListener("load", () => {
 				    var imageList = finalobject.imageList;
 				
 				    // Utilizza i dati dell'oggetto JSON come desideri
-				    createYourAuctionTable(yourAuctionInfoList);
-				    createOwnWonAuctionTable(ownClosedAuctionInfoList);
+				    
+				    if(yourAuctionInfoList.length>0){
+						document.getElementById("id_empty_yourAuctionInfoListOpen").classList.add("hiddenElement");
+						document.getElementById("id_yourAuctionInfoListOpen_listContainer").classList.remove("hiddenElement");
+					    createYourAuctionTable(yourAuctionInfoList);
+					}
+					
+					if(ownClosedAuctionInfoList.length>0){
+						document.getElementById("id_empty_yourAuctionInfoListOpen").classList.add("hiddenElement");
+						document.getElementById("id_yourClosedAuctionInfoListOpen_listContainer").classList.remove("hiddenElement");
+					    createOwnWonAuctionTable(ownClosedAuctionInfoList);
+					}
+					
 				    addArticlePage();
 				    createArticlePage(imageList);
 				    addArticlePost();

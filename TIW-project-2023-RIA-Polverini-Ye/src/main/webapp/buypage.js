@@ -277,8 +277,12 @@ function buildTableDetails(details){
 	    let highBidderCell = document.createElement("td");
 	    if (details.maxBid === undefined){
 	    	highBidderCell.textContent = "no one";
+	    	document.getElementById("id_empty_auctionDetailsBids").classList.remove("hiddenElement");
+			document.getElementById("id_auctionDetailsBids").classList.add("hiddenElement");
 	    } else {
 			highBidderCell.textContent = details.maxBid.userMail;
+			document.getElementById("id_empty_auctionDetailsBids").classList.add("hiddenElement");
+			document.getElementById("id_auctionDetailsBids").classList.remove("hiddenElement");
 		}
 	    
 	    row.appendChild(highBidderCell);
