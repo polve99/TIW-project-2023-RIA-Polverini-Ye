@@ -43,133 +43,138 @@ public class CreateAuction extends HttpServlet{
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
         connection = ConnectionHandler.getConnection(servletContext);
+    }
+    
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ArrayList<Article> articleList = new ArrayList<Article>();
+        User user = (User) request.getSession().getAttribute("user");
+
         try {
             connection.setAutoCommit(false);
         } catch (SQLException e) {
             e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error, retry later");
+            return;
         }
-    }
-    
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	ArrayList<Article> articleList = new ArrayList<Article>();
-    	User user = (User) request.getSession().getAttribute("user");
-    	
-    	int i = 0;
-    	float initialPrice = 0;
-    	
-		if (!isNumber(StringEscapeUtils.escapeJava(request.getParameter("duration")))) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+        int i = 0;
+        float initialPrice = 0;
+
+        if (!isNumber(StringEscapeUtils.escapeJava(request.getParameter("duration")))) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println("missing duration or wrong format");
             return;
-		} 
+        }
+
         int daysToAdd = Integer.parseInt(StringEscapeUtils.escapeJava(request.getParameter("duration")));
         if (daysToAdd < 1 || daysToAdd > 20) {
-        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println("the number inserted doesn't respect the range of possibilities proposed");
             return;
         }
+
         LocalDateTime dateTime = LocalDateTime.now();
-        LocalDateTime newDateTime = dateTime.plusDays(daysToAdd); 
+        LocalDateTime newDateTime = dateTime.plusDays(daysToAdd);
         Timestamp time = Timestamp.valueOf(newDateTime);
-    	
+
         if (!isNumber(StringEscapeUtils.escapeJava(request.getParameter("minRise")))) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println("missing minRise or wrong format");
             return;
-		}
-        String minRise =StringEscapeUtils.escapeJava(request.getParameter("minRise"));
+        }
+
+        String minRise = StringEscapeUtils.escapeJava(request.getParameter("minRise"));
         String[] selectedImages = request.getParameterValues("articleToUpload");
         String[] escapedImages = new String[selectedImages.length];
-        
-        if(selectedImages.length<=0) {
-        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+        if (selectedImages.length <= 0) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println("missing article");
             return;
         }
-        
+
         for (int j = 0; j < selectedImages.length; j++) {
-          escapedImages[j] = StringEscapeUtils.escapeJava(selectedImages[j]);
+            escapedImages[j] = StringEscapeUtils.escapeJava(selectedImages[j]);
         }
 
         AuctionDAO auctionDAO = new AuctionDAO(connection);
         ArticleDAO articleDAO = new ArticleDAO(connection);
-        
+
         int aucId = 0;
-        
-        for(String image : escapedImages) { 
-        	try {
-        		Article article = new Article();
-        		article = articleDAO.findArticleByImage(image);
-        		articleList.add(article);
-        		
-        	} catch (SQLException e) {
-    			e.printStackTrace();
-    			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-    			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error, retry later");
-    			return;
-    		}
-        	initialPrice += articleList.get(i).getArticlePrice();
-        	i++;
+
+        for (String image : escapedImages) {
+            try {
+                Article article = new Article();
+                article = articleDAO.findArticleByImage(image);
+                articleList.add(article);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error, retry later");
+                return;
+            }
+            initialPrice += articleList.get(i).getArticlePrice();
+            i++;
         }
-        
+
         float rise = 0;
         try {
-        	rise = Float.parseFloat(minRise);
-        	if (rise <= 0) {
-        		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            rise = Float.parseFloat(minRise);
+            if (rise <= 0) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().println("the rise must be greater than zero");
                 return;
-        	}
+            }
         } catch (Exception e) {
-        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        	response.getWriter().println("the rise inserted doesn't have the right format");
-        	return;
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().println("the rise inserted doesn't have the right format");
+            return;
         }
-        
+
         try {
-			aucId = auctionDAO.createAuction(initialPrice, rise, time, user.getUserMail());
-		} catch (NumberFormatException | SQLException e) {
-			e.printStackTrace();
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error, retry later");
-			return;
-		}
-        
-        try {
-			auctionDAO.addArticlesInAuction(aucId, articleList);
-			connection.commit(); 
-		} catch (SQLException e) {
-			e.printStackTrace();
-			try {
-				connection.rollback();
-			} catch (SQLException ex) {
-				ex.printStackTrace();
-			}
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error, retry later");
-			return;
-		} finally {
-			try {
-				connection.setAutoCommit(true);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-        
-        Map<String,Object> AuctionMapToAddLater = new HashMap<String, Object>();
-        AuctionMapToAddLater.put("idAuction", aucId);
-        AuctionMapToAddLater.put("Article", articleList);
-        AuctionMapToAddLater.put("MinRise", rise);
-        AuctionMapToAddLater.put("MaxBidValue", initialPrice);
-        AuctionMapToAddLater.put("TimeLeft", formatTimeLeft(time));
-        
+            aucId = auctionDAO.createAuction(initialPrice, rise, time, user.getUserMail());
+            auctionDAO.addArticlesInAuction(aucId, articleList);
+
+            // Commit the transaction if all operations are successful
+            connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+            try {
+                // Rollback the transaction in case of an exception
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error, retry later");
+            return;
+        } finally {
+            try {
+                // Set auto-commit back to true in the finally block
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Map<String, Object> auctionMapToAddLater = new HashMap<String, Object>();
+        auctionMapToAddLater.put("idAuction", aucId);
+        auctionMapToAddLater.put("Article", articleList);
+        auctionMapToAddLater.put("MinRise", rise);
+        auctionMapToAddLater.put("MaxBidValue", initialPrice);
+        auctionMapToAddLater.put("TimeLeft", formatTimeLeft(time));
+
         Gson gson = new Gson();
-        String AuctionMapToAddLaterString = gson.toJson(AuctionMapToAddLater);
-        
+        String auctionMapToAddLaterString = gson.toJson(auctionMapToAddLater);
+
         response.setStatus(HttpServletResponse.SC_OK);
-  	    response.setContentType("application/json");
-  	    response.setCharacterEncoding("UTF-8");
-  	    response.getWriter().print(AuctionMapToAddLaterString); 
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().print(auctionMapToAddLaterString);
     }
     
     private String formatTimeLeft(Timestamp expirationDateTime) {
