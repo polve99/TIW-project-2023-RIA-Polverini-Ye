@@ -360,7 +360,7 @@ const createBid = () => {
 				    appendBid(response);
 				} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
 					let message = response.responseText;
-	      			document.getElementById("msgBid").textContent(message);
+	      			document.getElementById("msgBid").textContent=message;
 				}
 			 });
 		 }else{
