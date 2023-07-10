@@ -44,11 +44,6 @@ public class AddArticle extends HttpServlet{
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
         connection = ConnectionHandler.getConnection(servletContext);
-        try {
-            connection.setAutoCommit(false);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -167,10 +162,12 @@ public class AddArticle extends HttpServlet{
 		   //Part filePart = request.getPart("articleImage"); 
 	       //fileName = filePart.getSubmittedFileName(); 
 	       String fileExtension = getFileExtension(fileName);
+	       
 	       if(isAllowedExtension(fileExtension)) {
-	    	    
+	    	    connection.setAutoCommit(false);
 	       		article.createArticle(articleName, articleDesc, price, fileName ,user.getUserMail());
 	       		articlesObject = new Article(articleName, articleDesc, price, fileName, user.getUserMail());
+	       		connection.commit();
 	       } else {
 	    	    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 	            response.getWriter().println("Invalid file type. Only JPG, JPEG and PNG files are allowed.");
@@ -183,7 +180,7 @@ public class AddArticle extends HttpServlet{
 			return;
 		} finally {
             try {
-                connection.commit();
+                
                 connection.setAutoCommit(true);
             } catch (SQLException e) {
                 e.printStackTrace();

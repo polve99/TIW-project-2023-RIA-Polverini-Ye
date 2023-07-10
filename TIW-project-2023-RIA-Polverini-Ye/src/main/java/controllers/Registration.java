@@ -32,11 +32,6 @@ public class Registration extends HttpServlet {
     @Override
     public void init() throws ServletException {
     	connection = ConnectionHandler.getConnection(getServletContext());
-        try {
-            connection.setAutoCommit(false);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -102,6 +97,7 @@ public class Registration extends HttpServlet {
 		
 		User user = null;
 		try {
+			connection.setAutoCommit(false);
 			user = userDAO.createUser(userMail, password, name, surname, telephone, address);
             connection.commit();
 		} catch (SQLException e) {
