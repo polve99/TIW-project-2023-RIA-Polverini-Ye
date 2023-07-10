@@ -124,7 +124,7 @@ const checkLogin = (loginForm) => {
 	if (email != null) {
 	  emailValid = emailPattern.test(email);
 	}
-	if(!emailValid ||email.length <2 || email.length>20){
+	if(!emailValid ||email.length <2 || email.length>50){
 		document.getElementById("loginErrorMessage").textContent = "Invalid email. Email must be between 5 and 50 characters and have a valid format (e.g., email@mail.com)";
 		document.getElementById("loginUser").className = "inputWithError";
 		return false;
