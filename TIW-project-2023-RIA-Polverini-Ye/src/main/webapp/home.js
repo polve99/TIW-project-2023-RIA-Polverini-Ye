@@ -159,12 +159,18 @@ window.addEventListener("load", () => {
 			makeCall("GET", "GoToBuy", null, function(response) {
 		  	if (response.readyState == XMLHttpRequest.DONE && response.status == 200) {
 			    var response = JSON.parse(response.responseText);
-			    var auctionInfoList = response.auctionInfoList;
-			    var wonAuctionInfoList = response.wonAuctionInfoList;
+			    let auctionInfoList = response.auctionInfoList;
+			    let wonAuctionInfoList = response.wonAuctionInfoList;
 			
 			    // Utilizza i dati dell'oggetto JSON come desideri
 			    createOpenAuctionTable(auctionInfoList);
-			    createWonAuctionTable(wonAuctionInfoList);
+			    
+			    if(wonAuctionInfoList.length>0){
+					document.getElementById("id_empty_WonAuctionSection").classList.add("hiddenElement");
+					document.getElementById("WonAuctionSection").classList.remove("hiddenElement");
+				    createWonAuctionTable(wonAuctionInfoList);
+				}
+			    
 			    getCookiesAuctions(sessionStorage.getItem("userMail"));
 			    main2();
 			    floatImage();
