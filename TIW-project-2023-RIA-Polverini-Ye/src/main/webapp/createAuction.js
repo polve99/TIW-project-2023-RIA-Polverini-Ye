@@ -352,6 +352,7 @@ const createBid = () => {
 	 document.getElementById("createBidButton").addEventListener("click", (e) => {
 		 e.preventDefault();
 		 let form = e.target.closest("form");
+		 resetInputFieldsAndMessages();
 		 let formData = new FormData(form);
 		 if(!isNaN(formData.get("bidValue")) && form.checkValidity()){
 			 makeCall("POST", "MakeBid?bidValue="+formData.get("bidValue"), null, function(response){
@@ -534,4 +535,5 @@ const resetInputFieldsAndMessages = () => {
 		previousErrorFields[0].className = "";
 	}
 	document.getElementById("auctionErrorMessage").innerHTML = "";
+	document.getElementById("msgBid").innerHTML="";
 };

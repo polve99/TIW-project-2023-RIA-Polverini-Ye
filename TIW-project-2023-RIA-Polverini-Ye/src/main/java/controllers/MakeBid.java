@@ -57,7 +57,7 @@ public class MakeBid extends HttpServlet {
 
         if(!isNumber(request.getParameter("bidValue"))) {
         	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().println("Bid value must be a number");
+            response.getWriter().println("Bid value must be a positive number");
             return;
         }
         
@@ -100,7 +100,7 @@ public class MakeBid extends HttpServlet {
                 }
 
                 if(maxBid == null){
-                    if(bidValue <= auction.getInitialPrice()) {
+                    if(bidValue < auction.getInitialPrice()) {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                         response.getWriter().println("Bid value too low (must be greater than/equal the initial price (" + auction.getInitialPrice() + "))");
                         return;
