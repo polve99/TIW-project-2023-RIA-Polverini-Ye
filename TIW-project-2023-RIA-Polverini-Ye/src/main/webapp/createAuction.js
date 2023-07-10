@@ -424,6 +424,7 @@ const closeAuction = () => {
 function removeRow(message){
 	if(document.getElementById("rowOwn_"+message.idAuction).closest("tbody").children.length === 1){
 		document.getElementById("id_empty_yourAuctionInfoListOpen").classList.remove("hiddenElement");
+		document.getElementById("id_yourAuctionInfoListOpen_listContainer").classList.add("hiddenElement");
 	}
 	document.getElementById("rowOpen_"+message.idAuction).remove();
 	document.getElementById("rowOwn_"+message.idAuction).remove();
@@ -507,6 +508,7 @@ function removeRow(message){
 		}
 	}
 	document.getElementById("id_empty_yourClosedAuctionInfoListOpen").classList.add("hiddenElement");
+	document.getElementById("id_yourClosedAuctionInfoListOpen_listContainer").classList.remove("hiddenElement");
     
     addListener(linkId);
     message.articles.forEach(function(article){

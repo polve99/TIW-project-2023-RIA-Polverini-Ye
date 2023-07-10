@@ -275,7 +275,7 @@ function buildTableDetails(details){
 	    //higest bidder
 	    let highBidderCell = document.createElement("td");
 	    if (details.maxBid === undefined){
-	    	highBidderCell.textContent = "no one";
+	    	highBidderCell.textContent = "No bidders.";
 	    	document.getElementById("id_empty_auctionDetailsBids").classList.remove("hiddenElement");
 			document.getElementById("id_auctionDetailsBids").classList.add("hiddenElement");
 	    } else {

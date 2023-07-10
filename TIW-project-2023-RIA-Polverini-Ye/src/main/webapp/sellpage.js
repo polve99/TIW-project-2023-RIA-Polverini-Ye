@@ -85,7 +85,7 @@
 
 };
 
-function createOwnWonAuctionTable(wonAuctionInfoList){
+function createOwnWonAuctionTable(ownClosedAuctionInfoList){
 
   // Trova l'elemento HTML in cui verrà generata la tabella
   var tableContainer = document.getElementById("id_yourClosedAuctionInfoListOpen_listContainer");
@@ -110,16 +110,16 @@ function createOwnWonAuctionTable(wonAuctionInfoList){
   let tbody = document.createElement("tbody");
   tbody.id = "tbodyOwnClosed_id";
 
-  wonAuctionInfoList.forEach(function(auctionInfo) {
+  ownClosedAuctionInfoList.forEach(function(auctionInfo2) {
     var row = document.createElement("tr");
-    row.id = "rowOwnClosed_" + auctionInfo.idAuction;
+    row.id = "rowOwnClosed_" + auctionInfo2.idAuction;
 
     // ID Auction
     var idAuctionCell = document.createElement("td");
-    idAuctionCell.id = "idOwnOpenRow"+auctionInfo.idAuction;
+    idAuctionCell.id = "idOwnOpenRow"+auctionInfo2.idAuction;
     let linkId = document.createElement("a");
     linkId.className = "id";
-    linkId.textContent = auctionInfo.idAuction;
+    linkId.textContent = auctionInfo2.idAuction;
     idAuctionCell.appendChild(linkId);
     row.appendChild(idAuctionCell);
 
@@ -127,7 +127,7 @@ function createOwnWonAuctionTable(wonAuctionInfoList){
     var articlesCell = document.createElement("td");
     var articlesList = document.createElement("ul");
     
-    auctionInfo.articles.forEach(function(article) {
+    auctionInfo2.articles.forEach(function(article) {
       var listItem = document.createElement("li");
       listItem.textContent = article.articleName;
       //listItem.id = article.image;
@@ -144,8 +144,8 @@ function createOwnWonAuctionTable(wonAuctionInfoList){
 
     // Max Bid Value
     var maxBidValueCell = document.createElement("td");
-    maxBidValueCell.textContent = auctionInfo.maxBidValue;
-    console.log(auctionInfo.maxBidValue);
+    maxBidValueCell.textContent = auctionInfo2.maxBidValue;
+    console.log(auctionInfo2.maxBidValue);
     row.appendChild(maxBidValueCell);
 
     tbody.appendChild(row);

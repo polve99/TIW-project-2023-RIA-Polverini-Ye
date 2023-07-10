@@ -164,13 +164,7 @@ window.addEventListener("load", () => {
 			
 			    // Utilizza i dati dell'oggetto JSON come desideri
 			    createOpenAuctionTable(auctionInfoList);
-			    
-			    if(wonAuctionInfoList.length>0){
-					document.getElementById("id_empty_WonAuctionSection").classList.add("hiddenElement");
-					document.getElementById("WonAuctionSection").classList.remove("hiddenElement");
-				    createWonAuctionTable(wonAuctionInfoList);
-				}
-			    
+			    createWonAuctionTable(wonAuctionInfoList);
 			    getCookiesAuctions(sessionStorage.getItem("userMail"));
 			    main2();
 			    floatImage();
@@ -192,11 +186,19 @@ window.addEventListener("load", () => {
 				    if(yourAuctionInfoList.length>0){
 						document.getElementById("id_empty_yourAuctionInfoListOpen").classList.add("hiddenElement");
 						document.getElementById("id_yourAuctionInfoListOpen_listContainer").classList.remove("hiddenElement");
+					} else {
+						document.getElementById("id_empty_yourAuctionInfoListOpen").classList.remove("hiddenElement");
+						document.getElementById("id_yourAuctionInfoListOpen_listContainer").classList.add("hiddenElement");
 					}
 					createYourAuctionTable(yourAuctionInfoList);
-					if(ownClosedAuctionInfoList.length>0){
+					
+					if(ownClosedAuctionInfoList.length>0 && ownClosedAuctionInfoList!=null){
 						document.getElementById("id_empty_yourClosedAuctionInfoListOpen").classList.add("hiddenElement");
 						document.getElementById("id_yourClosedAuctionInfoListOpen_listContainer").classList.remove("hiddenElement");
+					} else{
+						document.getElementById("id_empty_yourClosedAuctionInfoListOpen").classList.remove("hiddenElement");
+						document.getElementById("id_yourClosedAuctionInfoListOpen_listContainer").classList.add("hiddenElement");
+					
 					}
 					createOwnWonAuctionTable(ownClosedAuctionInfoList);
 					
