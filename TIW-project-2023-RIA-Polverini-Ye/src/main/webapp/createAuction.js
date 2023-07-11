@@ -91,7 +91,7 @@
 					switch(x.status) {
 						case 200:
 							removeIdFromCookie(sessionStorage.getItem("userMail"), "sell");
-							var oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
+							let oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
 							updateOldCookie(sessionStorage.getItem("userMail"), oldCookie + "sell" + ",");
 							appendNewRow(message);
 							break;
@@ -182,7 +182,7 @@ function appendNewRow(message){
 	    listItem1.className = article1.image;
 	    listItem.textContent = article1.articleName;
         listItem.className = "notOver";
-        var imageItem = document.createElement("img");
+        let imageItem = document.createElement("img");
         imageItem.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+article1.image;
         imageItem.style.width = "30px";
     	imageItem.style.height = "30px";
@@ -250,7 +250,7 @@ function appendNewRow(message){
 	let formattedNewRow1 = parseTimeValue(newRow1.cells[4].textContent);
 	
 	// append new line in own auctions table
-	for (var i = 0; i < rowCount; i++) {
+	for (let i = 0; i < rowCount; i++) {
 	  let currentRow = tableBody.children[i];
 	  let nextRow = tableBody.children[i + 1];
 	
@@ -276,7 +276,7 @@ function appendNewRow(message){
 	
 	insertIndex = -1;
 	// append new line in auctions table
-	for (var i = 0; i < rowCount1; i++) {
+	for (let i = 0; i < rowCount1; i++) {
 	  let currentRow1 = tableBody1.children[i];
 	  let nextRow1 = tableBody1.children[i + 1];
 	
@@ -353,7 +353,7 @@ const createBid = () => {
 		 if(!isNaN(formData.get("bidValue")) && form.checkValidity()){
 			 makeCall("POST", "MakeBid?bidValue="+formData.get("bidValue"), null, function(response){
 				 if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
-					var response = JSON.parse(response.responseText);
+					let response = JSON.parse(response.responseText);
 				    appendBid(response);
 				} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
 					let message = response.responseText;
@@ -440,11 +440,11 @@ function removeRow(message){
 	
 	let bodyOwnClosed = document.getElementById("tbodyOwnClosed_id");
 	
-    var row = document.createElement("tr");
+    let row = document.createElement("tr");
     row.id = "rowOwnClosed_" + message.idAuction;
 
     // ID Auction
-    var idAuctionCell = document.createElement("td");
+    let idAuctionCell = document.createElement("td");
     idAuctionCell.id = "idOwnOpenRow"+message.idAuction;
     let linkId = document.createElement("a");
     linkId.className = "id";
@@ -453,15 +453,15 @@ function removeRow(message){
     row.appendChild(idAuctionCell);
 
     //Articles
-    var articlesCell = document.createElement("td");
-    var articlesList = document.createElement("ul");
+    let articlesCell = document.createElement("td");
+    let articlesList = document.createElement("ul");
     
     message.articles.forEach(function(article) {
-      var listItem = document.createElement("li");
+      let listItem = document.createElement("li");
       listItem.textContent = article.articleName;
       //listItem.id = article.image;
       listItem.className = article.image;
-      //var imageItem = document.createElement("img");
+      //let imageItem = document.createElement("img");
       //imageItem.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+article.image;
       //imageItem.style.width = "30px";
   	  //imageItem.style.height = "30px";
@@ -472,7 +472,7 @@ function removeRow(message){
     row.appendChild(articlesCell);
 
     // Max Bid Value
-    var maxBidValueCell = document.createElement("td");
+    let maxBidValueCell = document.createElement("td");
     maxBidValueCell.textContent = message.bidValue;
     row.appendChild(maxBidValueCell);
 
@@ -533,9 +533,9 @@ function removeRow(message){
 }
  
 const resetInputFieldsAndMessages = () => {
-	var previousErrorFields = document.getElementsByClassName("inputWithError");
-	var elementsLength = previousErrorFields.length;
-	for (var i = 0; i < elementsLength; i++) {
+	let previousErrorFields = document.getElementsByClassName("inputWithError");
+	let elementsLength = previousErrorFields.length;
+	for (let i = 0; i < elementsLength; i++) {
 		previousErrorFields[0].className = "";
 	}
 	document.getElementById("auctionErrorMessage").innerHTML = "";

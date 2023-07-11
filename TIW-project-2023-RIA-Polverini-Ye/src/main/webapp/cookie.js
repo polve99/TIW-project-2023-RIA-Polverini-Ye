@@ -13,12 +13,12 @@ function createNewCookie(username, asta_id) {
 
 function getCookieValue(username) {
 	//cerca acquisto o vendita dato un predefinito id;
-	var username = username.replace(/(\r\n|\n|\r)/gm, "") + "=";
-	var ca = document.cookie.split(';');
+	let username = username.replace(/(\r\n|\n|\r)/gm, "") + "=";
+	let ca = document.cookie.split(';');
 
 
-	for (var i = 0; i < ca.length; i++) {
-		var c = ca[i];
+	for (let i = 0; i < ca.length; i++) {
+		let c = ca[i];
 		while (c.charAt(0) == ' ') {
 			c = c.substring(1);
 		}
@@ -46,7 +46,7 @@ function cookieExistence(username) {
 
 //carica gli id delle aste
 function getIdFromCookieSet(username) {
-	var cookieRecipe = getCookieValue(username);
+	let cookieRecipe = getCookieValue(username);
 	cookieComponents = cookieRecipe.split(',');
 	const aste_set = new Set();
 
@@ -55,7 +55,7 @@ function getIdFromCookieSet(username) {
 			aste_set.add(asta);
 		}
 	}
-	var lista_asteId = Array.from(aste_set).join(',');
+	let lista_asteId = Array.from(aste_set).join(',');
 	lista_asteId.replace("%", ","); //levare
 	
 	return lista_asteId.substring(0,lista_asteId.length - 1);
@@ -79,13 +79,13 @@ function removeIdFromCookie(username, idToRemove) {
 
 function returnLastValueCookie(username) {
 	//ritorna l'ultima istanza del campo value di un determinato cookie
-	var rawCookies = getCookieValue(username);
-	var rawSplitCookies = rawCookies.split(',');
+	let rawCookies = getCookieValue(username);
+	let rawSplitCookies = rawCookies.split(',');
 
-	var arrayCookie = Array.from(rawSplitCookies);
+	let arrayCookie = Array.from(rawSplitCookies);
 
 	//getta l'ultimo elemento
-	var lastNotEmptyValue = arrayCookie[arrayCookie.length - 2];
+	let lastNotEmptyValue = arrayCookie[arrayCookie.length - 2];
 
 	return lastNotEmptyValue;
 }
@@ -149,7 +149,7 @@ function createCookieAuctionTable(yourAuctionInfoList){
       listItem1.textContent = article1.articleName;
       //listItem1.id = article1.image;
       listItem1.className = article1.image;
-      //var imageItem = document.createElement("img");
+      //let imageItem = document.createElement("img");
       //imageItem.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+article.image;
       //imageItem.style.width = "30px";
   	  //imageItem.style.height = "30px";

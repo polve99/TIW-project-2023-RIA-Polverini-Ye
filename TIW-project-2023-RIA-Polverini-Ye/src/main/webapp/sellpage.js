@@ -5,18 +5,18 @@
  function createYourAuctionTable(yourAuctionInfoList){
 
   // Trova l'elemento HTML in cui verrà generata la tabella
-  var tableContainer1 = document.getElementById("id_yourAuctionInfoListOpen_listContainer");
+  let tableContainer1 = document.getElementById("id_yourAuctionInfoListOpen_listContainer");
 
   // Crea l'intestazione della tabella
-  var table1 = document.createElement("table");
+  let table1 = document.createElement("table");
   table1.className = "tableOwn";
   table1.id = "tableOwn_id";
-  var thead1 = document.createElement("thead");
-  var headerRow1 = document.createElement("tr");
-  var headers1 = ["ID Auction", "Articles", "Max Bid", "Min Rise", "Time Left"];
+  let thead1 = document.createElement("thead");
+  let headerRow1 = document.createElement("tr");
+  let headers1 = ["ID Auction", "Articles", "Max Bid", "Min Rise", "Time Left"];
 
   headers1.forEach(function(headerText1) {
-    var header1 = document.createElement("th");
+    let header1 = document.createElement("th");
     header1.textContent = headerText1;
     headerRow1.appendChild(header1);
   });
@@ -25,11 +25,11 @@
   table1.appendChild(thead1);
 
   // Crea il corpo della tabella con i dati dell'asta
-  var tbody1 = document.createElement("tbody");
+  let tbody1 = document.createElement("tbody");
   tbody1.id="tbodyown_id";
 
   yourAuctionInfoList.forEach(function(auctionInfo1) {
-    var row1 = document.createElement("tr");
+    let row1 = document.createElement("tr");
     row1.id = "rowOwn_" + auctionInfo1.idAuction;
 
     // ID Auction
@@ -42,15 +42,15 @@
     row1.appendChild(idAuctionCell1);
 
     //Articles
-    var articlesCell1 = document.createElement("td");
-    var articlesList1 = document.createElement("ul");
+    let articlesCell1 = document.createElement("td");
+    let articlesList1 = document.createElement("ul");
     
     auctionInfo1.articles.forEach(function(article1) {
-      var listItem1 = document.createElement("li");
+      let listItem1 = document.createElement("li");
       listItem1.textContent = article1.articleName;
       //listItem1.id = article1.image;
       listItem1.className = article1.image;
-      //var imageItem = document.createElement("img");
+      //let imageItem = document.createElement("img");
       //imageItem.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+article.image;
       //imageItem.style.width = "30px";
   	  //imageItem.style.height = "30px";
@@ -61,17 +61,17 @@
     row1.appendChild(articlesCell1);
 
     // Max Bid Value
-    var maxBidValueCell1 = document.createElement("td");
+    let maxBidValueCell1 = document.createElement("td");
     maxBidValueCell1.textContent = auctionInfo1.maxBidValue;
     row1.appendChild(maxBidValueCell1);
     
     //Min Rise
-    var minRiseCell1 = document.createElement("td");
+    let minRiseCell1 = document.createElement("td");
     minRiseCell1.textContent = auctionInfo1.minRise;
     row1.appendChild(minRiseCell1);
     
     //Time Left Formatted
-    var timeLeftFormattedCell1 = document.createElement("td");
+    let timeLeftFormattedCell1 = document.createElement("td");
     timeLeftFormattedCell1.textContent = auctionInfo1.timeLeftFormatted;
     row1.appendChild(timeLeftFormattedCell1);
 
@@ -88,17 +88,17 @@
 function createOwnWonAuctionTable(ownClosedAuctionInfoList){
 
   // Trova l'elemento HTML in cui verrà generata la tabella
-  var tableContainer = document.getElementById("id_yourClosedAuctionInfoListOpen_listContainer");
+  let tableContainer = document.getElementById("id_yourClosedAuctionInfoListOpen_listContainer");
 
   // Crea l'intestazione della tabella
-  var table = document.createElement("table");
+  let table = document.createElement("table");
   table.className = "tableWon";
-  var thead = document.createElement("thead");
-  var headerRow = document.createElement("tr");
-  var headers = ["ID Auction", "Articles", "Winning bid"];
+  let thead = document.createElement("thead");
+  let headerRow = document.createElement("tr");
+  let headers = ["ID Auction", "Articles", "Winning bid"];
 
   headers.forEach(function(headerText) {
-    var header = document.createElement("th");
+    let header = document.createElement("th");
     header.textContent = headerText;
     headerRow.appendChild(header);
   });
@@ -111,11 +111,11 @@ function createOwnWonAuctionTable(ownClosedAuctionInfoList){
   tbody.id = "tbodyOwnClosed_id";
 
   ownClosedAuctionInfoList.forEach(function(auctionInfo2) {
-    var row = document.createElement("tr");
+    let row = document.createElement("tr");
     row.id = "rowOwnClosed_" + auctionInfo2.idAuction;
 
     // ID Auction
-    var idAuctionCell = document.createElement("td");
+    let idAuctionCell = document.createElement("td");
     idAuctionCell.id = "idOwnOpenRow"+auctionInfo2.idAuction;
     let linkId = document.createElement("a");
     linkId.className = "id";
@@ -124,15 +124,15 @@ function createOwnWonAuctionTable(ownClosedAuctionInfoList){
     row.appendChild(idAuctionCell);
 
     //Articles
-    var articlesCell = document.createElement("td");
-    var articlesList = document.createElement("ul");
+    let articlesCell = document.createElement("td");
+    let articlesList = document.createElement("ul");
     
     auctionInfo2.articles.forEach(function(article) {
-      var listItem = document.createElement("li");
+      let listItem = document.createElement("li");
       listItem.textContent = article.articleName;
       //listItem.id = article.image;
       listItem.className = article.image;
-      //var imageItem = document.createElement("img");
+      //let imageItem = document.createElement("img");
       //imageItem.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+article.image;
       //imageItem.style.width = "30px";
   	  //imageItem.style.height = "30px";
@@ -143,7 +143,7 @@ function createOwnWonAuctionTable(ownClosedAuctionInfoList){
     row.appendChild(articlesCell);
 
     // Max Bid Value
-    var maxBidValueCell = document.createElement("td");
+    let maxBidValueCell = document.createElement("td");
     maxBidValueCell.textContent = auctionInfo2.maxBidValue;
     console.log(auctionInfo2.maxBidValue);
     row.appendChild(maxBidValueCell);
