@@ -95,7 +95,7 @@ function getCookiesAuctions(username){
 	makeCall("GET", "CookieController?listAsteId="+cookieAuctionsId, null, function(response){
 		if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
 			document.getElementById("cookieTable").classList.remove("hiddenElement");
-			let message = JSON.parse(response.responseText);
+			var message = JSON.parse(response.responseText);
 			console.log(message);
 			createCookieAuctionTable(message);
 		} else {

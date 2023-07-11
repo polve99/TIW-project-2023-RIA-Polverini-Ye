@@ -86,7 +86,7 @@
 		resetInputFieldsAndMessages();
 		if (form.checkValidity() && checkCreateAuction(form)) {
 			makeCall("post", "CreateAuction", form, function(x) {
-				let message = JSON.parse(x.responseText);
+				var message = JSON.parse(x.responseText);
 				if (x.readyState == XMLHttpRequest.DONE) {
 					switch(x.status) {
 						case 200:
@@ -109,10 +109,10 @@
 };
 
  const checkCreateAuction = (auctionForm) => {
-	let formData = new FormData(auctionForm);
-	let duration = formData.get("duration");
-	let minRise = formData.get("minRise");
-	let articleToUpload = formData.get("articleToUpload");
+	var formData = new FormData(auctionForm);
+	var duration = formData.get("duration");
+	var minRise = formData.get("minRise");
+	var articleToUpload = formData.get("articleToUpload");
 	
 	if(minRise<=0){
 		document.getElementById("auctionErrorMessage").textContent = "the rise must be greater than zero";
@@ -250,7 +250,7 @@ function appendNewRow(message){
 	let formattedNewRow1 = parseTimeValue(newRow1.cells[4].textContent);
 	
 	// append new line in own auctions table
-	for (var i = 0; i < rowCount; i++) {
+	for (let i = 0; i < rowCount; i++) {
 	  let currentRow = tableBody.children[i];
 	  let nextRow = tableBody.children[i + 1];
 	
@@ -276,7 +276,7 @@ function appendNewRow(message){
 	
 	insertIndex = -1;
 	// append new line in auctions table
-	for (var i = 0; i < rowCount1; i++) {
+	for (let i = 0; i < rowCount1; i++) {
 	  let currentRow1 = tableBody1.children[i];
 	  let nextRow1 = tableBody1.children[i + 1];
 	
@@ -353,10 +353,10 @@ const createBid = () => {
 		 if(!isNaN(formData.get("bidValue")) && form.checkValidity()){
 			 makeCall("POST", "MakeBid?bidValue="+formData.get("bidValue"), null, function(response){
 				 if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
-					let response = JSON.parse(response.responseText);
+					var response = JSON.parse(response.responseText);
 				    appendBid(response);
 				} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
-					let message = response.responseText;
+					var message = response.responseText;
 	      			document.getElementById("msgBid").textContent=message;
 				}
 			 });
@@ -410,11 +410,11 @@ const closeAuction = () => {
 		e.preventDefault();
 		makeCall("POST", "CloseAuction", null, function(response){
 			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
-				let message = JSON.parse(response.responseText);
+				var message = JSON.parse(response.responseText);
 			    removeRow(message);
 			    alert(message.closeMsg);
 			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
-				let errorMessage = response.responseText;
+				var errorMessage = response.responseText;
       			alert(errorMessage);
 			}
 		});

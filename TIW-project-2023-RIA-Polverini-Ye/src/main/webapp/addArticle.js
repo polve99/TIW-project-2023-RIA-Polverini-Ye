@@ -89,7 +89,7 @@
 		resetInputFieldsAndMessages();
 		if (form.checkValidity() && checkAddArticle(form)) {
 			makeCall("post", "AddArticle", form, function(x) {
-				let message = JSON.parse(x.responseText);
+				var message = JSON.parse(x.responseText);
 				if (x.readyState == XMLHttpRequest.DONE) {
 					switch(x.status) {
 						case 200:
@@ -124,11 +124,11 @@
 };
 
 const checkAddArticle = (articleForm) => {
-	let formData = new FormData(articleForm);
-	let articleName = formData.get("articleName");
-	let articleDesc = formData.get("articleDesc");
-	let articlePrice = formData.get("articlePrice");
-	let articleImage = formData.get("articleImage");
+	var formData = new FormData(articleForm);
+	var articleName = formData.get("articleName");
+	var articleDesc = formData.get("articleDesc");
+	var articlePrice = formData.get("articlePrice");
+	var articleImage = formData.get("articleImage");
 	
 	if(articlePrice<0){
 		document.getElementById("articleErrorMessage").textContent = "the price must be greater or equal zero";

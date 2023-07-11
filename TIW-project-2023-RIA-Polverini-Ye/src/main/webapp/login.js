@@ -5,7 +5,7 @@ const login = () => {
 		let formValidity = form.checkValidity();
 		if (formValidity && checkLogin(form)) {
 			makeCall("POST", "Login", form, function(response) {
-				let message = response.responseText;
+				var message = response.responseText;
 				if (response.readyState == XMLHttpRequest.DONE && response.status == 200) {
 					sessionStorage.setItem("userMail", message);
 					window.location.href = "home.html";
@@ -37,7 +37,7 @@ const registration = () => {
 		let formValidity = form.checkValidity();
 		if (formValidity && checkRegistration(form)) {
 			makeCall("POST", "Registration", form, function(response) {
-				let message = response.responseText;
+				var message = response.responseText;
 				if (response.readyState == XMLHttpRequest.DONE && response.status == 200) {
 					sessionStorage.setItem("userMail", message);
 					window.location.href = "home.html";
@@ -69,7 +69,7 @@ const checkRegistration = (registrationForm) => {
 	let repeatedPassword = formData.get("repeatedPassword");
 	let telephone = formData.get("telephone");
 	let address = formData.get("address");
-	let telephonePattern = /\\d+/;
+	let telephonePattern = /^\d+$/;
 	let telValid = false;
 	let emailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 	let emailValid = false;
@@ -92,7 +92,7 @@ const checkRegistration = (registrationForm) => {
 		document.getElementById("registrationErrorMessage").textContent = "Invalid email. Email must be between 5 and 50 characters and have a valid format (e.g., email@mail.com)";
 		document.getElementById("emailInput").className = "inputWithError";
 		return false;
-	} else if (password.length<8 || password.legth>50) {
+	} else if (password.length<8 || password.length>50) {
 		document.getElementById("registrationErrorMessage").textContent = "Password must be between 8 and 50 characters";
 		document.getElementById("passwordInput").className = "inputWithError";
 		return false;
@@ -105,7 +105,7 @@ const checkRegistration = (registrationForm) => {
 		document.getElementById("registrationErrorMessage").textContent = "Address must be between 1 and 50 characters";
 		document.getElementById("addressInput").className = "inputWithError";
 		return false;
-	} else if (telephone.length>0 && !telValid) {
+	} else if (telephone.length > 0 && (!telValid || !Number.isInteger(Number(telephone)))) {
 		document.getElementById("registrationErrorMessage").textContent = "Telephone number not valid";
 		document.getElementById("telephone").className = "inputWithError";
 		return false;

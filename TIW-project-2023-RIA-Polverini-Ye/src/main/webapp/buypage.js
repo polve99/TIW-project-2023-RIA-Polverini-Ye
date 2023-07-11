@@ -171,7 +171,6 @@ let lis = document.getElementsByTagName("li");
 for (let i = 0; i < lis.length; i++) {
 				if(lis[i].className != "notOver"){
 				  lis[i].addEventListener('mouseover', function(event) {
-					  console.log(this.id);
 				    showFloatingImage(event, this.id);
 				  });
 			  }
@@ -180,12 +179,8 @@ for (let i = 0; i < lis.length; i++) {
 //funzione per mostrare dettagli asta
 const aucDetails = () => {
 	let ids = document.getElementsByClassName("id");
-	console.log(ids.length);
 	for (let i = 0; i < ids.length; i++){
-		console.log(ids[i].textContent);
 		ids[i].addEventListener("click", (e) => {
-			console.log(e.target);
-			console.log(ids[i]);
 		makeCall("GET", "GoToAuction?idAuction="+e.target.textContent,null, function(response){
 			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
 				document.getElementById("msgBid").textContent="";
@@ -397,7 +392,7 @@ const keyWordTable = () => {
 		let keyword = formData.get("keyword");
 		makeCall("GET", "GoToBuy?keyword="+keyword, null, function(response){
 			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
-				let response = JSON.parse(response.responseText);
+				var response = JSON.parse(response.responseText);
 			    let auctionInfoList = response.auctionInfoList;
 			
 			    // Utilizza i dati dell'oggetto JSON come desideri
@@ -407,7 +402,7 @@ const keyWordTable = () => {
 			    }
 			
 			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
-				let errorMessage = response.responseText;
+				var errorMessage = response.responseText;
       			alert(errorMessage);
 			}
 		});
