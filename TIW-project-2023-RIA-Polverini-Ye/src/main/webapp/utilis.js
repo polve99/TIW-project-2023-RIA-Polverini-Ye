@@ -3,7 +3,7 @@
  */
 
 	function makeCall(method, url, formElement, callbak, reset = true) {
-	    let req = new XMLHttpRequest();
+	    var req = new XMLHttpRequest();
 	    req.onreadystatechange = function() {
 	      callbak(req)
 	    };
@@ -23,7 +23,7 @@
 		
 		makeCall("GET", "GoToAuction?idAuction="+e.target.textContent,null, function(response){
 			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
-				let response = JSON.parse(response.responseText);
+				var response = JSON.parse(response.responseText);
 				document.getElementById("msgBid").textContent="";
 				
 				let buySec = document.getElementById("buySection");
@@ -62,12 +62,12 @@
 				
 				removeIdFromCookie(sessionStorage.getItem("userMail"), e.target.textContent);
 				if ((e.target.closest("tr").id !== "rowWon_"+e.target.textContent) && (e.target.closest("tr").id !== "rowOwnClosed_"+e.target.textContent)){
-					let oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
+					var oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
 					updateOldCookie(sessionStorage.getItem("userMail"), oldCookie + e.target.textContent + ",");
 				}
 				buildTableDetails(response);
 			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
-				let errorMessage = response.responseText;
+				var errorMessage = response.responseText;
       			alert(errorMessage);
 			}
 			

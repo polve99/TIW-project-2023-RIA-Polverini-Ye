@@ -105,7 +105,7 @@ function createWonAuctionTable(wonAuctionInfoList){
       listItem.textContent = article.articleName;
       //listItem.id = article.image;
       listItem.className = article.image;
-      //let imageItem = document.createElement("img");
+      //var imageItem = document.createElement("img");
       //imageItem.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+article.image;
       //imageItem.style.width = "30px";
   	  //imageItem.style.height = "30px";
@@ -134,7 +134,7 @@ function createWonAuctionTable(wonAuctionInfoList){
 function showFloatingImage(event, image) {
 	
   // Crea l'elemento dell'immagine
-  let floatingImage = document.createElement('img');
+  var floatingImage = document.createElement('img');
   floatingImage.src = "http://localhost:8080/TIW-project-2023-RIA-Polverini-Ye/images/"+image; // Sostituisci con il percorso corretto dell'immagine
   floatingImage.style.position = 'absolute';
   floatingImage.style.width = '100px'; // Imposta la larghezza desiderata per l'immagine
@@ -167,8 +167,8 @@ function showFloatingImage(event, image) {
 };
 
 // Aggiungi un listener a tutti gli elementi li con className = a li_image per attivare la visualizzazione dell'immagine fluttuante
-let lis = document.getElementsByTagName("li");
-for (let i = 0; i < lis.length; i++) {
+var lis = document.getElementsByTagName("li");
+for (var i = 0; i < lis.length; i++) {
 				if(lis[i].className != "notOver"){
 				  lis[i].addEventListener('mouseover', function(event) {
 					  console.log(this.id);
@@ -189,7 +189,7 @@ const aucDetails = () => {
 		makeCall("GET", "GoToAuction?idAuction="+e.target.textContent,null, function(response){
 			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
 				document.getElementById("msgBid").textContent="";
-				let response = JSON.parse(response.responseText);
+				var response = JSON.parse(response.responseText);
 				
 				let buySec = document.getElementById("buySection");
 				let sellSec = document.getElementById("sellSection");
@@ -228,7 +228,7 @@ const aucDetails = () => {
 				
 				removeIdFromCookie(sessionStorage.getItem("userMail"), e.target.textContent);
 				if ((e.target.closest("tr").id !== "rowWon_"+e.target.textContent) && (e.target.closest("tr").id !== "rowOwnClosed_"+e.target.textContent)){
-					let oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
+					var oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
 					updateOldCookie(sessionStorage.getItem("userMail"), oldCookie + e.target.textContent + ",");
 				}
 				
@@ -397,8 +397,8 @@ const keyWordTable = () => {
 		let keyword = formData.get("keyword");
 		makeCall("GET", "GoToBuy?keyword="+keyword, null, function(response){
 			if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
-				let response = JSON.parse(response.responseText);
-			    let auctionInfoList = response.auctionInfoList;
+				var response = JSON.parse(response.responseText);
+			    var auctionInfoList = response.auctionInfoList;
 			
 			    // Utilizza i dati dell'oggetto JSON come desideri
 			    if (auctionInfoList.length > 0){
@@ -407,7 +407,7 @@ const keyWordTable = () => {
 			    }
 			
 			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
-				let errorMessage = response.responseText;
+				var errorMessage = response.responseText;
       			alert(errorMessage);
 			}
 		});

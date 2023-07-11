@@ -61,18 +61,18 @@ const registration = () => {
 };
 
 const checkRegistration = (registrationForm) => {
-	let formData = new FormData(registrationForm);
-	let name = formData.get("name");
-	let surname = formData.get("surname");
-	let email = formData.get("userMail");
-	let password = formData.get("password");
-	let repeatedPassword = formData.get("repeatedPassword");
-	let telephone = formData.get("telephone");
-	let address = formData.get("address");
-	let telephonePattern = /\\d+/;
-	let telValid = false;
-	let emailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-	let emailValid = false;
+	var formData = new FormData(registrationForm);
+	var name = formData.get("name");
+	var surname = formData.get("surname");
+	var email = formData.get("userMail");
+	var password = formData.get("password");
+	var repeatedPassword = formData.get("repeatedPassword");
+	var telephone = formData.get("telephone");
+	var address = formData.get("address");
+	var telephonePattern = /\\d+/;
+	var telValid = false;
+	var emailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+	var emailValid = false;
 	
 	if (telephone.length>0) {
 	  telValid = telephonePattern.test(telephone);
@@ -115,11 +115,11 @@ const checkRegistration = (registrationForm) => {
 };
 
 const checkLogin = (loginForm) => {
-	let formData = new FormData(loginForm);
-	let email = formData.get("userMail");
-	let password = formData.get("password");
-	let emailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-	let emailValid = false;
+	var formData = new FormData(loginForm);
+	var email = formData.get("userMail");
+	var password = formData.get("password");
+	var emailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+	var emailValid = false;
 	
 	if (email != null) {
 	  emailValid = emailPattern.test(email);
@@ -138,9 +138,9 @@ const checkLogin = (loginForm) => {
 };
 
 const resetInputFieldsAndMessages = () => {
-	let previousErrorFields = document.getElementsByClassName("inputWithError");
-	let elementsLength = previousErrorFields.length;
-	for (let i = 0; i < elementsLength; i++) {
+	var previousErrorFields = document.getElementsByClassName("inputWithError");
+	var elementsLength = previousErrorFields.length;
+	for (var i = 0; i < elementsLength; i++) {
 		previousErrorFields[0].className = "";
 	}
 	document.getElementById("loginErrorMessage").innerHTML = "";
