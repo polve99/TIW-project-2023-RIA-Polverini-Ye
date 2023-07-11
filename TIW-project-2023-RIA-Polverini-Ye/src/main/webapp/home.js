@@ -164,6 +164,13 @@ window.addEventListener("load", () => {
 			
 			    // Utilizza i dati dell'oggetto JSON come desideri
 			    createOpenAuctionTable(auctionInfoList);
+			    if(wonAuctionInfoList.length>0){
+					document.getElementById("id_empty_WonAuctionSection").classList.add("hiddenElement");
+					document.getElementById("WonAuctionSection").classList.remove("hiddenElement");
+				}else{
+					document.getElementById("id_empty_WonAuctionSection").classList.remove("hiddenElement");
+					document.getElementById("WonAuctionSection").classList.add("hiddenElement");
+				}
 			    createWonAuctionTable(wonAuctionInfoList);
 			    getCookiesAuctions(sessionStorage.getItem("userMail"));
 			    main2();
