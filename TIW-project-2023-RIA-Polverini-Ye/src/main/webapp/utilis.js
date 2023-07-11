@@ -66,6 +66,7 @@
 					updateOldCookie(sessionStorage.getItem("userMail"), oldCookie + e.target.textContent + ",");
 				}
 				buildTableDetails(response);
+				
 			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
 				var errorMessage = response.responseText;
       			alert(errorMessage);
