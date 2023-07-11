@@ -62,13 +62,13 @@
 				
 				removeIdFromCookie(sessionStorage.getItem("userMail"), e.target.textContent);
 				if ((e.target.closest("tr").id !== "rowWon_"+e.target.textContent) && (e.target.closest("tr").id !== "rowOwnClosed_"+e.target.textContent)){
-					var oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
+					let oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
 					updateOldCookie(sessionStorage.getItem("userMail"), oldCookie + e.target.textContent + ",");
 				}
 				buildTableDetails(response);
 				
 			} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
-				var errorMessage = response.responseText;
+				let errorMessage = response.responseText;
       			alert(errorMessage);
 			}
 			

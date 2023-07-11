@@ -94,8 +94,8 @@ const main2 = () => {
 
 const floatImage = () => {
 	 //immagini hover
-		    var lis = document.getElementsByTagName("li");
-			for (var i = 0; i < lis.length; i++) {
+		    let lis = document.getElementsByTagName("li");
+			for (let i = 0; i < lis.length; i++) {
 				if(lis[i].className != "notOver"){
 				  lis[i].addEventListener('mouseover', function(event) {
 				    showFloatingImage(event, this.className);
@@ -184,9 +184,9 @@ window.addEventListener("load", () => {
 				
 			  	if (response1.readyState == XMLHttpRequest.DONE && response1.status == 200) {
 				    var finalobject = JSON.parse(response1.responseText);
-				    var yourAuctionInfoList = finalobject.auctionInfoList;
-				    var ownClosedAuctionInfoList = finalobject.ownClosedAuctionInfoList;
-				    var imageList = finalobject.imageList;
+				    let yourAuctionInfoList = finalobject.auctionInfoList;
+				    let ownClosedAuctionInfoList = finalobject.ownClosedAuctionInfoList;
+				    let imageList = finalobject.imageList;
 				
 				    // Utilizza i dati dell'oggetto JSON come desideri
 				    

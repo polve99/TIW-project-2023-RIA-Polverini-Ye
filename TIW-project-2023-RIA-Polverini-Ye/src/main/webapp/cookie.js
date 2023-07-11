@@ -11,14 +11,14 @@ function createNewCookie(username, asta_id) {
 	document.cookie = username.replace(/(\r\n|\n|\r)/gm, "") + "=" + asta_id + ";" + expires + ";" + "path=/ ; Secure";
 }
 
-function getCookieValue(username) {
+function getCookieValue(userMail) {
 	//cerca acquisto o vendita dato un predefinito id;
-	var username = username.replace(/(\r\n|\n|\r)/gm, "") + "=";
-	var ca = document.cookie.split(';');
+	let username = userMail.replace(/(\r\n|\n|\r)/gm, "") + "=";
+	let ca = document.cookie.split(';');
 
 
-	for (var i = 0; i < ca.length; i++) {
-		var c = ca[i];
+	for (let i = 0; i < ca.length; i++) {
+		let c = ca[i];
 		while (c.charAt(0) == ' ') {
 			c = c.substring(1);
 		}
@@ -46,46 +46,46 @@ function cookieExistence(username) {
 
 //carica gli id delle aste
 function getIdFromCookieSet(username) {
-	var cookieRecipe = getCookieValue(username);
-	cookieComponents = cookieRecipe.split(',');
+	let cookieRecipe = getCookieValue(username);
+	let cookieComponents = cookieRecipe.split(',');
 	const aste_set = new Set();
 
 	for (const asta of cookieComponents) {
-		if(!aste_set.has(asta) && asta !== "sell"){
+		if (!aste_set.has(asta) && asta !== "sell") {
 			aste_set.add(asta);
 		}
 	}
-	var lista_asteId = Array.from(aste_set).join(',');
+	let lista_asteId = Array.from(aste_set).join(',');
 	lista_asteId.replace("%", ","); //levare
 	
-	return lista_asteId.substring(0,lista_asteId.length - 1);
+	return lista_asteId.substring(0, lista_asteId.length - 1);
 }
 
 function removeIdFromCookie(username, idToRemove) {
-  let cookieValue = getCookieValue(username);
-  let cookieComponents = cookieValue.split(',');
+	let cookieValue = getCookieValue(username);
+	let cookieComponents = cookieValue.split(',');
 
-  // Crea un nuovo array filtrando gli ID da rimuovere
-  let newComponents = cookieComponents.filter(function(id) {
-    return id !== String(idToRemove);
-  });
+	// Crea un nuovo array filtrando gli ID da rimuovere
+	let newComponents = cookieComponents.filter(function(id) {
+		return id !== String(idToRemove);
+	});
 
-  // Crea la nuova stringa di ID separati da virgole
-  let newCookieValue = newComponents.join(',');
+	// Crea la nuova stringa di ID separati da virgole
+	let newCookieValue = newComponents.join(',');
 
-  // Aggiorna il cookie con i nuovi ID
-  updateOldCookie(username, newCookieValue);
+	// Aggiorna il cookie con i nuovi ID
+	updateOldCookie(username, newCookieValue);
 }
 
 function returnLastValueCookie(username) {
 	//ritorna l'ultima istanza del campo value di un determinato cookie
-	var rawCookies = getCookieValue(username);
-	var rawSplitCookies = rawCookies.split(',');
+	let rawCookies = getCookieValue(username);
+	let rawSplitCookies = rawCookies.split(',');
 
-	var arrayCookie = Array.from(rawSplitCookies);
+	let arrayCookie = Array.from(rawSplitCookies);
 
 	//getta l'ultimo elemento
-	var lastNotEmptyValue = arrayCookie[arrayCookie.length - 2];
+	let lastNotEmptyValue = arrayCookie[arrayCookie.length - 2];
 
 	return lastNotEmptyValue;
 }
@@ -103,7 +103,6 @@ function getCookiesAuctions(username){
 		}
 	});
 };
-
 
 function createCookieAuctionTable(yourAuctionInfoList){
 
@@ -129,7 +128,7 @@ function createCookieAuctionTable(yourAuctionInfoList){
 
   // Crea il corpo della tabella con i dati dell'asta
   let tbody1 = document.createElement("tbody");
-  tbody1.id="tbodyCookie_id";
+  tbody1.id = "tbodyCookie_id";
 
   yourAuctionInfoList.forEach(function(auctionInfo1) {
     let row1 = document.createElement("tr");

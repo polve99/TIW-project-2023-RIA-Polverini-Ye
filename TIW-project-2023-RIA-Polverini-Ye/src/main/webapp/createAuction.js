@@ -91,7 +91,7 @@
 					switch(x.status) {
 						case 200:
 							removeIdFromCookie(sessionStorage.getItem("userMail"), "sell");
-							var oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
+							let oldCookie = getCookieValue(sessionStorage.getItem("userMail"));
 							updateOldCookie(sessionStorage.getItem("userMail"), oldCookie + "sell" + ",");
 							appendNewRow(message);
 							break;
@@ -353,7 +353,7 @@ const createBid = () => {
 		 if(!isNaN(formData.get("bidValue")) && form.checkValidity()){
 			 makeCall("POST", "MakeBid?bidValue="+formData.get("bidValue"), null, function(response){
 				 if (response.readyState == XMLHttpRequest.DONE && response.status == 200){
-					var response = JSON.parse(response.responseText);
+					let response = JSON.parse(response.responseText);
 				    appendBid(response);
 				} else if(response.readyState == XMLHttpRequest.DONE && response.status !== 200){
 					let message = response.responseText;
@@ -453,11 +453,11 @@ function removeRow(message){
     row.appendChild(idAuctionCell);
 
     //Articles
-    var articlesCell = document.createElement("td");
-    var articlesList = document.createElement("ul");
+    let articlesCell = document.createElement("td");
+    let articlesList = document.createElement("ul");
     
     message.articles.forEach(function(article) {
-      var listItem = document.createElement("li");
+      let listItem = document.createElement("li");
       listItem.textContent = article.articleName;
       //listItem.id = article.image;
       listItem.className = article.image;
@@ -472,7 +472,7 @@ function removeRow(message){
     row.appendChild(articlesCell);
 
     // Max Bid Value
-    var maxBidValueCell = document.createElement("td");
+    let maxBidValueCell = document.createElement("td");
     maxBidValueCell.textContent = message.bidValue;
     row.appendChild(maxBidValueCell);
 
@@ -533,9 +533,9 @@ function removeRow(message){
 }
  
 const resetInputFieldsAndMessages = () => {
-	var previousErrorFields = document.getElementsByClassName("inputWithError");
-	var elementsLength = previousErrorFields.length;
-	for (var i = 0; i < elementsLength; i++) {
+	let previousErrorFields = document.getElementsByClassName("inputWithError");
+	let elementsLength = previousErrorFields.length;
+	for (let i = 0; i < elementsLength; i++) {
 		previousErrorFields[0].className = "";
 	}
 	document.getElementById("auctionErrorMessage").innerHTML = "";
